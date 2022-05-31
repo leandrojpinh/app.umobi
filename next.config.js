@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+const path = require('path');
+const withImages = require('next-images');
 
-module.exports = nextConfig
+module.exports = withImages({
+  esModule: true,
+  inlineImageLimit: false,
+  images: {
+    domains: ['avatars.githubusercontent.com']
+  },
+  sassOptions: [
+    path.join(__dirname, 'styles')
+  ],
+  reactStrictMode: true,
+});
