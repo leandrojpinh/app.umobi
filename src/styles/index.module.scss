@@ -35,11 +35,15 @@
     border: 0;
     color: var(--text);
     cursor: pointer;
-    transition: filter 2s;
     font-size: 1.1rem;
     font-family: 'Staatliches';
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    transition: filter .2s;
+  }
+
+  .subscribe:hover {
+    filter: brightness(80%);
   }
 
   .last {

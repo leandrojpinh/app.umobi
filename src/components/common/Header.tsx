@@ -133,13 +133,13 @@ const SessionLinks = () => {
     <NavMenu>
       <NavItem>
         <FiUser height={36} color={'var(--primary-dark)'} />
-        <NavLink href={'home'}>
+        <NavLink href={'login'}>
           Entrar
         </NavLink>
       </NavItem>
       <NavItem>
         <SubscribeButton>
-          <NavLink href={'about'}>
+          <NavLink href={'registration'}>
             Inscreva-se
           </NavLink>
         </SubscribeButton>

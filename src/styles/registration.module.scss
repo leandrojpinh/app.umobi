@@ -1,0 +1,19 @@
+.role {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+
+  strong {
+    text-transform: uppercase;
+    font-family: 'Poppins';
+    font-weight: 600;
+    padding-bottom: .5rem;
+  }
+
+  span {
+    font-family: 'Poppins';
+    font-weight: normal;
+    padding-bottom: .5rem;
+  }
+}

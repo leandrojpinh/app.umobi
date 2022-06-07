@@ -1,0 +1,21 @@
+.button {
+  background: var(--linear);
+  border: none;
+  color: var(--text);
+  font-family: 'Staatliches';
+  padding: 1rem 3rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 2rem 0;
+
+  transition: filter .2s;
+}
+
+.button:hover {
+  filter: brightness(80%);
+}
+
+.button:disabled {
+  background: var(--background);
+  filter: brightness(80%)
+}
