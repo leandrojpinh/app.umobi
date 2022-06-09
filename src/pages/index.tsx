@@ -1,8 +1,20 @@
 import React from 'react';
+import YouTube, { YouTubeProps } from 'react-youtube';
 
 import styles from '@/styles/index.module.scss';
 
 export default function Home() {
+  const onPlayerReady: YouTubeProps['onReady'] = (e) => {
+    e.target.pauseVideo();
+  }
+
+  const opts: YouTubeProps['opts'] = {
+    height: '390',
+    width: '640',
+    playerVars: {
+      autoplay: 1,
+    },
+  };
 
   return (
     <div className={styles.container} style={{ background: `url('./square.svg')`, backgroundRepeat: 'no-repeat' }}>
@@ -14,7 +26,10 @@ export default function Home() {
 
       <div className={styles.last}>
         <strong>Retiro Umobi 2021</strong>
-        <div></div>
+        <YouTube
+          videoId='wV3TQjDUdW0'
+          opts={opts}
+          onReady={onPlayerReady} />
       </div>
     </div>
   )
