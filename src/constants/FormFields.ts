@@ -3,12 +3,13 @@ export interface IField {
   label: string;
   required?: boolean;
   subLabel?: string;
+  mask?: string;
 }
 
 export interface IFieldItem {
   id: number;
   field: IField;
-  type: "mail" | "text" | "date" | "radio" | "checkbox";
+  type: "mail" | "text" | "date" | "radio" | "checkbox";  
 }
 export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
   {
@@ -21,7 +22,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "mail",
   },
   {
-    id: 4,
+    id: 2,
     field: {
       name: "name",
       label: "Qual o seu nome completo?",
@@ -30,16 +31,17 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 5,
+    id: 3,
     field: {
       name: "birthDate",
       label: "Qual sua data de nascimento?",
       required: true,
+      mask: '99/99/9999'
     },
     type: "date",
   },
   {
-    id: 6,
+    id: 4,
     field: {
       name: "address",
       label: "Qual seu endereço? (Rua, Nº, Bairro, Cidade)",
@@ -48,16 +50,17 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 7,
+    id: 5,
     field: {
       name: "phoneNumber",
       label: "Qual o seu telefone para contato? (DDD  + Número)",
       required: true,
+      mask: '(99) 99999-9999'
     },
     type: "text",
   },
   {
-    id: 8,
+    id: 6,
     field: {
       name: "parentNames",
       label: "Qual o nome dos seus pais?",
@@ -66,16 +69,17 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 9,
+    id: 7,
     field: { name: "churchName", label: "Em que igreja você congrega?" },
     type: "text",
   },
   {
-    id: 10,
+    id: 8,
     field: {
       name: "ministerNumber",
       label: "Qual o telefone do seu pastor?",
       required: true,
+      mask: '(99) 99999-9999'
     },
     type: "text",
   },
@@ -83,7 +87,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
 
 export const FORM_COMPLEX_FIELDS = {
   ministerApproval: {
-    id: 10,
+    id: 9,
     field: {
       name: "ministerApproval",
       label: "O seu pastor está ciente da sua inscrição?",
@@ -102,7 +106,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isAllergic: {
-    id: 12,
+    id: 10,
     field: {
       name: "isAllergic",
       label: "Você tem alergia a algum medicamento?",
@@ -121,12 +125,12 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   medicineName: {
-    id: 13,
+    id: 11,
     field: { name: "medicineName", label: "Qual o medicamento?" },
     type: "text",
   },
   canSwim: {
-    id: 14,
+    id: 12,
     field: {
       name: "canSwim",
       label: "Você sabe nadar?",
@@ -146,7 +150,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isBeliever: {
-    id: 15,
+    id: 13,
     field: { name: "isBeliever", label: "Você é crente em Jesus?" },
     type: "radio",
     options: [
@@ -161,7 +165,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isResponsable: {
-    id: 16,
+    id: 14,
     field: {
       name: "isResponsable",
       label:
@@ -181,7 +185,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   moreInformation: {
-    id: 17,
+    id: 15,
     field: {
       name: "moreInformation",
       label:
@@ -190,7 +194,7 @@ export const FORM_COMPLEX_FIELDS = {
     type: "text",
   },
   isAllTrue: {
-    id: 18,
+    id: 16,
     field: { name: "isAllTrue", label: "Preenchi conforme solicitado", required: true, },
     type: "checkbox",
   },

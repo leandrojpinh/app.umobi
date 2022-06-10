@@ -3,7 +3,7 @@ import { Layout } from "@/components/common/Layout";
 import { Title } from "@/components/common/Title";
 import { Topic } from "@/components/common/Topic";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 
 import { FileContainer } from '@/styles/pages/Payments';
 
@@ -11,19 +11,43 @@ import styles from '@/styles/payment.module.scss';
 import { FiLayers, FiPaperclip } from "react-icons/fi";
 
 import { IResponseProps, Response } from '@/components/common/Response';
+import { LOCAL_STORAGE } from "@/constants/Storage";
+import { useRouter } from "next/router";
+import { useApp } from "@/context/AppContext";
+import { Loader } from "@/components/common/Loader";
 
 export default function Payment() {
+  const app = useApp();
+  const router = useRouter();
+
   const [file, setFile] = useState<File>();
   const [response, setResponse] = useState<IResponseProps>();
 
+  useEffect(() => {
+    const hasAgreed = localStorage.getItem(LOCAL_STORAGE.agree);
+    if (hasAgreed !== '1') {
+      router.back();
+    }
+
+    const hasFormData = localStorage.getItem(LOCAL_STORAGE.form);
+    if (!hasFormData) {
+      router.push('/registration/form');
+    }
+  }, []);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    app.setIsLoading(true);
+
+    //ENVIO PRA API
 
     setResponse({
       title: 'tudo certo!',
       message: 'Abaixo o código para acessar sua inscrição, não se preocupe, enviamos pora o seu e-mail também, verifica lá e não perca esse código.',
       type: 'success'
-    })
+    });
+
+    app.setIsLoading(false);
   }
 
   const handleFile = (fileSelected?: File) => {
@@ -38,6 +62,7 @@ export default function Payment() {
 
   return (
     <Layout>
+      <Loader loading={app.isLoading} />
       {response ? (
         <Response type={response.type} message={response.message} title={response.title} />
       ) : (
@@ -77,7 +102,7 @@ export default function Payment() {
               </FileContainer>
 
 
-              <Button type={'submit'} label="Finalizar" onClick={() => { }} />
+              <Button type={'submit'} label="Finalizar" disabled={!file} />
             </form>
           </section>
         </>

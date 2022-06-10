@@ -6,7 +6,7 @@
 }
 
 .wrapper {
-  margin-top: 0.3rem;
+  margin-top: 0.5rem;
   display: flex;
   gap: 1rem;
 }
@@ -62,4 +62,10 @@
 
 .container:not(:disabled):checked ~ input::before{
   opacity: 1;
+}
+
+.subLabel {
+  font-size: .8rem;
+  margin: 0.1rem 0 0;
+  color: var(--placeholder);
 }

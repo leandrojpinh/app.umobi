@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  z-index: 1;
+  flex: 999;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background: var(--background);
+  top: 0;
+
+  > span > span {
+    background-color: var(--primary-dark);
+  }
+  > span > span+span {
+    background-color: var(--primary-light);
+  }
+}

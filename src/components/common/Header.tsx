@@ -103,6 +103,9 @@ const SubscribeButton = styled.div`
   display: flex;
   cursor: pointer;
   color: inherit;
+  font-family: "Staatliches";
+  letter-spacing: 0.1rem;
+  font-weight: 500;
 
   background: var(--linear);
   border-radius: 8px;
@@ -118,11 +121,13 @@ const NavLinks = () => {
     <>
       <NavMenu>
         <NavItem>
-          <NavLink href={'home'}>Home</NavLink>
+          <NavLink href={'/'}>Home</NavLink>
         </NavItem>
+        {/* 
+        TODO: Login
         <NavItem>
           <NavLink href={'about'}>Sobre nós</NavLink>
-        </NavItem>
+        </NavItem> */}
       </NavMenu>
     </>
   )
