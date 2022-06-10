@@ -9,7 +9,7 @@ export interface IField {
 export interface IFieldItem {
   id: number;
   field: IField;
-  type: "mail" | "text" | "date" | "radio" | "checkbox";  
+  type: "mail" | "text" | "date" | "radio" | "checkbox";
 }
 export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
   {
@@ -36,7 +36,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
       name: "birthDate",
       label: "Qual sua data de nascimento?",
       required: true,
-      mask: '99/99/9999'
+      mask: "99/99/9999",
     },
     type: "date",
   },
@@ -55,7 +55,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
       name: "phoneNumber",
       label: "Qual o seu telefone para contato? (DDD  + Número)",
       required: true,
-      mask: '(99) 99999-9999'
+      mask: "(99) 99999-9999",
     },
     type: "text",
   },
@@ -79,7 +79,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
       name: "ministerNumber",
       label: "Qual o telefone do seu pastor?",
       required: true,
-      mask: '(99) 99999-9999'
+      mask: "(99) 99999-9999",
     },
     type: "text",
   },
@@ -195,7 +195,48 @@ export const FORM_COMPLEX_FIELDS = {
   },
   isAllTrue: {
     id: 16,
-    field: { name: "isAllTrue", label: "Preenchi conforme solicitado", required: true, },
+    field: {
+      name: "isAllTrue",
+      label: "Preenchi conforme solicitado",
+      required: true,
+    },
     type: "checkbox",
+  },
+};
+
+export const LOGIN_FIELDS = {
+  loginMode: {
+    id: 1,
+    field: {
+      name: "loginMode",
+      label: "",
+    },
+    type: "radio",
+    options: [
+      {
+        label: "Sou retirante",
+        value: 1,
+      },
+      {
+        label: "Sou da diretoria",
+        value: 0,
+      },
+    ],
+  },
+  username: {
+    id: 2,
+    field: {
+      name: "username",
+      label: "E-mail",
+    },
+    type: "email",
+  },
+  password: {
+    id: 3,
+    field: {
+      name: "password",
+      label: "Senha",
+    },
+    type: "password",
   },
 };

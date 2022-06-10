@@ -1,4 +1,4 @@
-.button {
+.button, .loginButton {
   background: var(--linear);
   border: none;
   color: var(--text);
@@ -11,11 +11,19 @@
   transition: filter .2s;
 }
 
-.button:hover {
+.button:hover, .loginButton:hover {
   filter: brightness(80%);
 }
 
-.button:disabled {
+.button:disabled, .loginButton:disabled {
   background: var(--background);
   filter: brightness(80%)
+}
+
+.loginButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
 }

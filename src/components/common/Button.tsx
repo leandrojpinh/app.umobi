@@ -1,6 +1,7 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 import styles from '@/styles/button.module.scss';
 import Link from "next/link";
+import { FiLogIn } from "react-icons/fi";
 
 type IButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
@@ -26,5 +27,15 @@ export function ALink({ label, path, onClick, ...rest }: ILinkProps) {
         {label}
       </a>
     </Link>
+  )
+}
+
+export function LoginButton({ label, onClick, ...rest }: IButtonProps) {
+  return (
+    <button className={styles.loginButton} {...rest}>
+      {label}
+
+      <FiLogIn size={24} color={'var(--text)'} />
+    </button>
   )
 }

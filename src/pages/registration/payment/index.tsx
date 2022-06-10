@@ -24,6 +24,10 @@ export default function Payment() {
   const [response, setResponse] = useState<IResponseProps>();
 
   useEffect(() => {
+    app.setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
     const hasAgreed = localStorage.getItem(LOCAL_STORAGE.agree);
     if (hasAgreed !== '1') {
       router.back();
