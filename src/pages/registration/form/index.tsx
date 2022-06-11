@@ -16,6 +16,11 @@ import { Loader } from "@/components/common/Loader";
 
 import styles from '@/styles/pages/form-registration.module.scss';
 
+import { createRegistration, createSession, createUser } from "@/services/umobi/umobi.api";
+import { RegistrationForm } from '@/services/umobi/models/Registration';
+import { User } from '@/services/umobi/models/User';
+import { Session } from "@/services/umobi/models/Session";
+
 type IRegistrationProps = {
   email: string;
   name: string;
@@ -79,14 +84,51 @@ export default function Registration() {
     setRegistration(newRegistration);
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     app.setIsLoading(true);
 
-    console.log('newRegistration', registration);
-    localStorage.setItem(LOCAL_STORAGE.form, JSON.stringify(registration))
-    router.push('/registration/payment');
+    localStorage.setItem(LOCAL_STORAGE.form, JSON.stringify(registration));
+
+    const user = {
+      address: registration.address,
+      birthDate: registration.birthDate,
+      email: registration.email,
+      name: registration.name,
+      parentNames: registration.parentNames,
+      phoneNumber: registration.phoneNumber
+    } as User;
+    const userResponse = await createUser(user);
+    if (userResponse) {
+      const session = { email: user.email, password: '' } as Session;
+
+      await createSession(session);
+
+      const form = {
+        canSwim: registration.canSwim,
+        churchName: registration.churchName,
+        isAllergic: registration.isAllergic,
+        isAllTrue: registration.isAllTrue,
+        isBeliever: registration.isBeliever,
+        isResponsable: registration.isResponsable,
+        medicineName: registration.medicineName,
+        ministerApproval: registration.ministerApproval,
+        ministerNumber: registration.ministerNumber,
+        moreInformation: registration.moreInformation
+      } as RegistrationForm;
+      const response = await createRegistration(form);
+
+      if (response) {
+        localStorage.removeItem(LOCAL_STORAGE.form);
+
+        app.setIsLoading(false);
+        //TODO: Add toast de sucesso
+        router.push('/registration/payment');
+      }
+    }
+
     app.setIsLoading(false);
+    //TODO: Add toast de erro
   }
 
   const isValid = () => {
