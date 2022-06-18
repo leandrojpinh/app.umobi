@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
-
+import { animateScroll as scroll } from "react-scroll";
 import { FiInstagram, FiFacebook, FiArrowUp } from "react-icons/fi";
 
 import styles from '@/styles/footer.module.scss';
+import { RESOURCES } from '@/constants/Resources';
 
 export default function Footer() {
   return (
@@ -16,13 +17,13 @@ export default function Footer() {
           <span>© Todos os direitos reservados - {new Date().getFullYear()}</span>
         </div>
         <div className={styles.actions}>
-          <button className={styles.goTop} onClick={() => { }}>
+          <a className={styles.goTop} href={RESOURCES.instagram} target="_blank">
             <FiInstagram height={36} />
-          </button>
-          <button className={styles.goTop} onClick={() => { }}>
+          </a>
+          <a className={styles.goTop} href={RESOURCES.facebook} target="_blank">
             <FiFacebook height={36} />
-          </button>
-          <button className={styles.goTop} onClick={() => { }}>
+          </a>
+          <button className={styles.goTop} onClick={() => scroll.scrollToTop()}>
             <FiArrowUp height={36} />
           </button>
         </div>
