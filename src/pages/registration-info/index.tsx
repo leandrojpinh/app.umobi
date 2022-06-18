@@ -26,12 +26,10 @@ export default function Login() {
     phoneNumber: ''
   } as UserInfo;
 
-  const history = useRouter();
   const auth = useAuth();
   const app = useApp();
 
   useEffect(() => {
-    app.setIsLoading(false);
     getUserInfo().then(res => {
       const userData = {
         ...res,

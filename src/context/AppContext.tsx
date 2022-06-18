@@ -5,7 +5,7 @@ import { AppContextProviderProps } from '@/model/contexts/app/AppContextProvider
 export const AppContext = createContext({} as AppContextData);
 
 export function AppProvider({ children }: AppContextProviderProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <AppContext.Provider

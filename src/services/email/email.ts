@@ -12,5 +12,3 @@ export const emailConfig = {
 };
 
 init(emailConfig.userId || '');
-
-console.log('emailConfig', emailConfig)

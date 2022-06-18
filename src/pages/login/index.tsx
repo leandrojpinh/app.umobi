@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 
 import { useApp } from "@/context/AppContext";
 
@@ -20,10 +20,6 @@ export default function Login() {
   const auth = useAuth();
   const app = useApp();
 
-  useEffect(() => {
-    app.setIsLoading(false);
-  }, []);
-
   const [isAdm, setIsAdm] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +35,6 @@ export default function Login() {
           setEmail('');
           setPassword('');
 
-          console.log('USER', auth.user);
           if (isAuthenticated) {
             app.setIsLoading(false);
             if (auth.user.isAdmin) {

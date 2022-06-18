@@ -1,3 +1,6 @@
+import { useRouter } from "next/router";
+import { FormEvent, useState } from "react";
+
 import { Button } from "@/components/common/Button";
 import { Checkbox } from "@/components/common/Checkbox";
 import { Layout } from "@/components/common/Layout"
@@ -9,8 +12,6 @@ import { LOCAL_STORAGE } from "@/constants/Storage";
 import { useApp } from "@/context/AppContext";
 
 import styles from '@/styles/registration.module.scss';
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
 
 interface RoleProps {
   name: string;
@@ -42,10 +43,6 @@ export default function Registration() {
   const app = useApp();
 
   const [isChecked, setIsChecked] = useState(false);
-
-  useEffect(() => {
-    app.setIsLoading(false);
-  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

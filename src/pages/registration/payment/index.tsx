@@ -23,7 +23,7 @@ import { FORM_COMPLEX_FIELDS } from "@/constants/FormFields";
 
 export default function Payment() {
   const app = useApp();
-  const router = useRouter();
+  const history = useRouter();
 
   const [file, setFile] = useState<File>();
   const [tax, setTax] = useState(0);
@@ -31,22 +31,20 @@ export default function Payment() {
   const [response, setResponse] = useState<IResponseProps>();
 
   useEffect(() => {
-    app.setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
     const hasAgreed = localStorage.getItem(LOCAL_STORAGE.agree);
     if (hasAgreed !== '1') {
-      router.back();
+      history.back();
     }
 
     const hasRegistration = localStorage.getItem(LOCAL_STORAGE.registrationId);
     if (!hasRegistration) {
-      router.push('/registration/form');
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      history.push('/registration/form');
     } else {
       setRegistrationId(JSON.parse(hasRegistration));
     }
-  }, []);
+  }, [history]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

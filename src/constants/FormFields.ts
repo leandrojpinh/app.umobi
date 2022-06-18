@@ -242,10 +242,10 @@ export const LOGIN_FIELDS = {
         label: "Sou retirante",
         value: 1,
       },
-      {
-        label: "Sou da diretoria",
-        value: 0,
-      },
+      // {
+      //   label: "Sou da diretoria",
+      //   value: 0,
+      // },
     ],
   },
   email: {

@@ -22,7 +22,7 @@ import { RegistrationForm } from '@/services/umobi/models/Registration';
 import { User } from '@/services/umobi/models/User';
 
 import { useEmail } from '@/context/EmailProvider';
-import { EmailConfirmation } from '@/model/contexts/Email';
+import { EmailConfirmation } from '@/model/contexts/email/Email';
 
 type IRegistrationProps = {
   email: string;
@@ -70,23 +70,14 @@ export default function Registration() {
   const app = useApp();
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [teste, setTeste] = useState(0);
 
   useEffect(() => {
-    setTeste(teste +1);
-    console.log('teste', teste)
-    const email = {
-      data: new Date().toLocaleString(),
-      email: 'leandro-jpinh@hotmail.com',
-      name: 'Leandro'
-    } as EmailConfirmation;
-
     const hasAgreed = localStorage.getItem(LOCAL_STORAGE.agree);
     if (hasAgreed !== '1') {
       toast.dark('Hmm, parece que ainda não marcou sobre concordar com a regras...');
-      setTimeout(() => {
-        history.back();
-      }, 3000);
+      
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      history.back();
     }
 
     const hasStarted = localStorage.getItem(LOCAL_STORAGE.form);
@@ -94,7 +85,7 @@ export default function Registration() {
       setRegistration(JSON.parse(hasStarted) as IRegistrationProps);
       toast.dark('Parece que tem um cadastro ainda não finalizado, preenchi os campos que já estavam preenchidos antes. :)');
     }
-  }, []);
+  }, [history]);
 
   const changeField = (field: string, value: any) => {
     const newRegistration = {
