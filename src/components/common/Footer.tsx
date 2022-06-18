@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 
 import { FiInstagram, FiFacebook, FiArrowUp } from "react-icons/fi";
@@ -9,7 +10,9 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.content}>
         <div className={styles.info}>
-          <img src="/umobi-logo.png" alt="Umobi" height={42} width={128} />
+          <picture>
+            <img src="/umobi-logo.png" alt="Umobi" height={42} width={128} />
+          </picture>
           <span>© Todos os direitos reservados - {new Date().getFullYear()}</span>
         </div>
         <div className={styles.actions}>

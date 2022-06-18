@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable @next/next/no-img-element */
+
+import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 
-import { FiUser } from 'react-icons/fi';
+import { FiLogOut } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContainer';
 
 const Nav = styled.nav`
   color: var(--green0);
@@ -97,6 +100,24 @@ const NavLink = styled(Link)`
   }
 `;
 
+const NavLinkLogout = styled.a`
+  height: 100%;
+
+  button {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 2rem;
+    height: 100%;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: inherit;
+    &.active {
+      border-color: var(--green1) !important;
+    }
+  }
+`;
+
 const SubscribeButton = styled.div`
   height: 100%;
   transition: filter .2s;
@@ -137,7 +158,7 @@ const SessionLinks = () => {
   return (
     <NavMenu>
       <NavItem>
-        <FiUser height={36} color={'var(--primary-dark)'} />
+        <FiLogOut height={36} color={'var(--primary-dark)'} />
         <NavLink href={'/login'}>
           Entrar
         </NavLink>
@@ -153,7 +174,28 @@ const SessionLinks = () => {
   )
 }
 
+const Logout = () => {
+  const auth = useAuth();
+
+  const logout = () => {
+    auth.signOut();
+  }
+  
+  return (
+    <NavMenu>
+      <NavItem>
+        <NavLinkLogout onClick={logout}>
+          Sair
+        </NavLinkLogout>
+        <FiLogOut height={36} color={'var(--primary-light)'} />
+      </NavItem>      
+    </NavMenu>
+  )
+}
+
 export const Navbar = () => {
+  const auth = useAuth();
+
   return (
     <Nav>
       <NavContainer>
@@ -162,8 +204,14 @@ export const Navbar = () => {
             <img src="/umobi-logo.png" height={42} width={128} alt="Igreja Bíblica Batista de Jardim Bandeirante" />
           </NavLink>
         </NavBrand>
-        <NavLinks />
-        <SessionLinks />
+        {!auth?.user?.isAuthenticated ? (
+          <>
+            {/* <NavLinks /> */}
+            <SessionLinks />
+          </>
+        ) : (
+          <Logout />
+        )}
       </NavContainer>
     </Nav>
   )

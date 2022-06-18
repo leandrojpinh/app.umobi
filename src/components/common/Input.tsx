@@ -11,7 +11,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<InputProps> = ({ label, name, mask, ...rest }) => {
   return (
-    <div className={styles.inputBlock}>
+    <div className={`${styles.inputBlock} ${rest.className}`}>
       <label htmlFor={name}>{label}</label>
       {mask ? (
         <InputMask mask={mask} id={name} {...rest} />
