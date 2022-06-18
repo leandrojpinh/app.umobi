@@ -1,3 +1,5 @@
+import { v4 as uuidV4 } from "uuid";
+
 export interface IField {
   name: string;
   label: string;
@@ -7,13 +9,13 @@ export interface IField {
 }
 
 export interface IFieldItem {
-  id: number;
+  id: string;
   field: IField;
   type: "mail" | "text" | "date" | "radio" | "checkbox";
 }
 export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
   {
-    id: 1,
+    id: uuidV4(),
     field: {
       name: "email",
       label: "Qual o seu e-mail?",
@@ -22,7 +24,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "mail",
   },
   {
-    id: 2,
+    id: uuidV4(),
     field: {
       name: "name",
       label: "Qual o seu nome completo?",
@@ -31,7 +33,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 3,
+    id: uuidV4(),
     field: {
       name: "birthDate",
       label: "Qual sua data de nascimento?",
@@ -41,7 +43,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "date",
   },
   {
-    id: 4,
+    id: uuidV4(),
     field: {
       name: "address",
       label: "Qual seu endereço? (Rua, Nº, Bairro, Cidade)",
@@ -50,7 +52,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 5,
+    id: uuidV4(),
     field: {
       name: "phoneNumber",
       label: "Qual o seu telefone para contato? (DDD  + Número)",
@@ -60,7 +62,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 6,
+    id: uuidV4(),
     field: {
       name: "parentNames",
       label: "Qual o nome dos seus pais?",
@@ -69,12 +71,24 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
     type: "text",
   },
   {
-    id: 7,
-    field: { name: "churchName", label: "Em que igreja você congrega?" },
+    id: uuidV4(),
+    field: {
+      name: "churchName",
+      label: "Em que igreja você congrega?",
+    },
     type: "text",
   },
   {
-    id: 8,
+    id: uuidV4(),
+    field: {
+      name: "ministerName",
+      label: "Qual o nome do seu pastor?",
+      required: true,
+    },
+    type: "text",
+  },
+  {
+    id: uuidV4(),
     field: {
       name: "ministerNumber",
       label: "Qual o telefone do seu pastor?",
@@ -87,7 +101,7 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
 
 export const FORM_COMPLEX_FIELDS = {
   ministerApproval: {
-    id: 9,
+    id: uuidV4(),
     field: {
       name: "ministerApproval",
       label: "O seu pastor está ciente da sua inscrição?",
@@ -106,7 +120,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isAllergic: {
-    id: 10,
+    id: uuidV4(),
     field: {
       name: "isAllergic",
       label: "Você tem alergia a algum medicamento?",
@@ -125,12 +139,12 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   medicineName: {
-    id: 11,
+    id: uuidV4(),
     field: { name: "medicineName", label: "Qual o medicamento?" },
     type: "text",
   },
   canSwim: {
-    id: 12,
+    id: uuidV4(),
     field: {
       name: "canSwim",
       label: "Você sabe nadar?",
@@ -150,7 +164,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isBeliever: {
-    id: 13,
+    id: uuidV4(),
     field: { name: "isBeliever", label: "Você é crente em Jesus?" },
     type: "radio",
     options: [
@@ -165,7 +179,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   isResponsable: {
-    id: 14,
+    id: uuidV4(),
     field: {
       name: "isResponsable",
       label:
@@ -185,7 +199,7 @@ export const FORM_COMPLEX_FIELDS = {
     ],
   },
   moreInformation: {
-    id: 15,
+    id: uuidV4(),
     field: {
       name: "moreInformation",
       label:
@@ -194,7 +208,7 @@ export const FORM_COMPLEX_FIELDS = {
     type: "text",
   },
   isAllTrue: {
-    id: 16,
+    id: uuidV4(),
     field: {
       name: "isAllTrue",
       label: "Preenchi conforme solicitado",
@@ -203,15 +217,15 @@ export const FORM_COMPLEX_FIELDS = {
     type: "checkbox",
   },
   password: {
-    id: 17,
+    id: uuidV4(),
     field: {
       name: "password",
-      label: "Crie uma senha",
+      label: "Crie uma senha(mínimo 6 caracteres)",
     },
     type: "password",
   },
   confirmPassword: {
-    id: 18,
+    id: uuidV4(),
     field: {
       name: "confirmPassword",
       label: "Confirme sua senha",
@@ -219,7 +233,7 @@ export const FORM_COMPLEX_FIELDS = {
     type: "password",
   },
   tax: {
-    id: 19,
+    id: uuidV4(),
     field: {
       name: "tax",
       label: "Qual o valor do comprovante?",
@@ -231,7 +245,7 @@ export const FORM_COMPLEX_FIELDS = {
 
 export const LOGIN_FIELDS = {
   loginMode: {
-    id: 1,
+    id: uuidV4(),
     field: {
       name: "loginMode",
       label: "",
@@ -249,7 +263,7 @@ export const LOGIN_FIELDS = {
     ],
   },
   email: {
-    id: 2,
+    id: uuidV4(),
     field: {
       name: "email",
       label: "E-mail",
@@ -257,11 +271,41 @@ export const LOGIN_FIELDS = {
     type: "email",
   },
   password: {
-    id: 3,
+    id: uuidV4(),
     field: {
       name: "password",
       label: "Senha",
     },
     type: "password",
+  },
+};
+
+export const PAYMENT_FIELDS = {
+  paymentMode: {
+    id: uuidV4(),
+    field: {
+      name: "paymentMode",
+      label: "Formas de Pagamento",
+      subLabel: "No caso do parcelamento, o valor da entrada é R$ 70,00",
+    },
+    type: "radio",
+    options: [
+      {
+        label: "PIX - À vista",
+        value: "pix",
+      },
+      {
+        label: "Parcelado 3x - R$ 51,67",
+        value: "3x",
+      },
+      {
+        label: "Parcelado 2x - R$ 77,50",
+        value: "2x",
+      },
+      {
+        label: "Entrada + 1x - R$ 155,00",
+        value: "1x",
+      },
+    ],
   },
 };

@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext } from 'react';
 import { send } from 'emailjs-com';
 import { EmailContextData } from '@/model/contexts/email/EmailContextData';
 import { EmailContextProviderProps } from '@/model/contexts/email/EmailContextProviderProps';
-import { EmailConfirmation } from '@/model/contexts/email/Email';
+import { Email } from '@/model/contexts/email/Email';
 
 import { emailConfig } from '@/services/email/email';
 
@@ -37,21 +37,21 @@ export const EmailContext = createContext({} as EmailContextData);
 export function EmailProvider({ children }: EmailContextProviderProps) {
   const [isSending, setIsSending] = useState(false);
 
-  // async function sendCode(email: EmailCode) {
-  //   try {
-  //     setIsSending(true);
-  //     const response = await send(emailConfig.serviceId, emailConfig.codeTemplateId, email);
-  //     if (response.status !== 200) {
-  //       throw new Error('Erro ao enviar e-mail de código.');
-  //     }
+  async function sendRegistration(email: Email) {
+    try {
+      setIsSending(true);
+      const response = await send(emailConfig.serviceId, emailConfig.registrationTemplateId, email);
+      if (response.status !== 200) {
+        throw new Error('Erro ao enviar e-mail de inscrição.');
+      }
 
-  //     setIsSending(false);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+      setIsSending(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
-  async function sendConfirmation(email: EmailConfirmation) {
+  async function sendConfirmation(email: Email) {
     try {
       setIsSending(true);
       const response = await send(emailConfig.serviceId, emailConfig.confirmationTemplateId, email);
@@ -65,7 +65,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
     }
   }
 
-  async function sendRejection(email: EmailConfirmation) {
+  async function sendRejection(email: Email) {
     try {
       setIsSending(true);
       const response = await send(emailConfig.serviceId, emailConfig.rejectTemplateId, email);
@@ -79,7 +79,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
     }
   }
 
-  async function sendAdjustment(email: EmailConfirmation) {
+  async function sendAdjustment(email: Email) {
     try {
       setIsSending(true);
       const response = await send(emailConfig.serviceId, emailConfig.adjustTemplateId, email);
@@ -111,7 +111,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
     <EmailContext.Provider
       value={{
         isSending,
-        // sendCode,
+        sendRegistration,
         sendConfirmation,
         sendRejection,
         sendAdjustment,

@@ -21,10 +21,7 @@ import { createRegistration, createUser } from "@/services/umobi/umobi.api";
 import { RegistrationForm } from '@/services/umobi/models/Registration';
 import { User } from '@/services/umobi/models/User';
 
-import { useEmail } from '@/context/EmailProvider';
-import { EmailConfirmation } from '@/model/contexts/email/Email';
-
-type IRegistrationProps = {
+export type IRegistrationProps = {
   email: string;
   name: string;
   birthDate: string;
@@ -33,6 +30,7 @@ type IRegistrationProps = {
   parentNames: string;
   churchName: string;
   ministerApproval: boolean;
+  ministerName: string;
   ministerNumber: string;
   isAllergic: boolean;
   medicineName: string;
@@ -57,16 +55,16 @@ export default function Registration() {
     isResponsable: false,
     medicineName: '',
     ministerApproval: false,
+    ministerName: '',
     ministerNumber: '',
     moreInformation: '',
-    name: "",
+    name: '',
     parentNames: '',
     phoneNumber: '',
     password: '',
   };
 
   const history = useRouter();
-  const { sendAdjustment, sendConfirmation, sendNew, sendRejection } = useEmail();
   const app = useApp();
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -75,7 +73,7 @@ export default function Registration() {
     const hasAgreed = localStorage.getItem(LOCAL_STORAGE.agree);
     if (hasAgreed !== '1') {
       toast.dark('Hmm, parece que ainda não marcou sobre concordar com a regras...');
-      
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
       history.back();
     }
@@ -99,12 +97,22 @@ export default function Registration() {
     e.preventDefault();
     app.setIsLoading(true);
 
+    if (moment.duration(moment().diff(moment(registration.birthDate))).years() < 14) {
+      toast.warn('Hmm, você ainda não tem idade para participar...');
+
+      setTimeout(() => {
+        app.setIsLoading(false);
+        history.push('/');
+      }, 3000);
+      return;
+    }
+
     localStorage.setItem(LOCAL_STORAGE.form, JSON.stringify(registration));
 
     const user = {
       address: registration.address,
       birthDate: registration.birthDate,
-      email: registration.email,
+      email: registration.email.toLowerCase().trim(),
       name: registration.name,
       parentNames: registration.parentNames,
       phoneNumber: registration.phoneNumber,
@@ -122,6 +130,7 @@ export default function Registration() {
           isResponsable: registration.isResponsable,
           medicineName: registration.medicineName,
           ministerApproval: registration.ministerApproval,
+          ministerName: registration.ministerName,
           ministerNumber: registration.ministerNumber,
           moreInformation: registration.moreInformation,
         } as RegistrationForm;
@@ -134,17 +143,11 @@ export default function Registration() {
         history.push('/registration/payment');
       })
       .catch(err => {
-        console.log('', err)
-        if (err.trim() == 'User already exists.') {
-          toast.error('Sua inscrição já existe, vamos para o próximo passo.');
-          history.push('/registration/payment');
-        } else {
-          toast.error('Seu usuário foi criado!');
-        }
+        console.log('ERROR-137', err);
+        toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);
       });
-
   }
 
   const isValid = () => {
@@ -158,7 +161,7 @@ export default function Registration() {
 
     const isResponsableCheck = registration?.[FORM_COMPLEX_FIELDS.isResponsable.field.name as keyof IRegistrationProps];
     const isAllTrue = registration?.[FORM_COMPLEX_FIELDS.isAllTrue.field.name as keyof IRegistrationProps];
-    const validPassword = registration?.password && registration?.password === confirmPassword;
+    const validPassword = registration?.password && registration?.password === confirmPassword && registration?.password.length >= 6;
 
     return fieldsWithValue === requiredSimpleFields.length && isResponsableCheck && isAllTrue && validPassword;
   }

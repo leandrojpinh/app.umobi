@@ -47,9 +47,9 @@ const NavMenu = styled.ul`
   align-items: center;
   list-style: none;
   text-align: center;
-  @media screen and (max-width: 830px) {
+  /* @media screen and (max-width: 830px) {
     display: none;
-  }
+  } */
 `;
 
 const NavItem = styled.li`
