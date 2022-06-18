@@ -17,10 +17,10 @@ export default function Footer() {
           <span>© Todos os direitos reservados - {new Date().getFullYear()}</span>
         </div>
         <div className={styles.actions}>
-          <a className={styles.goTop} href={RESOURCES.instagram} target="_blank">
+          <a className={styles.goTop} href={RESOURCES.instagram} target="_blank" rel="noreferrer">
             <FiInstagram height={36} />
           </a>
-          <a className={styles.goTop} href={RESOURCES.facebook} target="_blank">
+          <a className={styles.goTop} href={RESOURCES.facebook} target="_blank" rel="noreferrer">
             <FiFacebook height={36} />
           </a>
           <button className={styles.goTop} onClick={() => scroll.scrollToTop()}>

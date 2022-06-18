@@ -56,7 +56,7 @@ export default function Payment() {
     if (tax < 70) {
       toast.warn('A tax mínima é R$ 70,00...');
     }
-  }, [tax < 70]);
+  }, [tax]);
 
   useEffect(() => {
     if (paymentMode === 'pix') {
