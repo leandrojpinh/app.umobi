@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import YouTube, { YouTubeProps } from 'react-youtube';
+import React from 'react';
 
 import styles from '@/styles/index.module.scss';
 import { ALink } from '@/components/common/Button';
@@ -12,18 +11,6 @@ import ReactPlayer from 'react-player';
 export default function Home() {
   const app = useApp();
   const auth = useAuth();
-
-  const onPlayerReady: YouTubeProps['onReady'] = (e) => {
-    e.target.pauseVideo();
-  }
-
-  const opts: YouTubeProps['opts'] = {
-    height: '390',
-    width: '640',
-    playerVars: {
-      autoplay: 1,
-    },
-  };
 
   return (
     <>
