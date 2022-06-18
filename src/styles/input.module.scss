@@ -19,3 +19,9 @@
   font-family: "Poppins";
   color: var(--text);
 }
+
+.inputBlock input[type="date"]::-webkit-calendar-picker-indicator {
+  color: transparent;
+  background: none;
+  z-index: 1;
+}

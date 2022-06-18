@@ -202,6 +202,31 @@ export const FORM_COMPLEX_FIELDS = {
     },
     type: "checkbox",
   },
+  password: {
+    id: 17,
+    field: {
+      name: "password",
+      label: "Crie uma senha",
+    },
+    type: "password",
+  },
+  confirmPassword: {
+    id: 18,
+    field: {
+      name: "confirmPassword",
+      label: "Confirme sua senha",
+    },
+    type: "password",
+  },
+  tax: {
+    id: 19,
+    field: {
+      name: "tax",
+      label: "Qual o valor do comprovante?",
+      required: true,
+    },
+    type: "number",
+  },
 };
 
 export const LOGIN_FIELDS = {
@@ -223,10 +248,10 @@ export const LOGIN_FIELDS = {
       },
     ],
   },
-  username: {
+  email: {
     id: 2,
     field: {
-      name: "username",
+      name: "email",
       label: "E-mail",
     },
     type: "email",

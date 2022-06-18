@@ -1,5 +1,6 @@
 export type Registration = {
 	campId: string;
+  userId: string;
 };
 
 export type RegistrationForm = {
@@ -15,4 +16,9 @@ export type RegistrationForm = {
   isResponsable: boolean,
   moreInformation: string,
   isAllTrue: boolean
+}
+
+export type RegistrationPayment = {
+  registrationId: string,
+  tax: number
 }

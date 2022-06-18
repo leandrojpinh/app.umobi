@@ -47,34 +47,38 @@ export default function Registration() {
     app.setIsLoading(false);
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     app.setIsLoading(true);
 
     localStorage.setItem(LOCAL_STORAGE.agree, isChecked ? '1' : '0');
 
     app.setIsLoading(false);
-    router.push('/registration/form');
+    await router.push('/registration/form');
   }
 
   return (
-    <Layout>
-      <Loader loading={app.isLoading} />
-      <Title
-        title="Inscrição"
-        subtitle="*Obs: idade mínima para participar é de 14 anos" />
+    <>
+      {app.isLoading ? <Loader loading={app.isLoading} /> :
+        <Layout>
+          <Title
+            title="Inscrição"
+            subtitle="*Obs: idade mínima para participar é de 14 anos" />
 
-      <section>
-        <Topic title="Regras" />
+          <section>
+            <Topic title="Regras" />
 
-        {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
+            {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
 
-        <form onSubmit={handleSubmit}>
-          <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
+            <form onSubmit={handleSubmit}>
+              <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
 
-          <Button type={'submit'} label="Continuar" disabled={!isChecked} />
-        </form>
-      </section>
-    </Layout>
+              <Button type={'submit'} label="Continuar" disabled={!isChecked} />
+            </form>
+          </section>
+        </Layout>
+      }
+    </>
+
   )
 }
