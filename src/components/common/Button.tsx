@@ -1,5 +1,5 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
-import styles from '@/styles/button.module.scss';
+import styles from '@/styles/components/button.module.scss';
 import Link from "next/link";
 import { FiLogIn } from "react-icons/fi";
 
