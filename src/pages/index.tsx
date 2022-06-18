@@ -7,6 +7,7 @@ import { Loader } from '@/components/common/Loader';
 import { Layout } from '@/components/common/Layout';
 import { useAuth } from '@/context/AuthContainer';
 import ReactPlayer from 'react-player';
+import { RESOURCES } from '@/constants/Resources';
 
 export default function Home() {
   const app = useApp();
@@ -25,9 +26,9 @@ export default function Home() {
               <ALink label={auth?.user?.isAuthenticated ? 'Acompanhar minha inscrição' : 'Quero me inscrever'} path={auth?.user?.isAuthenticated ? '/registration-info' : '/registration'} />
 
               <div className={styles.last}>
-                <strong>Retiro Umobi 2021</strong>
+                <strong>Retiro Umobi 2022</strong>
                 <div>
-                  <ReactPlayer url={process.env.NEXT_PUBLIC_YOUTUBE_PLAYER} />
+                  <ReactPlayer url={RESOURCES.video} />
                 </div>
               </div>
             </div>

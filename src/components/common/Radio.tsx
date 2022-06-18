@@ -3,15 +3,15 @@ import styles from '@/styles/radio.module.scss';
 
 type IOptionProps = {
   label: string;
-  value: number;
+  value: number | string;
 }
 
 type RadioProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   subLabel?: string;
   options: IOptionProps[];
-  key: number;
-  selected: number;
+  key: string;
+  selected: number | string;
 }
 
 export function Radio({ label, options, subLabel, selected, ...rest }: RadioProps) {

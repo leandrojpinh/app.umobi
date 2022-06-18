@@ -1,5 +1,5 @@
-export type EmailConfirmation = {
+export type Email = {
   name: string;
   email: string;
-  data: string;
+  data?: string;
 }

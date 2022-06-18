@@ -25,7 +25,6 @@ const createUser = (user: User) => {
     api
       .post("/users", user)
       .then((userResponse: AxiosResponse<string>) => resolve(userResponse.data))
-      .then((result) => console.log("SUCCESS", result))
       .catch((err) => {
         console.log("ewrr", err);
         console.log(err.response.data.message);
@@ -53,7 +52,7 @@ const createSession = async (session: Session): Promise<Token> => {
 };
 
 const createRegistration = async (userId: string, form: RegistrationForm) => {
-  return new Promise((resolve, reect) => {
+  return new Promise((resolve, reject) => {
     const registration = { userId } as Registration;
     api
       .post("/registrations", registration)
@@ -67,27 +66,20 @@ const createRegistration = async (userId: string, form: RegistrationForm) => {
         );
         return api.post("/registrations/form", form);
       })
-      .then((result) => console.log("CreateRegistrationForm", result))
       .then(resolve)
-      .catch(reect);
+      .catch((err) => reject(err.response.data.message));
   });
 };
 
 const createPayment = async (payment: RegistrationPayment, file: File) => {
   return new Promise((resolve, reject) => {
-    console.log("createPayment", { payment, file });
     api
       .post("/registrations/payment", payment)
       .then((paymentId) => {
-        console.log("PPQOQ", paymentId);
         const formData = new FormData();
         formData.append("receipt", file);
 
         return api.patch(`/registrations/payment/${paymentId.data}`, formData);
-      })
-      .then((result) => {
-        console.log("SUCCESS", result);
-        localStorage.clear();
       })
       .then(resolve)
       .then(reject);
@@ -103,6 +95,15 @@ const getUserInfo = async (): Promise<UserInfo> => {
   });
 };
 
+const getPendingPayments = async (): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get("/registrations/payment/pending")
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+};
+
 export {
   api,
   createRegistration,
@@ -110,4 +111,5 @@ export {
   createPayment,
   createSession,
   getUserInfo,
+  getPendingPayments
 };
