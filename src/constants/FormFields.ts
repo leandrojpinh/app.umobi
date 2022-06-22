@@ -243,25 +243,7 @@ export const FORM_COMPLEX_FIELDS = {
   },
 };
 
-export const LOGIN_FIELDS = {
-  loginMode: {
-    id: uuidV4(),
-    field: {
-      name: "loginMode",
-      label: "",
-    },
-    type: "radio",
-    options: [
-      {
-        label: "Sou retirante",
-        value: 1,
-      },
-      // {
-      //   label: "Sou da diretoria",
-      //   value: 0,
-      // },
-    ],
-  },
+export const LOGIN_FIELDS = {  
   email: {
     id: uuidV4(),
     field: {

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 import { useApp } from "@/context/AppContext";
 
@@ -8,7 +8,6 @@ import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 import Input from "@/components/common/Input";
-import { Radio } from "@/components/common/Radio";
 
 import { LOGIN_FIELDS } from "@/constants/FormFields";
 
@@ -20,9 +19,23 @@ export default function Login() {
   const auth = useAuth();
   const app = useApp();
 
-  const [isAdm, setIsAdm] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (auth.user.isAdmin) {
+        history.push('/dashboard')
+          .finally(() => app.setIsLoading(false));
+      } else {
+        history.push('/registration-info')
+          .finally(() => app.setIsLoading(false));
+      }
+    } else {
+      app.setIsLoading(false);
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -31,20 +44,13 @@ export default function Login() {
 
     auth.signIn(email, password)
       .then((isAuthenticated) => {
-        setTimeout(() => {
-          setEmail('');
-          setPassword('');
-
-          if (isAuthenticated) {
-            app.setIsLoading(false);
-            if (auth.user.isAdmin) {
-              // history.push('/dashboard');
-            } else {
-              history.push('/registration-info');
-            }
-          }
-        }, 3000);
-      }).catch(err => app.setIsLoading(false));
+        setEmail('');
+        setPassword('');
+        setIsAuthenticated(isAuthenticated);
+      }).catch(err => {
+        console.log('signError', err)
+        app.setIsLoading(false)
+      });
   }
 
   return (
@@ -58,14 +64,6 @@ export default function Login() {
                 subtitle="Faça login para acompanhar sua inscrição ou verificar alguma pendência" />
 
               <form onSubmit={handleSubmit}>
-                <Radio
-                  key={LOGIN_FIELDS.loginMode.id}
-                  label={''}
-                  options={LOGIN_FIELDS.loginMode.options}
-                  name={LOGIN_FIELDS.loginMode.field.name}
-                  selected={!isAdm ? 1 : 0}
-                  onChange={e => setIsAdm(e.target.value === '1')}
-                />
 
                 <Input
                   key={LOGIN_FIELDS.email.id}

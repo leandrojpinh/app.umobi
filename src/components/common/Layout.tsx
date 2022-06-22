@@ -16,3 +16,13 @@ export const Layout = ({ children }: LayoutProps) => {
     </div>
   )
 }
+
+export const LayoutAdmin = ({ children }: LayoutProps) => {
+  return (
+    <div className={styles.containerAdmin} style={{ backgroundImage: `url('${square}'), url('${line}')`}}>
+      <div className={styles.wrapperAdmin}>
+        {children}
+      </div>
+    </div>
+  )
+}
