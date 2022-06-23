@@ -1,22 +1,31 @@
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FiCheck, FiClipboard } from 'react-icons/fi';
 
 import { LayoutAdmin } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title";
 import { Summary } from "@/components/pages/dashboard/Summary";
-import { FormRole } from "@/constants/FormRules";
 import { useApp } from "@/context/AppContext";
 
 import styles from '@/styles/pages/dashboard.module.scss';
 import { Search } from "@/components/common/Search";
+import { useAuth } from "@/context/AuthContainer";
 
 export default function Dashboard() {
-  const router = useRouter();
+  const history = useRouter();
   const app = useApp();
+  const auth = useAuth();
 
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (auth) {
+      if (!auth.user.isAdmin) {
+        history.push('/');
+      }
+    }
+  }, [auth]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

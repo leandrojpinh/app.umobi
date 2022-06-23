@@ -5,6 +5,7 @@ import { FiLogIn } from "react-icons/fi";
 
 type IButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
+  styleType?: 'ok' | 'cancel'
 }
 
 type ILinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -12,9 +13,9 @@ type ILinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   path: string;
 }
 
-export function Button({ label, onClick, ...rest }: IButtonProps) {
+export function Button({ label, onClick, styleType = 'ok', ...rest }: IButtonProps) {
   return (
-    <button className={styles.button} {...rest}>
+    <button className={`${styles.button} ${styleType === 'cancel' ? styles.cancel : ''}`} {...rest}>
       {label}
     </button>
   )
