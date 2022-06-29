@@ -23,4 +23,8 @@ export type RegistrationPaymentProps = {
   registrationId: string;
   tax: number;
   paymentMode: string;
+  id?: string;
+  paymentUrl?: string;
+  validated?: boolean;
+  createdAt?: string;
 };

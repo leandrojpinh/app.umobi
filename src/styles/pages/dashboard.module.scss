@@ -48,8 +48,7 @@
       flex: 0;
       margin-left: 1rem;
       
-      > button {
-        padding: 0.7rem;
+      > button, a {
         color: var(--text);
         transition: filter .2s;
         border: none;
@@ -66,7 +65,7 @@
         }
       }
   
-      > button:hover {
+      > button:hover, a:hover {
         filter: brightness(.8);
       }
     }

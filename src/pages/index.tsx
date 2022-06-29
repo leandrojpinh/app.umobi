@@ -14,26 +14,27 @@ export default function Home() {
   const auth = useAuth();
 
   return (
-    <>
-      {app.isLoading ? <Loader loading={app.isLoading} /> :
-        (
-          <Layout>
-            <div className={styles.container}>
-              <span className={styles.hello}>Olá,</span>
-              <strong className={styles.title}>Bem-vindo à plataforma de<br /> inscrições para os Retiros da <br />Umobi</strong>
-              <span className={styles.subtitle}>A plataforma visa facilitar as inscrições e agilizar o processo para <br />que fique de forma independente.</span>
+    <Layout>
+      <div className={styles.container}>
+        <span className={styles.hello}>Olá,</span>
+        <strong className={styles.title}>Bem-vindo à plataforma de<br /> inscrições para os Retiros da <br />Umobi</strong>
+        <span className={styles.subtitle}>A plataforma visa facilitar as inscrições e agilizar o processo para <br />que fique de forma independente.</span>
 
-              <ALink label={auth?.user?.isAuthenticated ? 'Acompanhar minha inscrição' : 'Quero me inscrever'} path={auth?.user?.isAuthenticated ? '/registration-info' : '/registration'} />
+        {
+          !auth.user.isAdmin ? (
+            <ALink label={auth?.user?.isAuthenticated ? 'Acompanhar minha inscrição' : 'Quero me inscrever'} path={auth?.user?.isAuthenticated ? '/registration-info' : '/registration'} />
+          ) : (
+            <ALink label={'Gerenciar as inscrições'} path={'/dashboard'} />
+          )
+        }
 
-              <div className={styles.last}>
-                <strong>Retiro Umobi 2022</strong>
-                <div>
-                  <ReactPlayer url={RESOURCES.video} />
-                </div>
-              </div>
-            </div>
-          </Layout>
-        )}
-    </>
+        <div className={styles.last}>
+          <strong>Retiro Umobi 2022</strong>
+          <div>
+            <ReactPlayer url={RESOURCES.video} />
+          </div>
+        </div>
+      </div>
+    </Layout>
   )
 }

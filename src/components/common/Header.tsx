@@ -142,7 +142,7 @@ const NavLinks = () => {
     <>
       <NavMenu>
         <NavItem>
-          <NavLink href={'/'}>Home</NavLink>
+          <NavLink href={'/dashboard'}>Inscrições</NavLink>
         </NavItem>
         {/* 
         TODO: Login
@@ -210,7 +210,10 @@ export const Navbar = () => {
             <SessionLinks />
           </>
         ) : (
+          <>
+          {auth?.user?.isAdmin &&  <NavLinks />}
           <Logout />
+          </>          
         )}
       </NavContainer>
     </Nav>

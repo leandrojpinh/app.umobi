@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import { FiCheck, FiClipboard } from 'react-icons/fi';
+import { useEffect, useState } from "react";
+import { FiExternalLink } from 'react-icons/fi';
 
 import { LayoutAdmin } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
@@ -11,6 +11,9 @@ import { useApp } from "@/context/AppContext";
 import styles from '@/styles/pages/dashboard.module.scss';
 import { Search } from "@/components/common/Search";
 import { useAuth } from "@/context/AuthContainer";
+import { getForms, getSummary } from "@/services/umobi/umobi.api";
+import { DashboardForm } from "@/model/views/DashboardForm";
+import { SummaryPayments } from "@/services/umobi/models/Registration";
 
 export default function Dashboard() {
   const history = useRouter();
@@ -18,18 +21,40 @@ export default function Dashboard() {
   const auth = useAuth();
 
   const [search, setSearch] = useState('');
+  const [forms, setForms] = useState<DashboardForm[]>();
+  const [filteredForms, setFilteredForms] = useState<DashboardForm[]>();
+  const [summary, setSummary] = useState<SummaryPayments>();
 
   useEffect(() => {
     if (auth) {
       if (!auth.user.isAdmin) {
         history.push('/');
       }
+
+      if (auth.user.token) {
+        getForms().then(response => {
+          setForms(response);
+          setFilteredForms(response);
+        });
+
+        getSummary().then(response => {
+          setSummary(response);
+        })
+      }
     }
   }, [auth]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleFormDetails = (registrationId: string) => {
+    history.push(`/dashboard/details/${registrationId}`)
   }
+
+  const handleFilteredForms = () => {
+    if (search) {
+      setFilteredForms(forms?.filter(x => x.name.toLocaleLowerCase().includes(search.toLowerCase())))
+    } else {
+      setFilteredForms(forms);
+    }
+  };
 
   return (
     <>
@@ -37,41 +62,38 @@ export default function Dashboard() {
         <LayoutAdmin>
           <Title title="Dashboard" />
 
-          <Summary amountPayments={0} confirmed={0} pendingToComplete={0} pendingToConfirm={0} totalRegistrations={0} />
+          <Summary
+            received={summary?.received!}
+            confirmed={summary?.confirmed!}
+            uncompleted={summary?.uncompleted!}
+            pending={summary?.pending!}
+            registrations={summary?.registrations!} />
 
           <section className={styles.content}>
             <Search
               value={search}
               setSearch={setSearch}
               placeholder={'Buscar por nome'}
-              searchAction={() => { }} />
+              searchAction={handleFilteredForms} />
             <ul className={styles.registrations}>
-              <li key={'541654'}>
-                <div className='userData'>
-                  <span className='name'>{'leandro jackson pinheiro do nascimento'}</span>
-                  {/* item.totalConfirmed */}
-                  {true ? (
-                    <span>{`Confirmado: R$ 225,00`}</span>
-                  ) : (
-                    <span>{`Aguardando confirmação: R$ 155,00`}</span>
-                  )}
-                </div>
+              {filteredForms?.map(form => (
+                <li key={form.registrationId}>
+                  <div className='userData'>
+                    <span className='name'>{form.name}</span>
+                    {form.totalConfirmed ? (
+                      <span>{`Confirmado: R$ ${form.totalConfirmed}`}</span>
+                    ) : (
+                      <span>{`Aguardando confirmação`}</span>
+                    )}
+                  </div>
 
-
-                <div className={styles.action}>
-                  {true ? (
-                    <button className={styles.checkButton}
-                      onClick={() => { }}>
-                      <FiCheck height={24} />
+                  <div className={styles.action}>
+                    <button className={styles.checkButton} onClick={() => handleFormDetails(form.registrationId)}>
+                      <FiExternalLink />
                     </button>
-                  ) : (
-                    <button className={styles.viewButton}
-                      onClick={() => { }}>
-                      <FiClipboard height={24} />
-                    </button>
-                  )}
-                </div>
-              </li>
+                  </div>
+                </li>
+              ))}
             </ul>
           </section>
         </LayoutAdmin>

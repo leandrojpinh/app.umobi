@@ -1,6 +1,10 @@
+import { User } from "@/model/entities/User";
+
 export type Registration = {
   campId: string;
   userId: string;
+  id?: string;
+  user?: User;
 };
 
 export type RegistrationForm = {
@@ -17,10 +21,24 @@ export type RegistrationForm = {
   isResponsable: boolean;
   moreInformation: string;
   isAllTrue: boolean;
+  id?: string;
+  registration?: Registration;
 };
 
 export type RegistrationPayment = {
   registrationId: string;
   tax: number;
   paymentMode: string;
+  id?: string;
+  paymentUrl?: string;
+  validated?: boolean;
+  createdAt?: string;
+};
+
+export type SummaryPayments = {
+  registrations: number;
+  pending: number;
+  confirmed: number;
+  received: number;
+  uncompleted: number;
 };

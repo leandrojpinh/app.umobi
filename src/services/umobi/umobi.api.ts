@@ -1,10 +1,12 @@
 import { LOCAL_STORAGE } from "@/constants/Storage";
+import { DashboardForm } from "@/model/views/DashboardForm";
+import { EvaluatePayment } from "@/model/views/EvaluatePayment";
 import axios, { AxiosResponse } from "axios";
-import { Camp } from "./models/Camp";
 import {
   Registration,
   RegistrationForm,
   RegistrationPayment,
+  SummaryPayments,
 } from "./models/Registration";
 import { Session } from "./models/Session";
 import { Token } from "./models/Token";
@@ -45,8 +47,8 @@ const createSession = async (session: Session): Promise<Token> => {
         return resolve(response.data);
       })
       .catch((err) => {
-        console.log("createSession", JSON.stringify(err));
-        return reject(err);
+        console.log("createSession", JSON.stringify(err.response.data.message));
+        return reject(err.response.data.message);
       });
   });
 };
@@ -57,14 +59,13 @@ const createRegistration = async (userId: string, form: RegistrationForm) => {
     api
       .post("/registrations", registration)
       .then((registrationId) => {
-        console.log("CreateRegistration", registrationId);
         form.registrationId = registrationId.data;
 
         localStorage.setItem(
           LOCAL_STORAGE.registrationId,
           JSON.stringify(form.registrationId)
         );
-        return api.post("/registrations/form", form);
+        return api.post("/registrations/forms", form);
       })
       .then(resolve)
       .catch((err) => reject(err.response.data.message));
@@ -74,14 +75,43 @@ const createRegistration = async (userId: string, form: RegistrationForm) => {
 const createPayment = async (payment: RegistrationPayment, file: File) => {
   return new Promise((resolve, reject) => {
     api
-      .post("/registrations/payment", payment)
+      .post("/registrations/payments", payment)
       .then((paymentId) => {
         const formData = new FormData();
         formData.append("receipt", file);
 
-        return api.patch(`/registrations/payment/${paymentId.data}`, formData);
+        return api.patch(`/registrations/payments/${paymentId.data}`, formData);
       })
       .then(resolve)
+      .then(reject);
+  });
+};
+
+const getForms = async (): Promise<DashboardForm[]> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get("/registrations/forms")
+      .then((response) => resolve(response.data))
+      .then(reject);
+  });
+};
+
+const getForm = async (registrationId: string): Promise<RegistrationForm> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get(`/registrations/forms/${registrationId}`)
+      .then((response) => resolve(response.data))
+      .then(reject);
+  });
+};
+
+const getPayments = async (
+  registrationId: string
+): Promise<RegistrationPayment[]> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get(`/registrations/payments/${registrationId}`)
+      .then((response) => resolve(response.data))
       .then(reject);
   });
 };
@@ -98,11 +128,32 @@ const getUserInfo = async (): Promise<UserInfo> => {
 const getPendingPayments = async (): Promise<number> => {
   return new Promise((resolve, reject) => {
     api
-      .get("/registrations/payment/pending")
+      .get("/registrations/payments/pending")
       .then((response) => resolve(response.data))
       .catch((err) => reject(err));
   });
 };
+
+const evaluatePayment = async ({
+  paymentId,
+  validated,
+}: EvaluatePayment): Promise<RegistrationPayment> => {
+  return new Promise((resolve, reject) => {
+    api
+      .post(`/registrations/payments/${paymentId}`, { validated })
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+};
+
+const getSummary = async (): Promise<SummaryPayments> => {  
+  return new Promise((resolve, reject) => {
+    api
+      .get('/registrations/summary')
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
 
 export {
   api,
@@ -111,5 +162,10 @@ export {
   createPayment,
   createSession,
   getUserInfo,
-  getPendingPayments
+  getPendingPayments,
+  getForms,
+  getPayments,
+  getForm,
+  evaluatePayment,
+  getSummary
 };

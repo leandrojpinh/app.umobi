@@ -3,13 +3,11 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/common/Button";
 import { Checkbox } from "@/components/common/Checkbox";
-import { Layout } from "@/components/common/Layout"
-import { Loader } from "@/components/common/Loader";
-import { Title } from "@/components/common/Title"
-import { Topic } from "@/components/common/Topic"
+import { Layout } from "@/components/common/Layout";
+import { Title } from "@/components/common/Title";
+import { Topic } from "@/components/common/Topic";
 import { FORM, FormRole } from "@/constants/FormRules";
 import { LOCAL_STORAGE } from "@/constants/Storage";
-import { useApp } from "@/context/AppContext";
 
 import styles from '@/styles/registration.module.scss';
 
@@ -40,42 +38,33 @@ const Role = ({ items, name }: RoleProps) => {
 
 export default function Registration() {
   const router = useRouter();
-  const app = useApp();
 
   const [isChecked, setIsChecked] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    app.setIsLoading(true);
 
     localStorage.setItem(LOCAL_STORAGE.agree, isChecked ? '1' : '0');
-
-    app.setIsLoading(false);
     await router.push('/registration/form');
   }
 
   return (
-    <>
-      {app.isLoading ? <Loader loading={app.isLoading} /> :
-        <Layout>
-          <Title
-            title="Inscrição"
-            subtitle="*Obs: idade mínima para participar é de 14 anos" />
+    <Layout>
+      <Title
+        title="Inscrição"
+        subtitle="*Obs: idade mínima para participar é de 14 anos" />
 
-          <section>
-            <Topic title="Regras" />
+      <section>
+        <Topic title="Regras" />
 
-            {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
+        {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
 
-            <form onSubmit={handleSubmit}>
-              <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
+        <form onSubmit={handleSubmit}>
+          <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
 
-              <Button type={'submit'} label="Continuar" disabled={!isChecked} />
-            </form>
-          </section>
-        </Layout>
-      }
-    </>
-
+          <Button type={'submit'} label="Continuar" disabled={!isChecked} />
+        </form>
+      </section>
+    </Layout>
   )
 }

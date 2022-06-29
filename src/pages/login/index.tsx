@@ -48,8 +48,9 @@ export default function Login() {
         setPassword('');
         setIsAuthenticated(isAuthenticated);
       }).catch(err => {
-        console.log('signError', err)
-        app.setIsLoading(false)
+        console.log('signError', err);
+      }).finally(() => {
+        app.setIsLoading(false);
       });
   }
 
