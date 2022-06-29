@@ -1,6 +1,6 @@
 .button, .loginButton {
   background: var(--linear);
-  border: none;
+  border: 1px solid var(--black-dark);
   color: var(--text);
   font-family: 'Staatliches';
   padding: 1rem 3rem;
@@ -10,6 +10,10 @@
   letter-spacing: 0.1rem;
 
   transition: filter .2s;
+
+  &.cancel {
+    background: var(--black-light);
+  }
 }
 
 .button:hover, .loginButton:hover {

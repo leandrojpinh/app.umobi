@@ -1,0 +1,78 @@
+.content {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  background: var(--black-light);
+  box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
+  border-radius: 8px;  
+  padding: 2rem 1rem;
+}
+
+.registrations {
+  margin-top: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: .5rem;
+  list-style: none;
+  color: var(--text);
+
+  li {
+    display: flex;
+    padding: .5rem 1rem;
+    border-bottom: 1px solid var(--placeholder);
+    align-items: center;
+    justify-content: space-between;
+    transition: filter .2s;
+    margin: 0 -1rem;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    .userData {
+      font-family: 'Poppins';
+      text-transform: uppercase;
+
+      .name {
+        max-width: 15rem;
+        @media (min-width: 700px) {
+          max-width: none;
+        }
+      }
+    }
+
+    .action {
+      display: flex;
+      flex: 0;
+      margin-left: 1rem;
+      
+      > button, a {
+        color: var(--text);
+        transition: filter .2s;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        box-shadow: 2px 2px 5px rgb(0 0 0 / 10%);
+        cursor: pointer;
+
+        &.checkButton {
+          background-color: var(--primary-dark);
+        }
+        &.viewButton {
+          background-color: var(--primary-light);
+        }
+      }
+  
+      > button:hover, a:hover {
+        filter: brightness(.8);
+      }
+    }
+  }
+
+  li:hover {
+    background-color: var(--black-dark);
+      cursor: pointer;
+  }
+}

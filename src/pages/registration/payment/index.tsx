@@ -81,7 +81,7 @@ export default function Payment() {
         if (form) {
           const userForm = JSON.parse(form) as IRegistrationProps;
 
-          email.sendConfirmation({
+          email.sendRegistration({
             email: userForm.email,
             name: userForm.name,
             data: new Date().toLocaleString()

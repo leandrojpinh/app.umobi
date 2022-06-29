@@ -104,6 +104,7 @@ export default function Registration() {
         app.setIsLoading(false);
         history.push('/');
       }, 3000);
+
       return;
     }
 
@@ -137,13 +138,16 @@ export default function Registration() {
 
         return createRegistration(userId as string, form);
       })
-      .then(_ => {
+      .then(_ => {        
         toast.success('Sua inscrição foi enviada, vamos para o próximo passo!');
 
+        app.setIsLoading(false);
         history.push('/registration/payment');
       })
       .catch(err => {
         console.log('ERROR-137', err);
+        
+        app.setIsLoading(false);
         toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);

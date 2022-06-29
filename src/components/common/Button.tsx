@@ -1,30 +1,32 @@
-import { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import styles from '@/styles/components/button.module.scss';
 import Link from "next/link";
 import { FiLogIn } from "react-icons/fi";
 
 type IButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
+  styleType?: 'ok' | 'cancel'
 }
 
 type ILinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  label: string;
+  label?: string;
   path: string;
+  children?: ReactNode;
 }
 
-export function Button({ label, onClick, ...rest }: IButtonProps) {
+export function Button({ label, onClick, styleType = 'ok', ...rest }: IButtonProps) {
   return (
-    <button className={styles.button} {...rest}>
+    <button className={`${styles.button} ${styleType === 'cancel' ? styles.cancel : ''}`} {...rest}>
       {label}
     </button>
   )
 }
 
-export function ALink({ label, path, onClick, ...rest }: ILinkProps) {
+export function ALink({ label, path, onClick, children, ...rest }: ILinkProps) {
   return (
     <Link href={path}>
-      <a className={styles.button} {...rest}>
-        {label}
+      <a className={`${styles.button} ${rest.className ?? ''}`} {...rest}>
+        {label ? label : children}
       </a>
     </Link>
   )

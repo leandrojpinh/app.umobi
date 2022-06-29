@@ -1,13 +1,9 @@
-import { User } from "@/model/entities/User";
-
-export type Registration = {
+export type RegistrationProps = {
   campId: string;
   userId: string;
-  id?: string;
-  user?: User;
 };
 
-export type RegistrationForm = {
+export type RegistrationFormProps = {
   campId: string;
   churchName: string;
   ministerApproval: boolean;
@@ -21,11 +17,9 @@ export type RegistrationForm = {
   isResponsable: boolean;
   moreInformation: string;
   isAllTrue: boolean;
-  id?: string;
-  registration?: Registration;
 };
 
-export type RegistrationPayment = {
+export type RegistrationPaymentProps = {
   registrationId: string;
   tax: number;
   paymentMode: string;
@@ -33,12 +27,4 @@ export type RegistrationPayment = {
   paymentUrl?: string;
   validated?: boolean;
   createdAt?: string;
-};
-
-export type SummaryPayments = {
-  registrations: number;
-  pending: number;
-  confirmed: number;
-  received: number;
-  uncompleted: number;
 };
