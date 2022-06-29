@@ -35,7 +35,7 @@ html {
 }
 
 body {
-  background: linear-gradient(90deg, rgba(37,44,61,1) 0%, rgba(19,24,31,1) 100%);
+  background: linear-gradient(180deg, rgba(37,44,61,1) 0%, rgba(19,24,31,1) 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
