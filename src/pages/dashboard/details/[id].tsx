@@ -17,7 +17,6 @@ import Input from "@/components/common/Input";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";
-import { RegistrationPaymentProps } from "@/model/entities/Registration";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
 import { toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
@@ -39,7 +38,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   const [form, setForm] = useState<RegistrationForm>();
 
   const [confirmationTax, setConfirmationTax] = useState('');
-  const [selectedPayment, setSelectedPayment] = useState<RegistrationPaymentProps>();
+  const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
 
   useEffect(() => {
     if (auth) {
@@ -54,13 +53,8 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
       getPayments(registrationId).then(response => {
         const formatedPayments = response.map(payment => {
           return {
-            createdAt: moment(payment.createdAt).format('DD/MM/yyyy'),
-            registrationId: payment.registrationId,
-            tax: payment.tax,
-            paymentMode: payment.paymentMode,
-            paymentUrl: payment.paymentUrl,
-            validated: payment.validated,
-            id: payment.id
+            ...payment,
+            createdAt: moment(payment.createdAt).format('DD/MM/yyyy'),            
           } as RegistrationPayment
         });
 
@@ -74,12 +68,12 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
         setForm(response);
       }).catch(err => {
         toast.error("Erro ao listar as inscrições, ver nos logs");
-        console.log(err)
+        console.log(err);
       });
     }
   }, [selectedPayment?.validated]);
 
-  const handleSelectPayment = (obj: RegistrationPaymentProps) => {
+  const handleSelectPayment = (obj: RegistrationPayment) => {
     setSelectedPayment(obj);
   }
 
@@ -160,7 +154,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
                 <div>
                   <span>{item.createdAt}</span>
                   <span>{toMoney(`${item.tax}`)}</span>
-                  <span>{`${item.validated ? 'Validado' : ''}`}</span>
+                  <span>{item.paymentMode}</span>
                 </div>
               </li>
             ))}
@@ -172,7 +166,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <>
                 <div className={styles.registrationInfo}>
                   <Topic title="Validar comprovante de Pagamento" />
-                  <img src={selectedPayment.paymentUrl} />
+                  <img src={selectedPayment.publicPaymentUrl} />
 
                   <div className={styles.info}>
                     {selectedPayment.validated ? (
