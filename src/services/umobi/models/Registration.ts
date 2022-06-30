@@ -31,6 +31,7 @@ export type RegistrationPayment = {
   paymentMode: string;
   id?: string;
   paymentUrl?: string;
+  publicPaymentUrl?: string;
   validated?: boolean;
   createdAt?: string;
 };

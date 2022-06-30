@@ -49,7 +49,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 
           setLoading(false);
           return reject();
-        });
+        }).finally(() => setLoading(false));
     });
   }
 

@@ -47,8 +47,7 @@ const createSession = async (session: Session): Promise<Token> => {
         return resolve(response.data);
       })
       .catch((err) => {
-        console.log("createSession", JSON.stringify(err.response.data.message));
-        return reject(err.response.data.message);
+        return reject(err);
       });
   });
 };
