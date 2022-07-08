@@ -211,7 +211,7 @@ export default function Login() {
                         <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
                       </div>
                       <div>
-                        <span>{item.createdAt}</span>
+                        <span>{moment(item.createdAt).format('DD/MM/yyyy')}</span>
                         <span>{toMoney(`${item.tax}`)}</span>
                         <span>{item.paymentMode}</span>
                       </div>
