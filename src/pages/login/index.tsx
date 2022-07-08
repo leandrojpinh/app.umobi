@@ -26,11 +26,9 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) {
       if (auth.user.isAdmin) {
-        history.push('/dashboard')
-          .finally(() => app.setIsLoading(false));
+        history.push('/dashboard');
       } else {
-        history.push('/registration-info')
-          .finally(() => app.setIsLoading(false));
+        history.push('/registration-info');
       }
     } else {
       app.setIsLoading(false);
@@ -49,8 +47,6 @@ export default function Login() {
         setIsAuthenticated(isAuthenticated);
       }).catch(err => {
         console.log('signError', err);
-      }).finally(() => {
-        app.setIsLoading(false);
       });
   }
 

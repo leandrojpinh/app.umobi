@@ -115,6 +115,15 @@ const getPayments = async (
   });
 };
 
+const getUserPayments = async (): Promise<RegistrationPayment[]> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get(`/registrations/payments`)
+      .then((response) => resolve(response.data))
+      .then(reject);
+  });
+};
+
 const getUserInfo = async (): Promise<UserInfo> => {
   return new Promise((resolve, reject) => {
     api
@@ -135,11 +144,12 @@ const getPendingPayments = async (): Promise<number> => {
 
 const evaluatePayment = async ({
   paymentId,
-  validated,
+  rejected,
+  reason
 }: EvaluatePayment): Promise<RegistrationPayment> => {
   return new Promise((resolve, reject) => {
     api
-      .post(`/registrations/payments/${paymentId}`, { validated })
+      .post(`/registrations/payments/${paymentId}`, { rejected, reason })
       .then((response) => resolve(response.data))
       .catch((err) => reject(err));
   });
@@ -161,6 +171,7 @@ export {
   createPayment,
   createSession,
   getUserInfo,
+  getUserPayments,
   getPendingPayments,
   getForms,
   getPayments,

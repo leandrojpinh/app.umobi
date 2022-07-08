@@ -1,5 +1,5 @@
 import { FormEvent, useState, useEffect } from "react";
-import { FiLayers, FiPaperclip } from "react-icons/fi";
+import { FiPaperclip } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,7 @@ import { FORM_COMPLEX_FIELDS, PAYMENT_FIELDS } from "@/constants/FormFields";
 
 import styles from '@/styles/payment.module.scss';
 import { IRegistrationProps } from "../form";
+import { CampDetails } from "@/components/common/CampDetails";
 
 export default function Payment() {
   const app = useApp();
@@ -96,6 +97,9 @@ export default function Payment() {
               type: 'success'
             });
           }).catch(err => console.log(err));
+
+          history.push('/');
+          toast.success('Você já pode fazer Login e acompanhar sua inscrição :)');
         } else {
           toast.warn('Houve um problema na comunicação, verifica se preencheu o formulário certinho. ')
 
@@ -111,19 +115,15 @@ export default function Payment() {
       });
   }
 
-  const handleFile = (fileSelected?: File) => {
+  const handleFile = (fileSelected?: any) => {
     if (fileSelected) {
       setFile(fileSelected);
     }
   }
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText("textToCopy");
-  }
-
   return (
     <>
-      {app.isLoading || email.isSending ? <Loader loading={app.isLoading || email.isSending} /> :
+      {app.isLoading ? <Loader loading={app.isLoading} /> :
         <Layout>
           {response ? (
             <Response type={response.type} message={response.message} title={response.title} />
@@ -136,22 +136,7 @@ export default function Payment() {
               <section>
                 <Topic title="Comprovante de Pagamento" />
 
-                <div className={styles.info}>
-                  <strong>Taxa do Retiro</strong>
-                  <strong className={styles.tax}>R$ 225,00 <span>a partir de 16/out R$ 250,00.</span></strong>
-
-                  <strong>Dados para envio de pix/transferências</strong>
-                  <span>Chave Pix</span>
-                  <div className={styles.pix}>
-                    <span>
-                      (85) 99244-2092
-                    </span>
-                    <button onClick={handleCopy}>Copiar <FiLayers height={18} color={'var(--primary-light)'} /></button>
-                  </div>
-
-                  <span>Banco: NU Pagamentos</span>
-                  <span>Tesoureiro: Wisley Silva dos Santos</span>
-                </div>
+                <CampDetails />
 
                 <form onSubmit={handleSubmit}>
                   <section className={styles.paymentMode}>
@@ -166,7 +151,7 @@ export default function Payment() {
                     />
                   </section>
                   <FileContainer>
-                    <input type="file" accept="image/*,application/pdf" onChange={(e) => { handleFile(e.target.files ? e.target.files[0] : undefined) }} required />
+                    <input type="file" accept="image/*,application/pdf" onChange={(e) => { handleFile(e.target.files![0]) }} required />
 
                     <div>
                       <FiPaperclip height={18} color={'var(--text)'} />

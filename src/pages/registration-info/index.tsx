@@ -1,20 +1,36 @@
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-
-import { useApp } from "@/context/AppContext";
+import { FiFileText, FiPaperclip, FiPlus } from "react-icons/fi";
+import moment from "moment";
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
+import { v4 as uuid } from 'uuid';
+import { toast } from "react-toastify";
 
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 
-// import styles from '@/styles/pages/registration-info.module.scss';
-import { useAuth } from "@/context/AuthContainer";
 import { Info, InfoGroup } from "@/components/common/Info";
-import moment from "moment";
-import { getUserInfo } from "@/services/umobi/umobi.api";
+import { createPayment, getPendingPayments, getUserInfo, getUserPayments } from "@/services/umobi/umobi.api";
 import { UserInfo } from "@/services/umobi/models/UserInfo";
-import { GetServerSideProps } from "next";
-import { parseCookies } from "nookies";
+import { Topic } from "@/components/common/Topic";
+import { RegistrationPayment } from "@/services/umobi/models/Registration";
+
+import Input from "@/components/common/Input";
+import { Button } from "@/components/common/Button";
+import { FileContainer } from "@/styles/pages/Payments";
+import { FORM_COMPLEX_FIELDS, PAYMENT_FIELDS } from "@/constants/FormFields";
+import { CampDetails } from "@/components/common/CampDetails";
+import { Radio } from "@/components/common/Radio";
+
+import { useAuth } from "@/context/AuthContainer";
+import { useApp } from "@/context/AppContext";
+import { useEmail } from '@/context/EmailProvider';
+
+import { toMoney } from "@/helper/utils";
+
+import styles from '@/styles/pages/registration-info.module.scss';
 
 export default function Login() {
   const INITIAL_STATE = {
@@ -28,6 +44,17 @@ export default function Login() {
 
   const auth = useAuth();
   const app = useApp();
+  const history = useRouter();
+  const email = useEmail();
+
+  const [userInfo, setUserInfo] = useState<UserInfo>(INITIAL_STATE);
+  const [payments, setPayments] = useState<RegistrationPayment[]>();
+  const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
+  const [file, setFile] = useState<File>();
+  const [tax, setTax] = useState(225);
+  const [paymentMode, setPaymentMode] = useState('pix');
+  const [createNew, setCreateNew] = useState(false);
+  const [realoadPayments, setReloadPayments] = useState(false);
 
   useEffect(() => {
     getUserInfo().then(res => {
@@ -36,20 +63,76 @@ export default function Login() {
         birthDate: moment(res.birthDate).format('DD/MM/yyyy')
       } as UserInfo;
       setUserInfo(userData);
-    }).catch(err => console.log(err));
+    }).catch(err => {
+      console.log('ERRO', err);
+      history.push('/');
+    }).finally(() => {
+      app.setIsLoading(false);
+      auth.setLoadingPage(false);
+    });
   }, []);
 
-  const [userInfo, setUserInfo] = useState<UserInfo>(INITIAL_STATE);
+  useEffect(() => {
+    getUserPayments().then(res => {
+      setPayments(res);
+    }).catch(err => {
+      console.log('ERRO', err);
+      toast.warn("Tivemos um problema ao listar seus comprovantes, atualize a página.")
+    }).finally(() => {
+      app.setIsLoading(false);
+      auth.setLoadingPage(false);
+      setReloadPayments(false);
+    });
+  }, [auth.user.isAuthenticated, realoadPayments]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
     app.setIsLoading(true);
+
+    const registrationPayment = {
+      registrationId: userInfo?.registrationId,
+      paymentMode: paymentMode,
+      tax: tax,
+    } as RegistrationPayment;
+    console.log('RegistrationPayment', registrationPayment);
+    createPayment(registrationPayment, file as File)
+      .then(_ => {
+        setSelectedPayment(undefined);
+        setCreateNew(false);
+        setFile(undefined);
+        setTax(0);
+        setPaymentMode('pix');
+        email.sendRegistration({
+          email: userInfo.email,
+          name: userInfo.name,
+          data: new Date().toLocaleString()
+        }).then(_ => {
+          toast.success('Comprovante enviado com sucesso!');
+        }).catch(err => console.log(err));
+      })
+      .then(_ => getPendingPayments().then(count => email.sendNew(count)))
+      .catch(err => console.log('ERRR', err))
+      .finally(() => {
+        app.setIsLoading(false);
+        setReloadPayments(true);
+      });
+  }
+
+  const handleFile = (fileSelected?: File) => {
+    if (fileSelected) {
+      setFile(fileSelected);
+    }
+  }
+
+  const handleItem = (item: RegistrationPayment) => {
+    selectedPayment ? setSelectedPayment(undefined) : setSelectedPayment(item);
+
+    setCreateNew(false);
   }
 
   return (
     <>
-      {auth.loading || app.isLoading ? <Loader loading={app.isLoading} /> :
+      {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
         (
           <Layout>
             <Title
@@ -57,18 +140,100 @@ export default function Login() {
               subtitle="Aqui você irá acompanhar o status da sua inscrição." />
 
             <InfoGroup>
-              <Info label={'E-mail'} text={userInfo?.email} />
-              <Info label={'Telefone'} text={userInfo.phoneNumber} />
-              <Info label={'Data de Nascimento'} text={userInfo.birthDate} />
+              <Info label={'E-mail'} text={userInfo?.email!} />
+              <Info label={'Telefone'} text={userInfo?.phoneNumber!} />
+              <Info label={'Data de Nascimento'} text={userInfo?.birthDate!} />
             </InfoGroup>
             <InfoGroup>
-              <Info label={'Nome dos pais'} text={userInfo.parentNames} />
-              <Info label={'Endereço'} text={userInfo.address} />
+              <Info label={'Nome dos pais'} text={userInfo?.parentNames!} />
+              <Info label={'Endereço'} text={userInfo?.address!} />
             </InfoGroup>
 
-            <form action="">
+            <section className={styles.payments}>
+              <ul>
+                <Topic title="Comprovantes" />
+                <li key={uuid()} className={styles.new}>
+                  <div className={styles.header} onClick={() => setCreateNew(!createNew)}>
+                    <span>Enviar comprovante</span>
 
-            </form>
+                    <FiPlus size={24} color={'var(--text)'} />
+                  </div>
+                  {createNew && (
+                    <div className={styles.body}>
+                      <CampDetails />
+                      <form onSubmit={handleSubmit} className={styles.validation}>
+                        <div className={styles.paymentMode}>
+                          <Radio
+                            key={PAYMENT_FIELDS.paymentMode.id}
+                            label={PAYMENT_FIELDS.paymentMode.field.label}
+                            options={PAYMENT_FIELDS.paymentMode.options}
+                            name={PAYMENT_FIELDS.paymentMode.field.name}
+                            subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
+                            selected={paymentMode}
+                            onChange={e => { 
+                              setPaymentMode(e.target.value);
+
+                              const [pix, x1, x2] = PAYMENT_FIELDS.paymentMode.options;
+                              const preTax = e.target.value === pix.value ? 225 : e.target.value === x1.value ? 155 : e.target.value === x2.value ? 77.50 : 51.67;
+                              setTax(preTax);
+                            }}
+                          />
+                        </div>
+                        <FileContainer>
+                          <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFile(e.target.files ? e.target.files[0] : undefined)} />
+
+                          <div>
+                            <FiPaperclip height={18} color={'var(--text)'} />
+                            {!file ? <span>Selecione novo arquivo</span> : <span>{file.name}</span>}
+                          </div>
+                        </FileContainer>
+
+                        <Input
+                          className={styles.receipt}
+                          key={FORM_COMPLEX_FIELDS.tax.id}
+                          label={FORM_COMPLEX_FIELDS.tax.field.label}
+                          name={FORM_COMPLEX_FIELDS.tax.field.name}
+                          type={'text'}
+                          value={tax}
+                          disabled={true}
+                        />
+
+                        <Button type="submit" label="Reenviar" disabled={!file || !tax} />
+                      </form>
+                    </div>
+                  )}
+                </li>
+                {payments?.map(item => (
+                  <li key={item.id} className={`${selectedPayment?.id === item.id ? styles.selected : ''} ${item.rejected ? styles.rejected : ''}`}>
+                    <div className={`${styles.item} ${item.validated ? styles.validated : ''}`} onClick={() => handleItem(item)}>
+                      <div>
+                        <FiFileText size={24} />
+                        <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
+                      </div>
+                      <div>
+                        <span>{item.createdAt}</span>
+                        <span>{toMoney(`${item.tax}`)}</span>
+                        <span>{item.paymentMode}</span>
+                      </div>
+                    </div>
+                    {(selectedPayment && item.id === selectedPayment.id) && (
+                      <section className={`${styles.selectedPayment} ${!selectedPayment.validated || !selectedPayment.rejected ? styles.infoPending : ''}`}>
+                        {selectedPayment.validated && selectedPayment.rejected ? (
+                          <>
+                            <span>O comprovante foi rejeitado! Reenvie o comprovante correto</span>
+                            <span className={styles.reason}>{selectedPayment.reason}</span>
+                          </>
+                        ) : selectedPayment.validated && !selectedPayment.rejected ? (
+                          <span>O comprovante já foi validado!</span>
+                        ) : (
+                          <span>Pendente de validação, em breve você receberá um e-mail com o novo status.</span>
+                        )}
+                      </section>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
           </Layout>
         )
       }

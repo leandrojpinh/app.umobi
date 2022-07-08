@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { FormEvent, useEffect, useState } from "react";
-import { FiCheck, FiClock, FiFileText } from 'react-icons/fi';
+import { FiFileText } from 'react-icons/fi';
 import moment from "moment";
 import { ParsedUrlQuery } from 'querystring';
 import { toast } from "react-toastify";
@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { LayoutAdmin } from "@/components/common/Layout";
 import { Title } from "@/components/common/Title";
 
-import styles from '@/styles/pages/dashboard.registration.module.scss';
 import { Info, InfoGroup } from "@/components/common/Info";
 import { Back } from "@/components/common/Back";
 import { Topic } from "@/components/common/Topic";
@@ -20,6 +19,8 @@ import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.ap
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
 import { toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
+
+import styles from '@/styles/pages/dashboard.registration.module.scss';
 
 type DashboardPaymentProps = {
   registrationId: string
@@ -54,7 +55,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
         const formatedPayments = response.map(payment => {
           return {
             ...payment,
-            createdAt: moment(payment.createdAt).format('DD/MM/yyyy'),            
+            createdAt: moment(payment.createdAt).format('DD/MM/yyyy'),
           } as RegistrationPayment
         });
 
@@ -83,7 +84,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
     if (selectedPayment?.tax.toString() !== confirmationTax) {
       toast.warn('Verifique se o valor informado está correto.')
     } else {
-      evaluatePayment({ paymentId: selectedPayment.id!, validated: true }).then(response => {
+      evaluatePayment({ paymentId: selectedPayment.id!, rejected: false }).then(response => {
         email.sendConfirmation({
           email: form?.registration?.user?.email!,
           name: form?.registration?.user?.name!,
@@ -105,7 +106,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
   const handleRejectPayment = () => {
     if (selectedPayment) {
-      evaluatePayment({ paymentId: selectedPayment.id!, validated: false }).then(response => {
+      evaluatePayment({ paymentId: selectedPayment.id!, rejected: true }).then(response => {
 
         console.log('enviado email de rejeição');
         email.sendRejection({
@@ -166,19 +167,19 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <>
                 <div className={styles.registrationInfo}>
                   <Topic title="Validar comprovante de Pagamento" />
-                  <img src={selectedPayment.publicPaymentUrl} />
+                  {selectedPayment.publicPaymentUrl?.includes('.pdf') ? (
+                    <embed src={selectedPayment.publicPaymentUrl} height="500" type='application/pdf'>
+
+                    </embed>
+                  ) : (
+                    <img src={selectedPayment.publicPaymentUrl} alt="Comprovante" />
+                  )}
 
                   <div className={styles.info}>
                     {selectedPayment.validated ? (
-                      <>
-                        <span>O comprovante já foi validado!</span>
-                        <FiCheck size={36} color={'var(--text)'} />
-                      </>
+                      <span>O comprovante já foi validado!</span>
                     ) : (
-                      <>
-                        <span>O valor do comprovante deve ser: {toMoney(`${selectedPayment.tax}`)}</span>
-                        <FiClock size={36} color={'var(--text)'} />
-                      </>
+                      <span>O valor do comprovante deve ser: {toMoney(`${selectedPayment.tax}`)}</span>
                     )}
                   </div>
                 </div>
@@ -186,7 +187,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
                   <form onSubmit={handleEvaluatePayment} className={styles.validation}>
                     <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(e.target.value)} />
                     <div>
-                      <Button styleType='cancel' label="Tá errado" onClick={handleRejectPayment}></Button>
+                      {/* <Button value={'reject'} type="submit" styleType='cancel' label="Tá errado"></Button> */}
                       <Button label="Validado" type="submit"></Button>
                     </div>
                   </form>

@@ -75,13 +75,13 @@ export default function Registration() {
       toast.dark('Hmm, parece que ainda não marcou sobre concordar com a regras...');
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      history.back();
+      history.push('/registration');
     }
 
     const hasStarted = localStorage.getItem(LOCAL_STORAGE.form);
     if (hasStarted) {
       setRegistration(JSON.parse(hasStarted) as IRegistrationProps);
-      toast.dark('Parece que tem um cadastro ainda não finalizado, preenchi os campos que já estavam preenchidos antes. :)');
+      toast.dark('Parece que tem um cadastro ainda não finalizado...');
     }
   }, [history]);
 
@@ -109,7 +109,6 @@ export default function Registration() {
     }
 
     localStorage.setItem(LOCAL_STORAGE.form, JSON.stringify(registration));
-
     const user = {
       address: registration.address,
       birthDate: registration.birthDate,
