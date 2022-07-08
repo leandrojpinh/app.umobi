@@ -5,11 +5,11 @@ import { setCookie, destroyCookie } from 'nookies';
 
 import { AuthContextData } from '@/model/contexts/auth/AuthContextData';
 import AuthContextProviderProps from '@/model/contexts/auth/AuthContextProviderProps';
-import { User, Login, Cookie } from '@/model/contexts/auth/User';
+import { User, Cookie } from '@/model/contexts/auth/User';
 
 import { createSession } from '@/services/umobi/umobi.api';
 import { Session } from '@/services/umobi/models/Session';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { Token } from '@/services/umobi/models/Token';
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -36,20 +36,18 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
           setCookie(undefined, Cookie.umobiToken, loggedUser.token, {
             maxAge: 60 * 60 * 4, //4 hours
           });
-          setLoading(false);
 
           setUser(loggedUser);
           
-          return resolve(true);
+          resolve(true);
         })
         .catch((err: AxiosError) => {
           toast.error(`Hmmm!, ${err.response?.status === 400 ?
             'e-mail ou senha incorretos, verifique e tente novamente.' :
             'Houve problema na comunicação, tenta de novo.'}`);
 
-          setLoading(false);
-          return reject();
-        }).finally(() => setLoading(false));
+          reject();
+        });
     });
   }
 

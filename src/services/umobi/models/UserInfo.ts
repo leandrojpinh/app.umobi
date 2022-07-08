@@ -4,5 +4,6 @@ export type UserInfo = {
   birthDate: string,
   address: string,
   phoneNumber: string,
-  parentNames: string
+  parentNames: string,
+  registrationId?: string
 }

@@ -41,6 +41,8 @@ export default function Dashboard() {
           setSummary(response);
         })
       }
+
+      app.setIsLoading(false);
     }
   }, [auth]);
 

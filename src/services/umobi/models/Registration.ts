@@ -34,6 +34,8 @@ export type RegistrationPayment = {
   publicPaymentUrl?: string;
   validated?: boolean;
   createdAt?: string;
+  rejected?: boolean;
+  reason?: string;
 };
 
 export type SummaryPayments = {
