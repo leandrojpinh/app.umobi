@@ -56,6 +56,12 @@
       }
     }
 
+    .personData {
+      div {
+        flex: 1;
+      }
+    }
+
     .registrationInfo {
       display: flex;
       flex-direction: column;
