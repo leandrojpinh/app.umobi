@@ -17,7 +17,7 @@ import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
-import { toMoney } from "@/helper/utils";
+import { getBooleanAnswer, toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
 
 import styles from '@/styles/pages/dashboard.registration.module.scss';
@@ -128,10 +128,6 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
     }
   }
 
-  const getAnswer = (value: boolean) => {
-    return value ? 'Sim' : 'Não';
-  }
-
   return (
     <LayoutAdmin>
       <Back />
@@ -157,16 +153,16 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'Telefone do Pastor'} text={form?.ministerNumber!} />
             </InfoGroup>
             <InfoGroup>
-              <Info label={'Pastor está ciente?'} text={getAnswer(form?.ministerApproval!)} />
-              <Info label={'Sabe nadar?'} text={getAnswer(form?.canSwim!)} />
+              <Info label={'Pastor está ciente?'} text={getBooleanAnswer(form?.ministerApproval!)} />
+              <Info label={'Sabe nadar?'} text={getBooleanAnswer(form?.canSwim!)} />
             </InfoGroup>
             <InfoGroup>
-              <Info label={'Tem alguma alergia?'} text={getAnswer(form?.isAllergic!)} />
+              <Info label={'Tem alguma alergia?'} text={getBooleanAnswer(form?.isAllergic!)} />
               <Info label={'Nome do remédio'} text={form?.medicineName || '-'} />
             </InfoGroup>
             <InfoGroup>
-              <Info label={'É crente em Jesus?'} text={getAnswer(form?.isBeliever!)} />
-              <Info label={'Está comprometido com as regras?'} text={getAnswer(form?.isResponsable!)} />
+              <Info label={'É crente em Jesus?'} text={getBooleanAnswer(form?.isBeliever!)} />
+              <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(form?.isResponsable!)} />
             </InfoGroup>
             <InfoGroup>
               <Info label={'Informações adicionais'} text={form?.moreInformation!} />
