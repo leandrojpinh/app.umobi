@@ -1,3 +1,5 @@
+import { RegistrationForm, RegistrationPayment } from "./Registration"
+
 export type UserInfo = {
   email: string,
   name: string,
@@ -5,5 +7,7 @@ export type UserInfo = {
   address: string,
   phoneNumber: string,
   parentNames: string,
-  registrationId?: string
+  registrationId?: string,
+  form?: RegistrationForm,
+  payments?: RegistrationPayment[]
 }

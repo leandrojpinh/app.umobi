@@ -17,7 +17,7 @@ import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
-import { toMoney } from "@/helper/utils";
+import { getBooleanAnswer, toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
 
 import styles from '@/styles/pages/dashboard.registration.module.scss';
@@ -135,18 +135,39 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
       <div className={styles.container}>
         <section className={styles.side}>
-          <InfoGroup>
-            <Info label={'E-mail'} text={form?.registration?.user?.email || ''} />
-            <Info label={'Telefone'} text={form?.registration?.user?.phoneNumber || ''} />
-          </InfoGroup>
-          <InfoGroup>
-            <Info label={'Data de Nascimento'} text={moment(form?.registration?.user?.birthDate).format('DD/MM/yyyy')} />
-            <Info label={'Nome dos pais'} text={form?.registration?.user?.parentNames || ''} />
-          </InfoGroup>
-          <InfoGroup>
-            <Info label={'Endereço'} text={form?.registration?.user?.address || ''} />
-          </InfoGroup>
-
+          <div className={styles.personData}>
+            <InfoGroup>
+              <Info label={'E-mail'} text={form?.registration?.user?.email!} />
+              <Info label={'Telefone'} text={form?.registration?.user?.phoneNumber!} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Data de Nascimento'} text={moment(form?.registration?.user?.birthDate).format('DD/MM/yyyy')} />
+              <Info label={'Nome dos pais'} text={form?.registration?.user?.parentNames!} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Endereço'} text={form?.registration?.user?.address!} />
+              <Info label={'Igreja'} text={form?.churchName!} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Nome do Pastor'} text={form?.ministerName!} />
+              <Info label={'Telefone do Pastor'} text={form?.ministerNumber!} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Pastor está ciente?'} text={getBooleanAnswer(form?.ministerApproval!)} />
+              <Info label={'Sabe nadar?'} text={getBooleanAnswer(form?.canSwim!)} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Tem alguma alergia?'} text={getBooleanAnswer(form?.isAllergic!)} />
+              <Info label={'Nome do remédio'} text={form?.medicineName || '-'} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'É crente em Jesus?'} text={getBooleanAnswer(form?.isBeliever!)} />
+              <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(form?.isResponsable!)} />
+            </InfoGroup>
+            <InfoGroup>
+              <Info label={'Informações adicionais'} text={form?.moreInformation!} />
+            </InfoGroup>
+          </div>
           <ul>
             <Topic title="Comprovantes" />
             {payments?.map(item => (

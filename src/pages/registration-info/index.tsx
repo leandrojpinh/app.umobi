@@ -15,7 +15,7 @@ import { Info, InfoGroup } from "@/components/common/Info";
 import { createPayment, getPendingPayments, getUserInfo, getUserPayments } from "@/services/umobi/umobi.api";
 import { UserInfo } from "@/services/umobi/models/UserInfo";
 import { Topic } from "@/components/common/Topic";
-import { RegistrationPayment } from "@/services/umobi/models/Registration";
+import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
 
 import Input from "@/components/common/Input";
 import { Button } from "@/components/common/Button";
@@ -28,7 +28,7 @@ import { useAuth } from "@/context/AuthContainer";
 import { useApp } from "@/context/AppContext";
 import { useEmail } from '@/context/EmailProvider';
 
-import { toMoney } from "@/helper/utils";
+import { getBooleanAnswer, toMoney } from "@/helper/utils";
 
 import styles from '@/styles/pages/registration-info.module.scss';
 
@@ -48,7 +48,8 @@ export default function Login() {
   const email = useEmail();
 
   const [userInfo, setUserInfo] = useState<UserInfo>(INITIAL_STATE);
-  const [payments, setPayments] = useState<RegistrationPayment[]>();
+  const [userForm, setUserForm] = useState<RegistrationForm>();
+  const [userPayments, setUserPayments] = useState<RegistrationPayment[]>();
   const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
   const [file, setFile] = useState<File>();
   const [tax, setTax] = useState(225);
@@ -63,6 +64,14 @@ export default function Login() {
         birthDate: moment(res.birthDate).format('DD/MM/yyyy')
       } as UserInfo;
       setUserInfo(userData);
+
+      if(res.form) {
+        setUserForm(res.form);
+      }
+
+      if(res.payments) {
+        setUserPayments(res.payments);
+      }
     }).catch(err => {
       console.log('ERRO', err);
       history.push('/');
@@ -74,7 +83,7 @@ export default function Login() {
 
   useEffect(() => {
     getUserPayments().then(res => {
-      setPayments(res);
+      setUserPayments(res);
     }).catch(err => {
       console.log('ERRO', err);
       toast.warn("Tivemos um problema ao listar seus comprovantes, atualize a página.")
@@ -83,6 +92,8 @@ export default function Login() {
       auth.setLoadingPage(false);
       setReloadPayments(false);
     });
+
+
   }, [auth.user.isAuthenticated, realoadPayments]);
 
   const handleSubmit = (e: FormEvent) => {
@@ -139,15 +150,39 @@ export default function Login() {
               title={`Bem-vindo, ${auth?.user?.name?.split(' ')[0]}`}
               subtitle="Aqui você irá acompanhar o status da sua inscrição." />
 
-            <InfoGroup>
-              <Info label={'E-mail'} text={userInfo?.email!} />
-              <Info label={'Telefone'} text={userInfo?.phoneNumber!} />
-              <Info label={'Data de Nascimento'} text={userInfo?.birthDate!} />
-            </InfoGroup>
-            <InfoGroup>
-              <Info label={'Nome dos pais'} text={userInfo?.parentNames!} />
-              <Info label={'Endereço'} text={userInfo?.address!} />
-            </InfoGroup>
+            <div className={styles.personData}>
+              <InfoGroup>
+                <Info label={'E-mail'} text={userInfo.email!} />
+                <Info label={'Telefone'} text={userInfo.phoneNumber!} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Data de Nascimento'} text={moment(userInfo.birthDate).format('DD/MM/yyyy')} />
+                <Info label={'Nome dos pais'} text={userInfo.parentNames!} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Endereço'} text={userInfo.address!} />
+                <Info label={'Igreja'} text={userForm?.churchName!} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Nome do Pastor'} text={userForm?.ministerName!} />
+                <Info label={'Telefone do Pastor'} text={userForm?.ministerNumber!} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Pastor está ciente?'} text={getBooleanAnswer(userForm?.ministerApproval!)} />
+                <Info label={'Sabe nadar?'} text={getBooleanAnswer(userForm?.canSwim!)} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Tem alguma alergia?'} text={getBooleanAnswer(userForm?.isAllergic!)} />
+                <Info label={'Nome do remédio'} text={userForm?.medicineName || '-'} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'É crente em Jesus?'} text={getBooleanAnswer(userForm?.isBeliever!)} />
+                <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(userForm?.isResponsable!)} />
+              </InfoGroup>
+              <InfoGroup>
+                <Info label={'Informações adicionais'} text={userForm?.moreInformation!} />
+              </InfoGroup>
+            </div>
 
             <section className={styles.payments}>
               <ul>
@@ -170,7 +205,7 @@ export default function Login() {
                             name={PAYMENT_FIELDS.paymentMode.field.name}
                             subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
                             selected={paymentMode}
-                            onChange={e => { 
+                            onChange={e => {
                               setPaymentMode(e.target.value);
 
                               const [pix, x1, x2] = PAYMENT_FIELDS.paymentMode.options;
@@ -203,7 +238,7 @@ export default function Login() {
                     </div>
                   )}
                 </li>
-                {payments?.map(item => (
+                {userPayments?.map(item => (
                   <li key={item.id} className={`${selectedPayment?.id === item.id ? styles.selected : ''} ${item.rejected ? styles.rejected : ''}`}>
                     <div className={`${styles.item} ${item.validated ? styles.validated : ''}`} onClick={() => handleItem(item)}>
                       <div>
