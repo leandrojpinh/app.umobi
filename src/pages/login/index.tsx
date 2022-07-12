@@ -47,12 +47,13 @@ export default function Login() {
         setIsAuthenticated(isAuthenticated);
       }).catch(err => {
         console.log('signError', err);
+        app.setIsLoading(false);
       });
   }
 
   return (
     <>
-      {auth.loading || app.isLoading ? <Loader loading={app.isLoading} /> :
+      {auth.loading || app.isLoading ? <Loader loading={app.isLoading || auth.loading} /> :
         (
           <Layout>
             <section className={styles.container}>
