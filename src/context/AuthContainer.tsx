@@ -47,7 +47,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
             'Houve problema na comunicação, tenta de novo.'}`);
 
           reject();
-        });
+        }).finally(() => setLoading(false));
     });
   }
 

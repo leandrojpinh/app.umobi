@@ -65,11 +65,11 @@ export default function Login() {
       } as UserInfo;
       setUserInfo(userData);
 
-      if(res.form) {
+      if (res.form) {
         setUserForm(res.form);
       }
 
-      if(res.payments) {
+      if (res.payments) {
         setUserPayments(res.payments);
       }
     }).catch(err => {
@@ -201,16 +201,20 @@ export default function Login() {
                           <Radio
                             key={PAYMENT_FIELDS.paymentMode.id}
                             label={PAYMENT_FIELDS.paymentMode.field.label}
-                            options={PAYMENT_FIELDS.paymentMode.options}
+                            options={userPayments?.length ? PAYMENT_FIELDS.paymentMode.options.filter(f => f.value !== 'pix') : PAYMENT_FIELDS.paymentMode.options}
                             name={PAYMENT_FIELDS.paymentMode.field.name}
                             subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
                             selected={paymentMode}
                             onChange={e => {
                               setPaymentMode(e.target.value);
 
-                              const [pix, x1, x2] = PAYMENT_FIELDS.paymentMode.options;
-                              const preTax = e.target.value === pix.value ? 225 : e.target.value === x1.value ? 155 : e.target.value === x2.value ? 77.50 : 51.67;
-                              setTax(preTax);
+                              const [pix, _, x2, x1] = PAYMENT_FIELDS.paymentMode.options;
+                              if (!(userPayments?.length!) && e.target.value !== 'pix') {
+                                setTax(70);
+                              } else {
+                                const preTax = e.target.value === pix.value ? 225 : e.target.value === x1.value ? 155 : e.target.value === x2.value ? 77.50 : 51.67;
+                                setTax(preTax);
+                              }
                             }}
                           />
                         </div>
@@ -233,7 +237,7 @@ export default function Login() {
                           disabled={true}
                         />
 
-                        <Button type="submit" label="Reenviar" disabled={!file || !tax} />
+                        <Button type="submit" label="Enviar" disabled={!file || !tax} />
                       </form>
                     </div>
                   )}
