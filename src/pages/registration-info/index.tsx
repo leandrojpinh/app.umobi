@@ -35,7 +35,7 @@ import styles from '@/styles/pages/registration-info.module.scss';
 export default function Login() {
   const INITIAL_STATE = {
     address: '',
-    birthDate: moment().format('DD/MM/yyyy'),
+    birthDate: moment().utc().format('DD/MM/yyyy'),
     email: '',
     name: '',
     parentNames: '',
@@ -61,7 +61,7 @@ export default function Login() {
     getUserInfo().then(res => {
       const userData = {
         ...res,
-        birthDate: moment(res.birthDate).format('DD/MM/yyyy')
+        birthDate: moment(res.birthDate).utc().format('DD/MM/yyyy')
       } as UserInfo;
       setUserInfo(userData);
 
@@ -156,7 +156,7 @@ export default function Login() {
                 <Info label={'Telefone'} text={userInfo.phoneNumber!} />
               </InfoGroup>
               <InfoGroup>
-                <Info label={'Data de Nascimento'} text={moment(userInfo.birthDate).format('DD/MM/yyyy')} />
+                <Info label={'Data de Nascimento'} text={moment(userInfo.birthDate).utc().format('DD/MM/yyyy')} />
                 <Info label={'Nome dos pais'} text={userInfo.parentNames!} />
               </InfoGroup>
               <InfoGroup>
@@ -250,7 +250,7 @@ export default function Login() {
                         <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
                       </div>
                       <div>
-                        <span>{moment(item.createdAt).format('DD/MM/yyyy')}</span>
+                        <span>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
                         <span>{toMoney(`${item.tax}`)}</span>
                         <span>{item.paymentMode}</span>
                       </div>

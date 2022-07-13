@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContainer";
 import { getForms, getSummary } from "@/services/umobi/umobi.api";
 import { DashboardForm } from "@/model/views/DashboardForm";
 import { SummaryPayments } from "@/services/umobi/models/Registration";
+import { toMoney } from "@/helper/utils";
 
 export default function Dashboard() {
   const history = useRouter();
@@ -83,7 +84,7 @@ export default function Dashboard() {
                   <div className='userData'>
                     <span className='name'>{form.name}</span>
                     {form.totalConfirmed ? (
-                      <span>{`Confirmado: R$ ${form.totalConfirmed}`}</span>
+                      <span>{`Confirmado: ${toMoney(`${form.totalConfirmed}`)}`}</span>
                     ) : (
                       <span>{`Aguardando confirmação`}</span>
                     )}

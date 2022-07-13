@@ -16,7 +16,7 @@ type ILinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 
 export function Button({ label, onClick, styleType = 'ok', ...rest }: IButtonProps) {
   return (
-    <button className={`${styles.button} ${styleType === 'cancel' ? styles.cancel : ''}`} {...rest}>
+    <button className={`${styles.button} ${styleType === 'cancel' ? styles.cancel : ''}`} onClick={onClick} {...rest}>
       {label}
     </button>
   )
