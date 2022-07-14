@@ -108,7 +108,7 @@ export default function Payment() {
           }, 3000);
         }
       })
-      .then(_ => getPendingPayments().then(count => email.sendNew(count)))
+      // .then(_ => getPendingPayments().then(count => email.sendNew(count)))
       .catch(err => console.log('ERRR', err))
       .finally(() => {
         app.setIsLoading(false);
