@@ -165,9 +165,9 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'É crente em Jesus?'} text={getBooleanAnswer(form?.isBeliever!)} />
               <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(form?.isResponsable!)} />
             </InfoGroup>
-            <InfoGroup>
-              <Info label={'Informações adicionais'} text={form?.moreInformation!} />
-            </InfoGroup>
+            {form?.moreInformation && <InfoGroup>
+              <Info label={'Informações adicionais'} text={form?.moreInformation} />
+            </InfoGroup>}
           </div>
           <ul>
             <Topic title="Comprovantes" />

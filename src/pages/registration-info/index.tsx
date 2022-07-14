@@ -92,8 +92,6 @@ export default function Login() {
       auth.setLoadingPage(false);
       setReloadPayments(false);
     });
-
-
   }, [auth.user.isAuthenticated, realoadPayments]);
 
   const handleSubmit = (e: FormEvent) => {
@@ -105,7 +103,6 @@ export default function Login() {
       paymentMode: paymentMode,
       tax: tax,
     } as RegistrationPayment;
-    console.log('RegistrationPayment', registrationPayment);
     createPayment(registrationPayment, file as File)
       .then(_ => {
         setSelectedPayment(undefined);
@@ -121,7 +118,7 @@ export default function Login() {
           toast.success('Comprovante enviado com sucesso!');
         }).catch(err => console.log(err));
       })
-      .then(_ => getPendingPayments().then(count => email.sendNew(count)))
+      // .then(_ => getPendingPayments().then(count => email.sendNew(count)))
       .catch(err => console.log('ERRR', err))
       .finally(() => {
         app.setIsLoading(false);
@@ -179,9 +176,9 @@ export default function Login() {
                 <Info label={'É crente em Jesus?'} text={getBooleanAnswer(userForm?.isBeliever!)} />
                 <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(userForm?.isResponsable!)} />
               </InfoGroup>
-              <InfoGroup>
-                <Info label={'Informações adicionais'} text={userForm?.moreInformation!} />
-              </InfoGroup>
+              {userForm?.moreInformation && <InfoGroup>
+                <Info label={'Informações adicionais'} text={userForm?.moreInformation} />
+              </InfoGroup>}
             </div>
 
             <section className={styles.payments}>

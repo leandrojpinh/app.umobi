@@ -8,6 +8,7 @@ import {
   RegistrationPayment,
   SummaryPayments,
 } from "./models/Registration";
+import { Reset } from "./models/Reset";
 import { Session } from "./models/Session";
 import { Token } from "./models/Token";
 import { User } from "./models/User";
@@ -164,6 +165,24 @@ const getSummary = async (): Promise<SummaryPayments> => {
   });
 }
 
+const sendCode = async (email: string): Promise<Reset> => {  
+  return new Promise((resolve, reject) => {
+    api
+      .post('/password/forgot', { email })
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
+
+const resetUser = async (token: string, password: string): Promise<Reset> => {  
+  return new Promise((resolve, reject) => {
+    api
+      .post(`password/reset?token=${token}`, { password })
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
+
 export {
   api,
   createRegistration,
@@ -177,5 +196,7 @@ export {
   getPayments,
   getForm,
   evaluatePayment,
-  getSummary
+  getSummary,
+  sendCode,
+  resetUser
 };

@@ -260,6 +260,25 @@ export const LOGIN_FIELDS = {
     },
     type: "password",
   },
+  confirmPassword: {
+    id: uuidV4(),
+    field: {
+      name: "confirmPassword",
+      label: "Confirmar senha",
+    },
+    type: "password",
+  },
+};
+
+export const RESET_FIELDS = {  
+  code: {
+    id: uuidV4(),
+    field: {
+      name: "code",
+      label: "Código",
+    },
+    type: "text",
+  }
 };
 
 export const PAYMENT_FIELDS = {
