@@ -30,6 +30,8 @@ interface Params extends ParsedUrlQuery {
   id: string;
 }
 
+type ValidationType = 'accepted' | 'rejected';
+
 export default function DashboardRegistration({ registrationId }: DashboardPaymentProps) {
   const history = useRouter();
   const auth = useAuth();
@@ -40,6 +42,9 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
   const [confirmationTax, setConfirmationTax] = useState('');
   const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
+
+  const [validationType, setValidationType] = useState<ValidationType>();
+  const [validation, setValidation] = useState('');
 
   useEffect(() => {
     if (auth) {
@@ -55,7 +60,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
         const formatedPayments = response.map(payment => {
           return {
             ...payment,
-            createdAt: moment(payment.createdAt).format('DD/MM/yyyy'),
+            createdAt: moment(payment.createdAt).utc().format('DD/MM/yyyy'),
           } as RegistrationPayment
         });
 
@@ -84,47 +89,43 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
     if (selectedPayment?.tax.toString() !== confirmationTax) {
       toast.warn('Verifique se o valor informado está correto.')
     } else {
-      evaluatePayment({ paymentId: selectedPayment.id!, rejected: false }).then(response => {
-        email.sendConfirmation({
-          email: form?.registration?.user?.email!,
-          name: form?.registration?.user?.name!,
-          data: new Date().toLocaleString()
-        }).then(_ => {
-          toast.success('Valor do comprovante confirmado!');
+      if (validationType === "accepted") {
+        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false }).then(response => {
+          email.sendConfirmation({
+            email: form?.registration?.user?.email!,
+            name: form?.registration?.user?.name!,
+            data: new Date().toLocaleString()
+          }).then(_ => {
+            toast.success('Valor do comprovante confirmado!');
+          }).catch(err => {
+            toast.error('Erro ao enviar e-mail, ver nos logs');
+            console.log('ERR100', err);
+          });
+
+          setSelectedPayment(response);
         }).catch(err => {
-          toast.error('Erro ao enviar e-mail, ver nos logs');
-          console.log('ERR100', err);
+          toast.error('Erro ao confirmar comprovante, ver nos logs');
+          console.log('ERR103', err);
         });
+      } else {
+        evaluatePayment({ paymentId: selectedPayment.id!, rejected: true, reason: 'Valor incorreto.' }).then(response => {
+          email.sendRejection({
+            email: form?.registration?.user?.email!,
+            name: form?.registration?.user?.name!,
+            data: new Date().toLocaleString()
+          }).then(_ => {
+            toast.success('Valor do comprovante rejeitado, enviamos um e-mail para correção.');
+          }).catch(err => {
+            toast.error("Erro ao enviar e-mail de rejeição do comprovante, ver nos logs");
+            console.log('ERR124', err);
+          });
 
-        setSelectedPayment(response);
-      }).catch(err => {
-        toast.error('Erro ao confirmar comprovante, ver nos logs');
-        console.log('ERR103', err);
-      });
-    }
-  }
-
-  const handleRejectPayment = () => {
-    if (selectedPayment) {
-      evaluatePayment({ paymentId: selectedPayment.id!, rejected: true }).then(response => {
-
-        console.log('enviado email de rejeição');
-        email.sendRejection({
-          email: form?.registration?.user?.email!,
-          name: form?.registration?.user?.name!,
-          data: new Date().toLocaleString()
-        }).then(_ => {
-          toast.success('Valor do comprovante rejeitado, enviamos um e-mail para correção.');
+          setSelectedPayment(response);
         }).catch(err => {
-          toast.error("Erro ao enviar e-mail de rejeição do comprovante, ver nos logs");
-          console.log('ERR124', err);
+          toast.error("Erro ao rejeitar comprovante, ver nos logs");
+          console.log('ERR130', err);
         });
-
-        setSelectedPayment(response);
-      }).catch(err => {
-        toast.error("Erro ao rejeitar comprovante, ver nos logs");
-        console.log('ERR130', err);
-      });
+      }
     }
   }
 
@@ -141,7 +142,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'Telefone'} text={form?.registration?.user?.phoneNumber!} />
             </InfoGroup>
             <InfoGroup>
-              <Info label={'Data de Nascimento'} text={moment(form?.registration?.user?.birthDate).format('DD/MM/yyyy')} />
+              <Info label={'Data de Nascimento'} text={moment(form?.registration?.user?.birthDate).utc().format('DD/MM/yyyy')} />
               <Info label={'Nome dos pais'} text={form?.registration?.user?.parentNames!} />
             </InfoGroup>
             <InfoGroup>
@@ -164,9 +165,9 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'É crente em Jesus?'} text={getBooleanAnswer(form?.isBeliever!)} />
               <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(form?.isResponsable!)} />
             </InfoGroup>
-            <InfoGroup>
-              <Info label={'Informações adicionais'} text={form?.moreInformation!} />
-            </InfoGroup>
+            {form?.moreInformation && <InfoGroup>
+              <Info label={'Informações adicionais'} text={form?.moreInformation} />
+            </InfoGroup>}
           </div>
           <ul>
             <Topic title="Comprovantes" />
@@ -198,20 +199,30 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
                   <div className={styles.info}>
                     {selectedPayment.validated ? (
-                      <span>O comprovante já foi validado!</span>
+                      <span>O comprovante{!selectedPayment.rejected ? ' já foi validado' : ' foi rejeitado'}!</span>
                     ) : (
                       <span>O valor do comprovante deve ser: {toMoney(`${selectedPayment.tax}`)}</span>
                     )}
                   </div>
                 </div>
                 {!selectedPayment.validated && (
-                  <form onSubmit={handleEvaluatePayment} className={styles.validation}>
-                    <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(e.target.value)} />
-                    <div>
-                      {/* <Button value={'reject'} type="submit" styleType='cancel' label="Tá errado"></Button> */}
-                      <Button label="Validado" type="submit"></Button>
-                    </div>
-                  </form>
+                  <>
+                    <form onSubmit={handleEvaluatePayment} className={styles.validation}>
+                      <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(e.target.value)} />
+
+                      {!validationType ? (
+                        <div className={styles.toValidate}>
+                          <Button type="button" styleType='cancel' label="Tá errado" onClick={() => setValidationType('rejected')} disabled={!confirmationTax}></Button>
+                          <Button label="Validar" type="button" onClick={() => setValidationType('accepted')} disabled={!confirmationTax}></Button>
+                        </div>
+                      ) : (
+                        <div className={styles.toConfirm}>
+                          <Input type={'text'} name='validation' label="Para confirmar digite: confirmar" value={validation} onChange={(e) => setValidation(e.target.value)} />
+                          {validation === 'confirmar' && <Button label="Salvar" type="submit"></Button>}
+                        </div>
+                      )}
+                    </form>
+                  </>
                 )}
               </>
             )

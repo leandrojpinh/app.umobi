@@ -35,7 +35,7 @@ import styles from '@/styles/pages/registration-info.module.scss';
 export default function Login() {
   const INITIAL_STATE = {
     address: '',
-    birthDate: moment().format('DD/MM/yyyy'),
+    birthDate: moment().utc().format('DD/MM/yyyy'),
     email: '',
     name: '',
     parentNames: '',
@@ -61,7 +61,7 @@ export default function Login() {
     getUserInfo().then(res => {
       const userData = {
         ...res,
-        birthDate: moment(res.birthDate).format('DD/MM/yyyy')
+        birthDate: moment(res.birthDate).utc().format('DD/MM/yyyy')
       } as UserInfo;
       setUserInfo(userData);
 
@@ -92,8 +92,6 @@ export default function Login() {
       auth.setLoadingPage(false);
       setReloadPayments(false);
     });
-
-
   }, [auth.user.isAuthenticated, realoadPayments]);
 
   const handleSubmit = (e: FormEvent) => {
@@ -105,7 +103,6 @@ export default function Login() {
       paymentMode: paymentMode,
       tax: tax,
     } as RegistrationPayment;
-    console.log('RegistrationPayment', registrationPayment);
     createPayment(registrationPayment, file as File)
       .then(_ => {
         setSelectedPayment(undefined);
@@ -121,7 +118,7 @@ export default function Login() {
           toast.success('Comprovante enviado com sucesso!');
         }).catch(err => console.log(err));
       })
-      .then(_ => getPendingPayments().then(count => email.sendNew(count)))
+      // .then(_ => getPendingPayments().then(count => email.sendNew(count)))
       .catch(err => console.log('ERRR', err))
       .finally(() => {
         app.setIsLoading(false);
@@ -156,7 +153,7 @@ export default function Login() {
                 <Info label={'Telefone'} text={userInfo.phoneNumber!} />
               </InfoGroup>
               <InfoGroup>
-                <Info label={'Data de Nascimento'} text={moment(userInfo.birthDate).format('DD/MM/yyyy')} />
+                <Info label={'Data de Nascimento'} text={moment(userInfo.birthDate).utc().format('DD/MM/yyyy')} />
                 <Info label={'Nome dos pais'} text={userInfo.parentNames!} />
               </InfoGroup>
               <InfoGroup>
@@ -179,9 +176,9 @@ export default function Login() {
                 <Info label={'É crente em Jesus?'} text={getBooleanAnswer(userForm?.isBeliever!)} />
                 <Info label={'Está comprometido com as regras?'} text={getBooleanAnswer(userForm?.isResponsable!)} />
               </InfoGroup>
-              <InfoGroup>
-                <Info label={'Informações adicionais'} text={userForm?.moreInformation!} />
-              </InfoGroup>
+              {userForm?.moreInformation && <InfoGroup>
+                <Info label={'Informações adicionais'} text={userForm?.moreInformation} />
+              </InfoGroup>}
             </div>
 
             <section className={styles.payments}>
@@ -250,7 +247,7 @@ export default function Login() {
                         <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
                       </div>
                       <div>
-                        <span>{moment(item.createdAt).format('DD/MM/yyyy')}</span>
+                        <span>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
                         <span>{toMoney(`${item.tax}`)}</span>
                         <span>{item.paymentMode}</span>
                       </div>

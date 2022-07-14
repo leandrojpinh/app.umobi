@@ -93,10 +93,10 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
     }
   }
 
-  async function sendNew(total: number) {
+  async function sendReset(email: Email) {
     try {
       setIsSending(true);
-      const response = await send(emailConfig.serviceId, emailConfig.newTemplateId, { total });
+      const response = await send(emailConfig.serviceId, emailConfig.resetTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de inscrição.');
       }
@@ -115,7 +115,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
         sendConfirmation,
         sendRejection,
         sendAdjustment,
-        sendNew
+        sendReset
       }}>
       {children}
     </EmailContext.Provider>

@@ -6,5 +6,5 @@ export interface EmailContextData {
   sendConfirmation: (confirmation: Email) => Promise<void>;
   sendRejection: (rejection: Email) => Promise<void>;
   sendAdjustment: (adjustmend: Email) => Promise<void>;
-  sendNew: (total: number) => Promise<void>;
+  sendReset: (email: Email) => Promise<void>;
 }

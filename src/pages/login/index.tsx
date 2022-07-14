@@ -13,6 +13,7 @@ import { LOGIN_FIELDS } from "@/constants/FormFields";
 
 import styles from '@/styles/pages/login.module.scss';
 import { useAuth } from "@/context/AuthContainer";
+import Link from "next/link";
 
 export default function Login() {
   const history = useRouter();
@@ -26,9 +27,14 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) {
       if (auth.user.isAdmin) {
-        history.push('/dashboard');
+        history.push('/dashboard').then(() => {
+          app.setIsLoading(false);
+        });
       } else {
-        history.push('/registration-info');
+        console.log('chegou aqui')
+        history.push('/registration-info').then(() => {
+          app.setIsLoading(false);
+        });
       }
     } else {
       app.setIsLoading(false);
@@ -80,6 +86,12 @@ export default function Login() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
+
+                <Link href={'/login/forgot'}>
+                  <a className={styles.forgot}>
+                    Esqueci a senha
+                  </a>
+                </Link>
 
                 <LoginButton label="acessar" />
               </form>

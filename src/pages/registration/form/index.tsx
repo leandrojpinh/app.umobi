@@ -45,7 +45,7 @@ export type IRegistrationProps = {
 export default function Registration() {
   const INITIAL_STATE: IRegistrationProps = {
     address: "",
-    birthDate: moment().format('yyyy/MM/dd'),
+    birthDate: moment().utc().format('yyyy/MM/dd'),
     canSwim: false,
     churchName: '',
     email: '',

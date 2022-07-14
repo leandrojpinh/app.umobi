@@ -111,6 +111,28 @@
           justify-content: center;
         }
       }
+
+      .toConfirm {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+  
+        margin-top: 1rem;
+        gap: 0;
+      }
+
+      .toValidate {
+        gap: .5rem;
+      }
+    }
+
+    .toValidate {
+      display: flex;
+      flex: 1;
+
+      button {
+        flex: 1;
+      }
     }
   }
 }

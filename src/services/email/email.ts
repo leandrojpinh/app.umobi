@@ -8,7 +8,7 @@ export const emailConfig = {
   confirmationTemplateId: process.env.NEXT_PUBLIC_EMAILJS_CONFIRMATION_TEMPLATE_ID || '',
   rejectTemplateId: process.env.NEXT_PUBLIC_EMAILJS_REJECTION_TEMPLATE_ID || '',
   adjustTemplateId: process.env.NEXT_PUBLIC_EMAILJS_ADJUST_TEMPLATE_ID || '',
-  newTemplateId: process.env.NEXT_PUBLIC_EMAILJS_NEW_TEMPLATE_ID || '',
+  resetTemplateId: process.env.NEXT_PUBLIC_EMAILJS_RESET_TEMPLATE_ID || '',
 };
 
 init(emailConfig.userId || '');
