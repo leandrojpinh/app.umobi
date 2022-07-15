@@ -211,7 +211,7 @@ export const Navbar = () => {
           </>
         ) : (
           <>
-          {auth?.user?.isAdmin &&  <NavLinks />}
+          {(auth?.user?.isAdmin || auth?.user?.isViewer) &&  <NavLinks />}
           <Logout />
           </>          
         )}
