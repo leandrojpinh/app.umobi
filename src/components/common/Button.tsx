@@ -22,6 +22,14 @@ export function Button({ label, onClick, styleType = 'ok', ...rest }: IButtonPro
   )
 }
 
+export function ButtonRemove({ label, onClick, styleType = 'ok', ...rest }: IButtonProps) {
+  return (
+    <button className={`${styles.buttonRemove} ${styleType === 'cancel' ? styles.cancel : ''}`} onClick={onClick} {...rest}>
+      {label}
+    </button>
+  )
+}
+
 export function ALink({ label, path, onClick, children, ...rest }: ILinkProps) {
   return (
     <Link href={path}>

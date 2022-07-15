@@ -49,6 +49,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   useEffect(() => {
     if (auth) {
       if (!auth.user.isAdmin && !auth.user.isViewer) {
+        auth.signOut();
         history.push('/');
       }
     }
@@ -86,10 +87,12 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   const handleEvaluatePayment = (e: FormEvent) => {
     e.preventDefault();
 
-    if (selectedPayment?.tax.toString() !== confirmationTax) {
-      toast.warn('Verifique se o valor informado está correto.')
-    } else {
+    if (selectedPayment) {
       if (validationType === "accepted") {
+        if (selectedPayment?.tax.toString() !== confirmationTax) {
+          toast.warn('Verifique se o valor informado está correto.')
+        }
+
         evaluatePayment({ paymentId: selectedPayment.id!, rejected: false }).then(response => {
           email.sendConfirmation({
             email: form?.registration?.user?.email!,

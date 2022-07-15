@@ -183,6 +183,15 @@ const resetUser = async (token: string, password: string): Promise<Reset> => {
   });
 }
 
+const removeReceipt = async (paymentId: string): Promise<void> => {  
+  return new Promise((resolve, reject) => {
+    api
+      .delete(`/registrations/payments/${paymentId}`)
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
+
 export {
   api,
   createRegistration,
@@ -198,5 +207,6 @@ export {
   evaluatePayment,
   getSummary,
   sendCode,
-  resetUser
+  resetUser,
+  removeReceipt
 };
