@@ -26,12 +26,11 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (auth.user.isAdmin) {
+      if (auth.user.isAdmin || auth.user.isViewer) {
         history.push('/dashboard').then(() => {
           app.setIsLoading(false);
         });
       } else {
-        console.log('chegou aqui')
         history.push('/registration-info').then(() => {
           app.setIsLoading(false);
         });

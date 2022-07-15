@@ -3,6 +3,7 @@ export type Token = {
     name: string;
     email: string;
     isAdmin: boolean;
+    isViewer: boolean;
   };
   token: string;
   refreshToken: string;

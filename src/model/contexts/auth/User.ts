@@ -5,6 +5,7 @@ export type User = {
   refreshToken: string;
   token: string;
   isAdmin: boolean;
+  isViewer: boolean;
 }
 
 export type Login = {

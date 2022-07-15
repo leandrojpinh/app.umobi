@@ -30,7 +30,8 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
             isAuthenticated: true,
             refreshToken: response.refreshToken,
             token: response.token,
-            isAdmin: response.user?.isAdmin
+            isAdmin: response.user?.isAdmin,
+            isViewer: response.user?.isViewer
           } as User;
 
           setCookie(undefined, Cookie.umobiToken, loggedUser.token, {

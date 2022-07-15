@@ -48,7 +48,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
   useEffect(() => {
     if (auth) {
-      if (!auth.user.isAdmin) {
+      if (!auth.user.isAdmin && !auth.user.isViewer) {
         history.push('/');
       }
     }
@@ -197,15 +197,15 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
                     <img src={selectedPayment.publicPaymentUrl} alt="Comprovante" />
                   )}
 
-                  <div className={styles.info}>
+                  {auth.user.isAdmin && <div className={styles.info}>
                     {selectedPayment.validated ? (
                       <span>O comprovante{!selectedPayment.rejected ? ' já foi validado' : ' foi rejeitado'}!</span>
                     ) : (
                       <span>O valor do comprovante deve ser: {toMoney(`${selectedPayment.tax}`)}</span>
                     )}
-                  </div>
+                  </div>}
                 </div>
-                {!selectedPayment.validated && (
+                {(!selectedPayment.validated && auth.user.isAdmin) && (
                   <>
                     <form onSubmit={handleEvaluatePayment} className={styles.validation}>
                       <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(e.target.value)} />
