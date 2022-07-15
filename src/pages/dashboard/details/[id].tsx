@@ -49,6 +49,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   useEffect(() => {
     if (auth) {
       if (!auth.user.isAdmin && !auth.user.isViewer) {
+        auth.signOut();
         history.push('/');
       }
     }

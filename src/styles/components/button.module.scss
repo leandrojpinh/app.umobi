@@ -1,4 +1,4 @@
-.button, .loginButton {
+.button, .loginButton, .buttonRemove {
   background: var(--linear);
   border: 1px solid var(--black-dark);
   color: var(--text);
@@ -16,7 +16,11 @@
   }
 }
 
-.button:hover, .loginButton:hover {
+.buttonRemove{
+  background: var(--toastify-color-error);
+}
+
+.button:hover, .loginButton:hover, .buttonRemove:hover {
   filter: brightness(80%);
 }
 

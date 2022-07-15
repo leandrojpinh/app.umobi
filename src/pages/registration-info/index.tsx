@@ -12,13 +12,13 @@ import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 
 import { Info, InfoGroup } from "@/components/common/Info";
-import { createPayment, getPendingPayments, getUserInfo, getUserPayments } from "@/services/umobi/umobi.api";
+import { createPayment, getUserInfo, getUserPayments, removeReceipt } from "@/services/umobi/umobi.api";
 import { UserInfo } from "@/services/umobi/models/UserInfo";
 import { Topic } from "@/components/common/Topic";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
 
 import Input from "@/components/common/Input";
-import { Button } from "@/components/common/Button";
+import { Button, ButtonRemove } from "@/components/common/Button";
 import { FileContainer } from "@/styles/pages/Payments";
 import { FORM_COMPLEX_FIELDS, PAYMENT_FIELDS } from "@/constants/FormFields";
 import { CampDetails } from "@/components/common/CampDetails";
@@ -73,7 +73,8 @@ export default function Login() {
         setUserPayments(res.payments);
       }
     }).catch(err => {
-      console.log('ERRO', err);
+      console.log('ERRO76', err);
+      auth.signOut();
       history.push('/');
     }).finally(() => {
       app.setIsLoading(false);
@@ -119,7 +120,10 @@ export default function Login() {
         }).catch(err => console.log(err));
       })
       // .then(_ => getPendingPayments().then(count => email.sendNew(count)))
-      .catch(err => console.log('ERRR', err))
+      .catch(err => {
+        console.log('ERRR', err);
+        toast.warn("Tivemos um problema ao enviar o comprovante, atualize a página.")
+      })
       .finally(() => {
         app.setIsLoading(false);
         setReloadPayments(true);
@@ -136,6 +140,20 @@ export default function Login() {
     selectedPayment ? setSelectedPayment(undefined) : setSelectedPayment(item);
 
     setCreateNew(false);
+  }
+
+  const handleRemoveReceipt = (paymentId: string) => {
+    app.setIsLoading(true);
+    removeReceipt(paymentId).then(() => {
+      toast.success("Comprovante removido com sucesso.")
+      const payments = userPayments?.filter(f => f.id !== paymentId);
+      setUserPayments(payments);
+    }).catch(err => {
+      console.log('ERR145', err);
+      toast.warn("Tivemos um problema ao remover seu comprovantes, atualize a página.")
+    }).finally(() => {
+      app.setIsLoading(false);
+    });
   }
 
   return (
@@ -256,8 +274,9 @@ export default function Login() {
                       <section className={`${styles.selectedPayment} ${!selectedPayment.validated || !selectedPayment.rejected ? styles.infoPending : ''}`}>
                         {selectedPayment.validated && selectedPayment.rejected ? (
                           <>
-                            <span>O comprovante foi rejeitado! Reenvie o comprovante correto</span>
+                            <span>O comprovante foi rejeitado! Basta remover e enviar o comprovante correto.</span>
                             <span className={styles.reason}>{selectedPayment.reason}</span>
+                            <ButtonRemove label="Remover" onClick={() => handleRemoveReceipt(selectedPayment.id!)} />
                           </>
                         ) : selectedPayment.validated && !selectedPayment.rejected ? (
                           <span>O comprovante já foi validado!</span>

@@ -29,6 +29,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (auth) {
       if (!auth.user.isAdmin && !auth.user.isViewer) {
+        auth.signOut();
         history.push('/');
       }
 
