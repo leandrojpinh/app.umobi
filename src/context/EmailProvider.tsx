@@ -40,6 +40,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendRegistration(email: Email) {
     try {
       setIsSending(true);
+      //console.log('sendRegistration', email);
       const response = await send(emailConfig.serviceId, emailConfig.registrationTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de inscrição.');
@@ -54,6 +55,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendConfirmation(email: Email) {
     try {
       setIsSending(true);
+      // console.log('sendConfirmation', email);
       const response = await send(emailConfig.serviceId, emailConfig.confirmationTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de confirmação.');
@@ -68,6 +70,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendRejection(email: Email) {
     try {
       setIsSending(true);
+      // console.log('sendRejection', email);
       const response = await send(emailConfig.serviceId, emailConfig.rejectTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de confirmação.');
@@ -82,6 +85,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendAdjustment(email: Email) {
     try {
       setIsSending(true);
+      // console.log('sendAdjustment', email);
       const response = await send(emailConfig.serviceId, emailConfig.adjustTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de correção do comprovante.');
@@ -96,6 +100,7 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendReset(email: Email) {
     try {
       setIsSending(true);
+      // console.log('sendReset', email);
       const response = await send(emailConfig.serviceId, emailConfig.resetTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de inscrição.');

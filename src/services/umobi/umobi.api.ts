@@ -146,11 +146,16 @@ const getPendingPayments = async (): Promise<number> => {
 const evaluatePayment = async ({
   paymentId,
   rejected,
-  reason
+  reason,
+  tax
 }: EvaluatePayment): Promise<RegistrationPayment> => {
+  console.log({  paymentId,
+    rejected,
+    reason,
+    tax});
   return new Promise((resolve, reject) => {
     api
-      .post(`/registrations/payments/${paymentId}`, { rejected, reason })
+      .post(`/registrations/payments/${paymentId}`, { rejected, reason, tax })
       .then((response) => resolve(response.data))
       .catch((err) => reject(err));
   });

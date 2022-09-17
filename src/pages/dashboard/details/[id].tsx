@@ -45,13 +45,16 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
   const [validationType, setValidationType] = useState<ValidationType>();
   const [validation, setValidation] = useState('');
+  const [toConfirm, setToConfirm] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState('Confirmar');
 
   useEffect(() => {
-    if (auth) {
-      if (!auth.user.isAdmin && !auth.user.isViewer) {
-        auth.signOut();
-        history.push('/');
-      }
+    if (!auth?.user?.isAdmin && !auth?.user?.isViewer) {
+      history.push('/');
+    }
+
+    if (!auth?.user?.isAuthenticated) {
+      history.push('/');
     }
   }, [auth]);
 
@@ -89,11 +92,16 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
     if (selectedPayment) {
       if (validationType === "accepted") {
-        if (selectedPayment?.tax.toString() !== confirmationTax) {
-          toast.warn('Verifique se o valor informado está correto.')
+        if (selectedPayment?.tax.toString() !== confirmationTax && !toConfirm) {
+          toast.warn('Atenção!!! O valor do comprovante está diferente, do esperado...');
+          toast.info('Para confirmar, clique em "Estou ciente".');
+          setButtonLabel('Estou ciente');
+          setToConfirm(true);
+
+          return;
         }
 
-        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false }).then(response => {
+        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false, tax: parseInt(confirmationTax) }).then(response => {
           email.sendConfirmation({
             email: form?.registration?.user?.email!,
             name: form?.registration?.user?.name!,
@@ -216,12 +224,12 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
                       {!validationType ? (
                         <div className={styles.toValidate}>
                           <Button type="button" styleType='cancel' label="Tá errado" onClick={() => setValidationType('rejected')} disabled={!confirmationTax}></Button>
-                          <Button label="Validar" type="button" onClick={() => setValidationType('accepted')} disabled={!confirmationTax}></Button>
+                          <Button label={buttonLabel} type="button" onClick={() => setValidationType('accepted')} disabled={!confirmationTax}></Button>
                         </div>
                       ) : (
                         <div className={styles.toConfirm}>
                           <Input type={'text'} name='validation' label="Para confirmar digite: confirmar" value={validation} onChange={(e) => setValidation(e.target.value)} />
-                          {validation === 'confirmar' && <Button label="Salvar" type="submit"></Button>}
+                          {validation === 'confirmar' && <Button label={buttonLabel} type="submit"></Button>}
                         </div>
                       )}
                     </form>

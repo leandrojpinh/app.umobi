@@ -143,7 +143,7 @@ export default function Payment() {
                     <Radio
                       key={PAYMENT_FIELDS.paymentMode.id}
                       label={PAYMENT_FIELDS.paymentMode.field.label}
-                      options={PAYMENT_FIELDS.paymentMode.options}
+                      options={PAYMENT_FIELDS.paymentMode.options.filter(f => !['2x', '3x'].includes(f.value))}
                       name={PAYMENT_FIELDS.paymentMode.field.name}
                       subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
                       selected={paymentMode}
