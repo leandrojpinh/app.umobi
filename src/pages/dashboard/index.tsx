@@ -29,10 +29,9 @@ export default function Dashboard() {
   useEffect(() => {
     if (auth) {
       if (!auth.user.isAdmin && !auth.user.isViewer) {
-        auth.signOut();
         history.push('/');
       }
-
+      
       if (auth.user.token) {
         getForms().then(response => {
           setForms(response);
@@ -46,7 +45,7 @@ export default function Dashboard() {
 
       app.setIsLoading(false);
     }
-  }, [auth]);
+  }, [auth, app]);
 
   const handleFormDetails = (registrationId: string) => {
     history.push(`/dashboard/details/${registrationId}`)

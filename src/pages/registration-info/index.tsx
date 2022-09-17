@@ -74,7 +74,6 @@ export default function Login() {
       }
     }).catch(err => {
       console.log('ERRO76', err);
-      auth.signOut();
       history.push('/');
     }).finally(() => {
       app.setIsLoading(false);
@@ -216,18 +215,18 @@ export default function Login() {
                           <Radio
                             key={PAYMENT_FIELDS.paymentMode.id}
                             label={PAYMENT_FIELDS.paymentMode.field.label}
-                            options={userPayments?.length ? PAYMENT_FIELDS.paymentMode.options.filter(f => f.value !== 'pix') : PAYMENT_FIELDS.paymentMode.options}
+                            options={userPayments?.length ? PAYMENT_FIELDS.paymentMode.options.filter(f => f.value === '1x') : PAYMENT_FIELDS.paymentMode.options.filter(f => !['3x', '2x'].includes(f.value))}
                             name={PAYMENT_FIELDS.paymentMode.field.name}
                             subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
                             selected={paymentMode}
                             onChange={e => {
+                              console.log('asd', e.target.value);
                               setPaymentMode(e.target.value);
 
-                              const [pix, _, x2, x1] = PAYMENT_FIELDS.paymentMode.options;
                               if (!(userPayments?.length!) && e.target.value !== 'pix') {
                                 setTax(70);
                               } else {
-                                const preTax = e.target.value === pix.value ? 225 : e.target.value === x1.value ? 155 : e.target.value === x2.value ? 77.50 : 51.67;
+                                const preTax = e.target.value === 'pix' ? 225 : e.target.value === '1x' ? 155 : e.target.value === '2x' ? 77.50 : 51.67;
                                 setTax(preTax);
                               }
                             }}

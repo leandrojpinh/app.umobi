@@ -54,10 +54,11 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 
   const signOut = () => {
     setLoading(true);
-    setUser({} as User);
     destroyCookie(undefined, Cookie.umobiToken);
-    router.push('/');
+    setUser({} as User);
     setLoading(false);
+    router.push('/');
+    console.log('passou');
   }
 
   const setLoadingPage = (value: boolean) => {

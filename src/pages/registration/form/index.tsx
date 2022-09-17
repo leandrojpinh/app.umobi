@@ -20,6 +20,7 @@ import styles from '@/styles/pages/form-registration.module.scss';
 import { createRegistration, createUser } from "@/services/umobi/umobi.api";
 import { RegistrationForm } from '@/services/umobi/models/Registration';
 import { User } from '@/services/umobi/models/User';
+import { ERRORS } from "@/constants/ErrorMessages";
 
 export type IRegistrationProps = {
   email: string;
@@ -120,7 +121,6 @@ export default function Registration() {
     } as User;
     createUser(user)
       .then((userId) => {
-        toast.success('Seu usuário foi criado!');
         const form = {
           canSwim: registration.canSwim,
           churchName: registration.churchName,
@@ -137,7 +137,7 @@ export default function Registration() {
 
         return createRegistration(userId as string, form);
       })
-      .then(_ => {        
+      .then(_ => {
         toast.success('Sua inscrição foi enviada, vamos para o próximo passo!');
 
         app.setIsLoading(false);
@@ -145,8 +145,13 @@ export default function Registration() {
       })
       .catch(err => {
         console.log('ERROR-137', err);
-        
         app.setIsLoading(false);
+
+        if (err === ERRORS.formAlreadyExists.error) {
+          toast.error(ERRORS.formAlreadyExists.message);
+          return;
+        }
+        
         toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);
