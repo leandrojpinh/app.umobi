@@ -54,23 +54,17 @@ export default function Payment() {
   }, [history]);
 
   useEffect(() => {
-    if (tax < 70) {
-      toast.warn('A tax mínima é R$ 70,00...');
-    }
-  }, [tax]);
-
-  useEffect(() => {
-    if (paymentMode === 'pix') {
-      setTax(225);
-    } else {
-      setTax(70);
-    }
-
+    setTax(paymentMode === 'pix' ? 225 : 70);
   }, [paymentMode]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     app.setIsLoading(true);
+
+    if (tax < 70) {
+      toast.warn('A tax mínima é R$ 70,00...');
+      return;
+    }
 
     const registrationPayment = {
       registrationId, tax, paymentMode

@@ -155,6 +155,20 @@ export default function Login() {
     });
   }
 
+  const getOptions = () => {
+    const hasPayments = userPayments ? userPayments.length > 0 : false;
+    if (hasPayments) {
+      if (userPayments?.find(f => f.paymentMode === 'pix')) {
+        return [];
+      }
+
+      const existentPayment = userPayments?.find(f => f.paymentMode !== 'pix');
+      return PAYMENT_FIELDS.paymentMode.options.filter(f => f.value === existentPayment?.paymentMode);
+    }
+
+    return PAYMENT_FIELDS.paymentMode.options.filter(f => !['2x', '3x'].includes(f.value));
+  }
+
   return (
     <>
       {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
@@ -207,7 +221,7 @@ export default function Login() {
 
                     <FiPlus size={24} color={'var(--text)'} />
                   </div>
-                  {createNew && (
+                  {createNew && !userPayments?.find(f => f.paymentMode === 'pix') && (
                     <div className={styles.body}>
                       <CampDetails />
                       <form onSubmit={handleSubmit} className={styles.validation}>
@@ -215,12 +229,11 @@ export default function Login() {
                           <Radio
                             key={PAYMENT_FIELDS.paymentMode.id}
                             label={PAYMENT_FIELDS.paymentMode.field.label}
-                            options={userPayments?.length ? PAYMENT_FIELDS.paymentMode.options.filter(f => f.value === '1x') : PAYMENT_FIELDS.paymentMode.options.filter(f => !['3x', '2x'].includes(f.value))}
+                            options={getOptions()}
                             name={PAYMENT_FIELDS.paymentMode.field.name}
                             subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
                             selected={paymentMode}
                             onChange={e => {
-                              console.log('asd', e.target.value);
                               setPaymentMode(e.target.value);
 
                               if (!(userPayments?.length!) && e.target.value !== 'pix') {
@@ -246,11 +259,11 @@ export default function Login() {
                           key={FORM_COMPLEX_FIELDS.tax.id}
                           label={FORM_COMPLEX_FIELDS.tax.field.label}
                           name={FORM_COMPLEX_FIELDS.tax.field.name}
-                          type={'text'}
+                          type={FORM_COMPLEX_FIELDS.tax.type}
                           value={tax}
-                          disabled={true}
+                          onChange={e => setTax(parseFloat(e.target.value))}
+                          autoFocus
                         />
-
                         <Button type="submit" label="Enviar" disabled={!file || !tax} />
                       </form>
                     </div>
@@ -264,7 +277,7 @@ export default function Login() {
                         <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
                       </div>
                       <div>
-                        <span>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
+                        <span className={styles.paymentData}>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
                         <span>{toMoney(`${item.tax}`)}</span>
                         <span>{item.paymentMode}</span>
                       </div>

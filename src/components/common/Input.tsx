@@ -4,7 +4,7 @@ import InputMask from 'react-input-mask';
 import styles from '@/styles/input.module.scss';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  name: string;
+  name?: string;
   label: string;
   mask?: string;
 }
