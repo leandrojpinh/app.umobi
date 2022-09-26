@@ -40,7 +40,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   const [payments, setPayments] = useState<RegistrationPayment[]>();
   const [form, setForm] = useState<RegistrationForm>();
 
-  const [confirmationTax, setConfirmationTax] = useState('');
+  const [confirmationTax, setConfirmationTax] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
 
   const [validationType, setValidationType] = useState<ValidationType>();
@@ -92,7 +92,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
     if (selectedPayment) {
       if (validationType === "accepted") {
-        if (selectedPayment?.tax.toString() !== confirmationTax && !toConfirm) {
+        if (selectedPayment?.tax.toString() !== confirmationTax.toString() && !toConfirm) {
           toast.warn('Atenção!!! O valor do comprovante está diferente, do esperado...');
           toast.info('Para confirmar, clique em "Estou ciente".');
           setButtonLabel('Estou ciente');
@@ -101,7 +101,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
           return;
         }
 
-        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false, tax: parseInt(confirmationTax) }).then(response => {
+        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false, tax: confirmationTax }).then(response => {
           email.sendConfirmation({
             email: form?.registration?.user?.email!,
             name: form?.registration?.user?.name!,
@@ -219,7 +219,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
                 {(!selectedPayment.validated && auth.user.isAdmin) && (
                   <>
                     <form onSubmit={handleEvaluatePayment} className={styles.validation}>
-                      <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(e.target.value)} />
+                      <Input type={'number'} name="confirmationTax" label="Qual o valor do comprovante?" value={confirmationTax} onChange={(e) => setConfirmationTax(parseFloat(e.target.value))} />
 
                       {!validationType ? (
                         <div className={styles.toValidate}>

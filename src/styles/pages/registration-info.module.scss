@@ -33,6 +33,12 @@
         &.validated {
           background: var(--black-dark);
         }
+
+        .paymentData {
+          @media(max-width: 550px) {
+            display: none;
+          }
+        }
         
         :hover {
           filter: brightness(.8);
