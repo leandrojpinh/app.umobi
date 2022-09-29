@@ -17,9 +17,9 @@ export function Summary({ confirmed, pending, received, registrations, uncomplet
 
   useEffect(() => {
     setReport([{ id: 1, description: 'Total de inscrições', total: registrations || 0 } as ReportItem
-      , { id: 2, description: 'Total a confirmar', total: pending || 0 }
-      , { id: 3, description: 'Total confirmado', total: confirmed || 0 } as ReportItem
-      , { id: 4, description: 'Total de pagamentos incompletos', total: uncompleted || 0 } as ReportItem
+      , { id: 2, description: 'Pag. não iniciado', total: pending || 0 }
+      , { id: 3, description: 'Pag. realizados', total: confirmed || 0 } as ReportItem
+      , { id: 4, description: 'Pag. em andamento', total: uncompleted || 0 } as ReportItem
       , {
         id: 5, description: 'Total recebido(R$)', total: received || 0
       } as ReportItem]);
