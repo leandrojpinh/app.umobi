@@ -135,7 +135,7 @@ export default function Forgot() {
                     onChange={e => setConfirmPassword(e.target.value)}
                   />
 
-                  <LoginButton label="Valida e Enviar" disabled={!password || !confirmPassword || !code} />
+                  <LoginButton label="Valida e Enviar" disabled={!password || !confirmPassword || !code || (password.length < 6)} />
                 </form>
               </section>
             )}

@@ -163,13 +163,13 @@ const SessionLinks = () => {
           Entrar
         </NavLink>
       </NavItem>
-      <NavItem>
+      {/* <NavItem>
         <SubscribeButton>
           <NavLink href={'/registration'}>
             Inscreva-se
           </NavLink>
         </SubscribeButton>
-      </NavItem>
+      </NavItem> */}
     </NavMenu>
   )
 }
@@ -201,7 +201,7 @@ export const Navbar = () => {
       <NavContainer>
         <NavBrand>
           <NavLink href={'/'}>
-            <img src="/umobi-logo.png" height={42} width={128} alt="Igreja Bíblica Batista de Jardim Bandeirante" />
+            <img src="/umobi-logo.png" height={42} width={128} alt="Umobi" />
           </NavLink>
         </NavBrand>
         {!auth?.user?.isAuthenticated ? (

@@ -216,7 +216,7 @@ export default function Login() {
               <ul>
                 <Topic title="Comprovantes" />
                 <li key={uuid()} className={styles.new}>
-                  <div className={styles.header} onClick={() => setCreateNew(!createNew)}>
+                  <div className={styles.header} onClick={() => {console.log(createNew); setCreateNew(!createNew)}}>
                     <span>Enviar comprovante</span>
 
                     <FiPlus size={24} color={'var(--text)'} />
