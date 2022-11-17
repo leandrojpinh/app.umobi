@@ -50,7 +50,7 @@ export default function Registration() {
 
   return (
     <Layout>
-      <Title
+      {/* <Title
         title="Inscrição"
         subtitle="*Obs: idade mínima para participar é de 14 anos" />
 
@@ -64,7 +64,8 @@ export default function Registration() {
 
           <Button type={'submit'} label="Continuar" disabled={!isChecked} />
         </form>
-      </section>
+      </section> */}
+      <Title title="Incrições encerradas!" />
     </Layout>
   )
 }
