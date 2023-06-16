@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContainer';
 
 const Nav = styled.nav`
   color: var(--green0);
-  height: 90px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,12 +143,10 @@ const NavLinks = () => {
       <NavMenu>
         <NavItem>
           <NavLink href={'/dashboard'}>Inscrições</NavLink>
-        </NavItem>
-        {/* 
-        TODO: Login
+        </NavItem>        
         <NavItem>
           <NavLink href={'about'}>Sobre nós</NavLink>
-        </NavItem> */}
+        </NavItem>
       </NavMenu>
     </>
   )
@@ -163,13 +161,13 @@ const SessionLinks = () => {
           Entrar
         </NavLink>
       </NavItem>
-      {/* <NavItem>
+      <NavItem>
         <SubscribeButton>
           <NavLink href={'/registration'}>
             Inscreva-se
           </NavLink>
         </SubscribeButton>
-      </NavItem> */}
+      </NavItem>
     </NavMenu>
   )
 }
@@ -206,7 +204,7 @@ export const Navbar = () => {
         </NavBrand>
         {!auth?.user?.isAuthenticated ? (
           <>
-            {/* <NavLinks /> */}
+            <NavLinks />
             <SessionLinks />
           </>
         ) : (
