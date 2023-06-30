@@ -61,7 +61,7 @@ export default function Profile() {
       } as UserInfo;
       app.setUserInfo(userData);
 
-      if (res.registrations.length === 1) {
+      if (res.registrations?.length === 1) {
         setSelectedRegistration(res.registrations[0]);
       }
     }).catch(err => {
@@ -161,8 +161,6 @@ export default function Profile() {
   const changePaymentField = (field: string, value: any) => {
     setPayment({ ...payment, [`${field}`]: value });
   }
-
-  console.log("AUTH", auth);
 
   return (
     <>

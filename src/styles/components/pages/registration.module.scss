@@ -24,8 +24,8 @@
   ul {
     gap: 1rem;
     border-radius: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    width: fit-content;    
 
     li {
       display: flex;

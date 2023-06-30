@@ -5,16 +5,18 @@
   margin: 0 auto;
 }
 
-.forgot {
-  color: var(--primary-dark);
-  font-family: 'Staatliches';
-  font-size: .8rem;
-  padding: 1rem 0;
-  cursor: pointer;
-  letter-spacing: 0.1rem;
-  transition: filter .2s;
-}
+.actions {
+  .forgot {
+    color: var(--primary-dark);
+    font-family: 'Staatliches';
+    font-size: .8rem;
+    padding: 1rem 0;
+    cursor: pointer;
+    letter-spacing: 0.1rem;
+    transition: filter .2s;
+  }
 
-.forgot:hover {
-  filter: brightness(80%);
+  .forgot:hover {
+    filter: brightness(80%);
+  }
 }

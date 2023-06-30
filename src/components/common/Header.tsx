@@ -71,7 +71,7 @@ const NavItem = styled.li`
     color: inherit;
     transition: .2s filter;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(primary-light) !important;
     }
 
     & :hover {
@@ -101,7 +101,7 @@ const NavLink = styled(Link)`
     border-bottom: 3px solid transparent;
     color: inherit;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(--primary-light) !important;
     }
   }
 `;
@@ -119,7 +119,7 @@ const NavLinkLogout = styled.a`
     border-bottom: 3px solid transparent;
     color: inherit;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(--primary-light) !important;
     }
   }
 `;
@@ -138,8 +138,8 @@ const SubscribeButton = styled.div`
   border-radius: 8px;
   max-height: 2.1rem;  
 
-  & :hover {
-    filter: brightness(80%);
+  &:hover {
+    filter: brightness(90%);
   }
 
   @media screen and (min-width: 830px) {

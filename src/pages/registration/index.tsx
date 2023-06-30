@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { FormEvent, useState, useEffect, InputHTMLAttributes, useMemo } from "react";
+import { FormEvent, useState, useEffect, InputHTMLAttributes } from "react";
+import { animateScroll as scroll } from "react-scroll";
 
 import { Button } from "@/components/common/Button";
 import { Checkbox } from "@/components/common/Checkbox";
@@ -101,7 +102,6 @@ export default function Registration() {
   const history = useRouter();
   const email = useEmail();
 
-  const [events, setEvents] = useState<Camp[]>();
   const [selectedEvent, setSelectedEvent] = useState<Camp>();
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
   const [isChecked, setIsChecked] = useState(false);
@@ -116,7 +116,16 @@ export default function Registration() {
       history.push('/sign-in');
     }
 
-    
+    getCamps().then(camps => {
+      app.setEvents(camps);
+    })
+      .catch(err => {
+        console.log('ERROR-137', err);
+
+        toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
+      }).finally(() => {
+        app.setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -161,7 +170,7 @@ export default function Registration() {
     e.preventDefault();
 
     setStep(step + 1);
-    setEvents(events?.filter(f => f.name === selectedEvent?.name));
+    scroll.scrollToTop();
   }
 
   const handleStep1 = (e: FormEvent) => {
@@ -192,6 +201,7 @@ export default function Registration() {
 
       app.setIsLoading(false);
       setStep(step + 1);
+      scroll.scrollToTop();
     })
       .catch(err => {
         console.log('ERROR-137', err);
@@ -237,18 +247,11 @@ export default function Registration() {
       });
   }
 
-  const hasAvailableEvents = useMemo(() => {
-    const registations = app.userInfo?.registrations.map(r => r.campId) || [];
-    const availableEventCount = events?.filter(f => !registations.includes(f.id)).length || 0;
-
-    return availableEventCount > 0;
-  }, [app.userInfo?.registrations]);
-
   return (
     <>
       {app.isLoading ? <Loader loading={app.isLoading} /> : (
         <>
-          {hasAvailableEvents ? (
+          {app.hasAvailableEvents ? (
             <Layout>
               {(step + 1) <= 3 && <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />}
 
@@ -258,9 +261,9 @@ export default function Registration() {
                     <section className={styles.events}>
                       <Topic title="Eventos" />
                       <ul>
-                        {events?.map((evt, index) => (
-                          <li key={index} onClick={() => setSelectedEvent(evt)} className={evt.name === selectedEvent?.name ? styles.selected : ''}>
-                            <Image src={'/empty-folder.png'} alt={evt.name} width={120} height={140} />
+                        {app.events?.map(evt => (
+                          <li key={evt.id} onClick={() => setSelectedEvent(evt)} className={evt.name === selectedEvent?.name ? styles.selected : ''}>
+                            <Image src={evt.folderUrl ?? '/empty-folder.png'} alt={evt.name} width={120} height={140} />
                           </li>
                         ))}
                       </ul>

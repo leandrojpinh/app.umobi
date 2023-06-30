@@ -1,11 +1,20 @@
+import { useState } from 'react';
 import { campDetailModule as styles }  from '@/styles/components/pages';
 
 import { FiLayers } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 export function CampDetails() {
-  const keyPix = "(85) 99244-2092";
-  const handleCopy = () => {
-    navigator.clipboard.writeText(keyPix);
+  const keyPix = "cfc50003-defe-4875-9ae0-db173dbd41e6";
+  const [copyText, setCopyText] = useState('Copiar');
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(keyPix);
+    toast.success('Chave copiada');
+    setCopyText("Copiado!");
+
+    setTimeout(() => {
+      setCopyText("Copiar");
+    }, 3000);
   }
 
   return (
@@ -20,11 +29,11 @@ export function CampDetails() {
         <span>
           {keyPix}
         </span>
-        <button onClick={handleCopy}>Copiar <FiLayers height={18} color={'var(--primary-light)'} /></button>
+        <button onClick={handleCopy}>{copyText} <FiLayers height={18} color={'var(--primary-light)'} /></button>
       </div>
 
-      <span>Banco: NU Pagamentos</span>
-      <span>Tesoureiro: Wisley Silva dos Santos</span>
+      <span>Banco: Inter</span>
+      <span>Tesoureiro: Daniel Nunes Araújo</span>
     </div>
   )
 }

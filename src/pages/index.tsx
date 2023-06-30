@@ -35,7 +35,7 @@ export default function Home() {
     <Layout>
       <div className={styles.container}>
         <span className={styles.hello}>Olá,</span>
-        <strong className={styles.title}>Bem-vindo à plataforma de<br /> inscrições para os Retiros da <br />Umobi</strong>
+        <strong className={styles.title}>Bem-vindo à plataforma de inscrições para os Retiros da Umobi</strong>
         <span className={styles.subtitle}>A plataforma visa facilitar as inscrições e agilizar o processo para <br />que fique de forma independente.</span>
 
         {

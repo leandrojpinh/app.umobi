@@ -62,7 +62,6 @@ export default function SignIn() {
                 subtitle="Faça login para acompanhar sua inscrição ou verificar alguma pendência" />
 
               <form onSubmit={handleSubmit}>
-
                 <Input
                   key={SIGN_IN_FIELDS.email.id}
                   label={SIGN_IN_FIELDS.email.field.label}
@@ -81,13 +80,15 @@ export default function SignIn() {
                   onChange={e => setPassword(e.target.value)}
                 />
 
-                <Link href={'/sign-in/forgot'}>
-                  <a className={styles.forgot}>
-                    Esqueci a senha
-                  </a>
-                </Link>
+                <div className={styles.actions}>
+                  <Link href={'/sign-in/forgot'}>
+                    <a className={styles.forgot}>
+                      Esqueci a senha
+                    </a>
+                  </Link>
 
-                <SignInButton label="acessar" />
+                  <SignInButton label="acessar" />
+                </div>
               </form>
             </section>
           </Layout>
