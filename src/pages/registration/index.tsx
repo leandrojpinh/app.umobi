@@ -17,7 +17,7 @@ import { FORM_COMPLEX_FIELDS, FORM_SIMPLE_FIELDS, PAYMENT_FIELDS } from "@/const
 import { useAuth } from "@/context/AuthContainer";
 import { useApp } from "@/context/AppContext";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
-import { createPayment, createRegistration, getCurrentCamp } from "@/services/umobi/umobi.api";
+import { createPayment, createRegistration, getCamps, getCurrentCamp } from "@/services/umobi/umobi.api";
 import { toast } from "react-toastify";
 import { ERRORS } from "@/constants/ErrorMessages";
 import { useEmail } from "@/context/EmailProvider";
@@ -27,6 +27,7 @@ import { FileContainer } from "@/styles/pages/Payments";
 import { FiPaperclip } from "react-icons/fi";
 import { Camp } from "@/services/umobi/models/Camp";
 import { PaymentForm } from "@/components/pages/paymentForm";
+import { Loader } from "@/components/common/Loader";
 
 interface RoleProps {
   name: string;
@@ -107,35 +108,21 @@ export default function Registration() {
   const [step, setStep] = useState(0);
 
   const [file, setFile] = useState<File>();
-  const [tax, setTax] = useState(200);
-  const [paymentMode, setPaymentMode] = useState('pix');
   const [payment, setPayment] = useState<RegistrationPayment>(INITIAL_STATE_PAYMENT);
   const [response, setResponse] = useState<IResponseProps>();
 
   useEffect(() => {
-    console.log("USER", auth.user);
     if (!auth.user.isAuthenticated) {
-      history.push('sign-in')
-
+      history.push('/sign-in');
     }
 
-    app.setIsLoading(true);
-    getCurrentCamp().then(camp => {
-      setEvents([camp]);
-    })
-      .catch(err => {
-        console.log('ERROR-137', err);
-
-        toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
-      }).finally(() => {
-        app.setIsLoading(false);
-      });
+    
   }, []);
 
   useEffect(() => {
     const value = payment.paymentMode === 'pix' ? 200 : payment.paymentMode === '2x' ? 100 : parseFloat((200 / 3).toFixed(2));
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
-  }, [payment.paymentMode])
+  }, [payment.paymentMode]);
 
   const changeField = (field: string, value: any) => {
     const newRegistration = {
@@ -181,7 +168,9 @@ export default function Registration() {
     e.preventDefault();
     app.setIsLoading(true);
 
-    //VALIDAR A PRESENÇA DO USER ID
+    if (auth.user.id === '' || auth.user.id === undefined) {
+      history.push('sign-in');
+    }
 
     const form = {
       campId: selectedEvent?.id,
@@ -198,7 +187,7 @@ export default function Registration() {
       moreInformation: registration.moreInformation,
     } as RegistrationForm;
 
-    createRegistration(auth?.user?.id, form).then(_ => {
+    createRegistration(auth.user.id, form).then(_ => {
       toast.success('Sua inscrição foi enviada, vamos para o próximo passo!');
 
       app.setIsLoading(false);
@@ -206,8 +195,6 @@ export default function Registration() {
     })
       .catch(err => {
         console.log('ERROR-137', err);
-        app.setIsLoading(false);
-
         if (err === ERRORS.formAlreadyExists.error) {
           toast.info(ERRORS.formAlreadyExists.message);
           setStep(step + 1);
@@ -238,7 +225,7 @@ export default function Registration() {
           setStep(step + 1);
           setResponse({
             title: 'tudo certo!',
-            message: 'Sua inscrição foi enviada. Assim que for confirmada você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
+            message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
             type: 'success'
           });
           // }).catch(err => console.log(err));
@@ -250,158 +237,178 @@ export default function Registration() {
       });
   }
 
+  const hasAvailableEvents = useMemo(() => {
+    const registations = app.userInfo?.registrations.map(r => r.campId) || [];
+    const availableEventCount = events?.filter(f => !registations.includes(f.id)).length || 0;
+
+    return availableEventCount > 0;
+  }, [app.userInfo?.registrations]);
+
   return (
-    <Layout>
-      <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />
-      <>
-        {step === 0 ? (
-          <>
-            <section className={styles.events}>
-              <Topic title="Eventos" />
-              <ul>
-                {events?.map((evt, index) => (
-                  <li key={index} onClick={() => setSelectedEvent(evt)} className={evt.name === selectedEvent?.name ? styles.selected : ''}>
-                    <Image src={'/empty-folder.png'} alt={evt.name} width={120} height={140} />
-                  </li>
-                ))}
-              </ul>
-              <span>{`${selectedEvent !== undefined ? selectedEvent.name : 'Selecione o evento'}`}</span>
-            </section>
-            {selectedEvent && <section>
-              <Topic title="Regras" />
+    <>
+      {app.isLoading ? <Loader loading={app.isLoading} /> : (
+        <>
+          {hasAvailableEvents ? (
+            <Layout>
+              {(step + 1) <= 3 && <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />}
 
-              {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
+              <>
+                {step === 0 ? (
+                  <>
+                    <section className={styles.events}>
+                      <Topic title="Eventos" />
+                      <ul>
+                        {events?.map((evt, index) => (
+                          <li key={index} onClick={() => setSelectedEvent(evt)} className={evt.name === selectedEvent?.name ? styles.selected : ''}>
+                            <Image src={'/empty-folder.png'} alt={evt.name} width={120} height={140} />
+                          </li>
+                        ))}
+                      </ul>
+                      <span>{`${selectedEvent !== undefined ? selectedEvent.name : 'Selecione o evento'}`}</span>
+                    </section>
+                    {selectedEvent && <section>
+                      <Topic title="Regras" />
 
-              <form onSubmit={handleStep0}>
-                <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
+                      {FORM.map(({ id, name, items }) => <Role key={id} name={name} items={items} />)}
 
-                <Button type={'submit'} label="Continuar" disabled={!isChecked} />
-              </form>
-            </section>
-            }
-          </>
-        ) : step === 1 ? (
-          <section>
-            <Topic title="Formulário" />
+                      <form onSubmit={handleStep0}>
+                        <Checkbox label="Li e concordo" checked={isChecked} onChange={e => setIsChecked(e.target.checked)} />
 
-            <form onSubmit={handleStep1}>
-              {FORM_SIMPLE_FIELDS.map(({ field, id, type }) => {
-                const value = registration?.[field.name as keyof IRegistrationProps];
-                return (
-                  <Input
-                    type={type}
-                    key={id}
-                    mask={field.mask}
-                    label={field.label}
-                    name={field.name}
-                    required={field.required}
-                    onChange={e => changeField(field.name, e.target.value)}
-                    value={value as keyof InputHTMLAttributes<HTMLInputElement>}
-                  />
-                )
-              }
-              )}
+                        <Button type={'submit'} label="Continuar" disabled={!isChecked} />
+                      </form>
+                    </section>
+                    }
+                  </>
+                ) : step === 1 ? (
+                  <section>
+                    <Topic title="Formulário" />
 
-              <Radio
-                key={FORM_COMPLEX_FIELDS.ministerApproval.id}
-                label={FORM_COMPLEX_FIELDS.ministerApproval.field.label}
-                options={FORM_COMPLEX_FIELDS.ministerApproval.options}
-                name={FORM_COMPLEX_FIELDS.ministerApproval.field.name}
-                subLabel={FORM_COMPLEX_FIELDS.ministerApproval.field.subLabel}
-                selected={registration.ministerApproval ? 1 : 0}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.ministerApproval.field.name, e.target.value === '1')}
-              />
+                    <form onSubmit={handleStep1}>
+                      {FORM_SIMPLE_FIELDS.map(({ field, id, type }) => {
+                        const value = registration?.[field.name as keyof IRegistrationProps];
+                        return (
+                          <Input
+                            type={type}
+                            key={id}
+                            mask={field.mask}
+                            label={field.label}
+                            name={field.name}
+                            required={field.required}
+                            onChange={e => changeField(field.name, e.target.value)}
+                            value={value as keyof InputHTMLAttributes<HTMLInputElement>}
+                          />
+                        )
+                      }
+                      )}
 
-              <Radio
-                key={FORM_COMPLEX_FIELDS.isAllergic.id}
-                label={FORM_COMPLEX_FIELDS.isAllergic.field.label}
-                options={FORM_COMPLEX_FIELDS.isAllergic.options}
-                name={FORM_COMPLEX_FIELDS.isAllergic.field.name}
-                subLabel={FORM_COMPLEX_FIELDS.isAllergic.field.subLabel}
-                selected={registration.isAllergic ? 1 : 0}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.isAllergic.field.name, e.target.value === '1')}
-              />
+                      <Radio
+                        key={FORM_COMPLEX_FIELDS.ministerApproval.id}
+                        label={FORM_COMPLEX_FIELDS.ministerApproval.field.label}
+                        options={FORM_COMPLEX_FIELDS.ministerApproval.options}
+                        name={FORM_COMPLEX_FIELDS.ministerApproval.field.name}
+                        subLabel={FORM_COMPLEX_FIELDS.ministerApproval.field.subLabel}
+                        selected={registration.ministerApproval ? 1 : 0}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.ministerApproval.field.name, e.target.value === '1')}
+                      />
 
-              {
-                registration?.isAllergic && (
-                  <Input
-                    key={FORM_COMPLEX_FIELDS.medicineName.id}
-                    label={FORM_COMPLEX_FIELDS.medicineName.field.label}
-                    name={FORM_COMPLEX_FIELDS.medicineName.field.name}
-                    value={registration?.medicineName}
-                    onChange={e => changeField(FORM_COMPLEX_FIELDS.medicineName.field.name, e.target.value)}
-                  />
-                )
-              }
+                      <Radio
+                        key={FORM_COMPLEX_FIELDS.isAllergic.id}
+                        label={FORM_COMPLEX_FIELDS.isAllergic.field.label}
+                        options={FORM_COMPLEX_FIELDS.isAllergic.options}
+                        name={FORM_COMPLEX_FIELDS.isAllergic.field.name}
+                        subLabel={FORM_COMPLEX_FIELDS.isAllergic.field.subLabel}
+                        selected={registration.isAllergic ? 1 : 0}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.isAllergic.field.name, e.target.value === '1')}
+                      />
 
-              <Radio
-                key={FORM_COMPLEX_FIELDS.canSwim.id}
-                label={FORM_COMPLEX_FIELDS.canSwim.field.label}
-                options={FORM_COMPLEX_FIELDS.canSwim.options}
-                name={FORM_COMPLEX_FIELDS.canSwim.field.name}
-                subLabel={FORM_COMPLEX_FIELDS.canSwim.field.subLabel}
-                selected={registration.canSwim ? 1 : 0}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.canSwim.field.name, e.target.value === '1')}
-              />
+                      {
+                        registration?.isAllergic && (
+                          <Input
+                            key={FORM_COMPLEX_FIELDS.medicineName.id}
+                            label={FORM_COMPLEX_FIELDS.medicineName.field.label}
+                            name={FORM_COMPLEX_FIELDS.medicineName.field.name}
+                            value={registration?.medicineName}
+                            onChange={e => changeField(FORM_COMPLEX_FIELDS.medicineName.field.name, e.target.value)}
+                          />
+                        )
+                      }
 
-              <Radio
-                key={FORM_COMPLEX_FIELDS.isBeliever.id}
-                label={FORM_COMPLEX_FIELDS.isBeliever.field.label}
-                options={FORM_COMPLEX_FIELDS.isBeliever.options}
-                name={FORM_COMPLEX_FIELDS.isBeliever.field.name}
-                selected={registration.isBeliever ? 1 : 0}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.isBeliever.field.name, e.target.value === '1')}
-              />
+                      <Radio
+                        key={FORM_COMPLEX_FIELDS.canSwim.id}
+                        label={FORM_COMPLEX_FIELDS.canSwim.field.label}
+                        options={FORM_COMPLEX_FIELDS.canSwim.options}
+                        name={FORM_COMPLEX_FIELDS.canSwim.field.name}
+                        subLabel={FORM_COMPLEX_FIELDS.canSwim.field.subLabel}
+                        selected={registration.canSwim ? 1 : 0}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.canSwim.field.name, e.target.value === '1')}
+                      />
 
-              <Radio
-                key={FORM_COMPLEX_FIELDS.isResponsable.id}
-                label={FORM_COMPLEX_FIELDS.isResponsable.field.label}
-                options={FORM_COMPLEX_FIELDS.isResponsable.options}
-                name={FORM_COMPLEX_FIELDS.isResponsable.field.name}
-                required={FORM_COMPLEX_FIELDS.isResponsable.field.required}
-                selected={registration.isResponsable ? 1 : 0}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.isResponsable.field.name, e.target.value === '1')}
-              />
+                      <Radio
+                        key={FORM_COMPLEX_FIELDS.isBeliever.id}
+                        label={FORM_COMPLEX_FIELDS.isBeliever.field.label}
+                        options={FORM_COMPLEX_FIELDS.isBeliever.options}
+                        name={FORM_COMPLEX_FIELDS.isBeliever.field.name}
+                        selected={registration.isBeliever ? 1 : 0}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.isBeliever.field.name, e.target.value === '1')}
+                      />
 
-              <Input
-                key={FORM_COMPLEX_FIELDS.moreInformation.id}
-                label={FORM_COMPLEX_FIELDS.moreInformation.field.label}
-                name={FORM_COMPLEX_FIELDS.moreInformation.field.name}
-                value={registration?.moreInformation}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.moreInformation.field.name, e.target.value)}
-              />
+                      <Radio
+                        key={FORM_COMPLEX_FIELDS.isResponsable.id}
+                        label={FORM_COMPLEX_FIELDS.isResponsable.field.label}
+                        options={FORM_COMPLEX_FIELDS.isResponsable.options}
+                        name={FORM_COMPLEX_FIELDS.isResponsable.field.name}
+                        required={FORM_COMPLEX_FIELDS.isResponsable.field.required}
+                        selected={registration.isResponsable ? 1 : 0}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.isResponsable.field.name, e.target.value === '1')}
+                      />
 
-              <Checkbox
-                key={FORM_COMPLEX_FIELDS.isAllTrue.id}
-                label={FORM_COMPLEX_FIELDS.isAllTrue.field.label}
-                required={FORM_COMPLEX_FIELDS.isAllTrue.field.required}
-                checked={registration.isAllTrue}
-                onChange={e => changeField(FORM_COMPLEX_FIELDS.isAllTrue.field.name, e.target.checked)}
-              />
+                      <Input
+                        key={FORM_COMPLEX_FIELDS.moreInformation.id}
+                        label={FORM_COMPLEX_FIELDS.moreInformation.field.label}
+                        name={FORM_COMPLEX_FIELDS.moreInformation.field.name}
+                        value={registration?.moreInformation}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.moreInformation.field.name, e.target.value)}
+                      />
 
-              <Button type={'submit'} label="Continuar" disabled={!isStep1Valid()} />
-            </form>
-          </section>
-        ) : step === 2 ? (
-          <section>
-            <Topic title="Comprovante de Pagamento" />
+                      <Checkbox
+                        key={FORM_COMPLEX_FIELDS.isAllTrue.id}
+                        label={FORM_COMPLEX_FIELDS.isAllTrue.field.label}
+                        required={FORM_COMPLEX_FIELDS.isAllTrue.field.required}
+                        checked={registration.isAllTrue}
+                        onChange={e => changeField(FORM_COMPLEX_FIELDS.isAllTrue.field.name, e.target.checked)}
+                      />
 
-            <CampDetails />
+                      <Button type={'submit'} label="Continuar" disabled={!isStep1Valid()} />
+                    </form>
+                  </section>
+                ) : step === 2 ? (
+                  <section>
+                    <Topic title="Comprovante de Pagamento" />
 
-            <PaymentForm
-              file={file}
-              onFileChange={handleFile}
-              submit={handleStep2}
-              onPaymentChange={changePaymentField}
-              payment={payment}
-            />
-          </section>
-        ) : (
-          <>
-            {response && <Response type={response.type} message={response.message} title={response.title} />}
-          </>
-        )}
-      </>
-    </Layout>
+                    <CampDetails />
+
+                    <PaymentForm
+                      file={file}
+                      onFileChange={handleFile}
+                      submit={handleStep2}
+                      onPaymentChange={changePaymentField}
+                      payment={payment}
+                    />
+                  </section>
+                ) : (
+                  <>
+                    {response && <Response type={response.type} message={response.message} title={response.title} />}
+                  </>
+                )}
+              </>
+            </Layout>
+          ) : (
+            <Layout>
+              <Response type={'error'} message={'Não há mais eventos disponíveis.'} title={''} />
+            </Layout>
+          )}
+        </>
+      )}
+    </>
   )
 }

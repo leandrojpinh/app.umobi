@@ -207,6 +207,15 @@ const getCurrentCamp = async (): Promise<Camp> => {
   });
 }
 
+const getCamps = async (): Promise<Camp[]> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get(`/camps`)
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
+
 export {
   api,
   createRegistration,
@@ -223,5 +232,6 @@ export {
   sendCode,
   resetUser,
   removeReceipt,
-  getCurrentCamp
+  getCurrentCamp,
+  getCamps
 };

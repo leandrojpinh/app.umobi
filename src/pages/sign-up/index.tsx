@@ -41,6 +41,7 @@ export default function SignUp() {
 
   const history = useRouter();
   const app = useApp();
+
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -90,7 +91,7 @@ export default function SignUp() {
           toast.error(ERRORS.userAlreadyExists.message);
           return;
         }
-        
+
         toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);
@@ -105,7 +106,7 @@ export default function SignUp() {
 
       return total;
     }, 0);
-    
+
     const validPassword = registration?.password && registration?.password === confirmPassword && registration?.password.length >= 6;
 
     return fieldsWithValue === USER_FORM_FIELDS.length && validPassword;
@@ -153,7 +154,7 @@ export default function SignUp() {
                   />
                 )
               }
-              )}              
+              )}
 
               <Input
                 key={FORM_COMPLEX_FIELDS.password.id}

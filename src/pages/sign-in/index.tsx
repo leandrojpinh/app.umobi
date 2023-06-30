@@ -20,25 +20,18 @@ export default function SignIn() {
   const auth = useAuth();
   const app = useApp();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (auth.user.isAuthenticated) {
       if (auth.user.isAdmin || auth.user.isViewer) {
-        history.push('/dashboard').then(() => {
-          app.setIsLoading(false);
-        });
+        history.push('/dashboard');
       } else {
-        history.push('/profile').then(() => {
-          app.setIsLoading(false);
-        });
+        history.push('/profile');
       }
-    } else {
-      app.setIsLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [auth.user.isAuthenticated]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -46,10 +39,9 @@ export default function SignIn() {
     app.setIsLoading(true);
 
     auth.signIn(email, password)
-      .then((isAuthenticated) => {
+      .then(_ => {
         setEmail('');
         setPassword('');
-        setIsAuthenticated(isAuthenticated);
       })
       .catch(err => {
         console.log('signError', err);

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, FormEvent } from "react";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
@@ -30,32 +30,27 @@ import { CampDetails } from "@/components/common/CampDetails";
 import { toMoney } from "@/helper/utils";
 import { toast } from "react-toastify";
 import { useEmail } from "@/context/EmailProvider";
+import { PaymentForm } from "@/components/pages/paymentForm";
+
+const INITIAL_STATE_PAYMENT: RegistrationPayment = {
+  paymentMode: 'pix',
+  registrationId: '',
+  tax: 200
+};
 
 export default function Profile() {
-  const INITIAL_STATE = {
-    address: '',
-    birthDate: moment().utc().format('DD/MM/yyyy'),
-    email: '',
-    name: '',
-    parentNames: '',
-    phoneNumber: ''
-  } as UserInfo;
-
   const auth = useAuth();
   const app = useApp();
   const history = useRouter();
   const email = useEmail();
 
-  const [userInfo, setUserInfo] = useState<UserInfo>(INITIAL_STATE);
   const [selectedRegistration, setSelectedRegistration] = useState<Registration>();
 
   const [file, setFile] = useState<File>();
-  const [tax, setTax] = useState(225);
-  const [paymentMode, setPaymentMode] = useState('pix');
+  const [payment, setPayment] = useState<RegistrationPayment>(INITIAL_STATE_PAYMENT);
   const [createNew, setCreateNew] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
   const [userPayments, setUserPayments] = useState<RegistrationPayment[]>();
-  const [realoadPayments, setReloadPayments] = useState(false);
 
   useEffect(() => {
     app.setIsLoading(false);
@@ -64,7 +59,11 @@ export default function Profile() {
         ...res,
         birthDate: moment(res.birthDate).utc().format('DD/MM/yyyy')
       } as UserInfo;
-      setUserInfo(userData);
+      app.setUserInfo(userData);
+
+      if (res.registrations.length === 1) {
+        setSelectedRegistration(res.registrations[0]);
+      }
     }).catch(err => {
       console.log('ERRO76', err);
       history.push('/');
@@ -93,47 +92,43 @@ export default function Profile() {
 
   }, [selectedRegistration?.id]);
 
+  useEffect(() => {
+    const value = payment.paymentMode === 'pix' ? 200 : payment.paymentMode === '2x' ? 100 : parseFloat((200 / 3).toFixed(2));
+    changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
+  }, [payment.paymentMode]);
+
   //TODO: ajustar o component para enviar outro comprovante
   //TODO: ajustar a parte de gerar link publico para as imagens do firebase
   const isPaymentsPaid = useMemo(() => {
-    const totalPaid = userPayments?.reduce((acc, item) => acc + item.tax, 0);
+    const totalPaid = userPayments?.filter(f => !f.rejected)?.reduce((acc, item) => acc + item.tax, 0);
 
-    return totalPaid != undefined && totalPaid >= selectedRegistration?.camp?.tax!;
+    return totalPaid != undefined && totalPaid >= selectedRegistration?.camp.tax!;
   }, [userPayments]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     app.setIsLoading(true);
 
-    const registrationPayment = {
-      registrationId: userInfo?.registrationId,
-      paymentMode: paymentMode,
-      tax: tax,
-    } as RegistrationPayment;
-
-    createPayment(registrationPayment, file as File)
+    createPayment(payment, file as File)
       .then(_ => {
         setSelectedPayment(undefined);
         setCreateNew(false);
         setFile(undefined);
-        setTax(0);
-        setPaymentMode('pix');
-        email.sendRegistration({
-          email: userInfo.email,
-          name: userInfo.name,
-          data: new Date().toLocaleString()
-        }).then(_ => {
-          toast.success('Comprovante enviado com sucesso!');
-        }).catch(err => console.log(err));
+        setPayment(INITIAL_STATE_PAYMENT);
+        // email.sendRegistration({
+        //   email: app.userInfo?.email!,
+        //   name: app.userInfo?.name!,
+        //   data: new Date().toLocaleString()
+        // }).then(_ => {
+        //   toast.success('Comprovante enviado com sucesso!');
+        // }).catch(err => console.log(err));
       })
-      // .then(_ => getPendingPayments().then(count => email.sendNew(count)))
       .catch(err => {
         console.log('ERRR', err);
         toast.warn("Tivemos um problema ao enviar o comprovante, atualize a página.")
       })
       .finally(() => {
         app.setIsLoading(false);
-        setReloadPayments(true);
       });
   }
 
@@ -163,48 +158,42 @@ export default function Profile() {
     }
   }
 
-  const getOptions = () => {
-    const hasPayments = userPayments ? userPayments.length > 0 : false;
-    if (hasPayments) {
-      if (userPayments?.find(f => f.paymentMode === 'pix')) {
-        return [];
-      }
-
-      const existentPayment = userPayments?.find(f => f.paymentMode !== 'pix');
-      return PAYMENT_FIELDS.paymentMode.options.filter(f => f.value === existentPayment?.paymentMode);
-    }
-
-    return PAYMENT_FIELDS.paymentMode.options.filter(f => !['2x', '3x'].includes(f.value));
+  const changePaymentField = (field: string, value: any) => {
+    setPayment({ ...payment, [`${field}`]: value });
   }
+
+  console.log("AUTH", auth);
 
   return (
     <>
       {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
         (
           <Layout>
-            <Title title={`${auth?.user?.name?.split(' ').slice(0, 2).join(' ')}`} />
+            <Title title={`${app.userInfo.name.split(' ').slice(0, 2).join(' ')}`} />
 
-            <div className={styles.personData}>
-              <InfoGroup>
-                <Info label={'E-mail'} text={userInfo.email!} />
-                <Info label={'Telefone'} text={userInfo.phoneNumber!} />
-              </InfoGroup>
-              <InfoGroup>
-                <Info label={'Data de Nascimento'} text={userInfo.birthDate} />
-                <Info label={'Nome dos pais'} text={userInfo.parentNames!} />
-              </InfoGroup>
-              <InfoGroup>
-                <Info label={'Endereço'} text={userInfo.address!} />
+            {app.userInfo !== undefined && (
+              <div className={styles.personData}>
+                <InfoGroup>
+                  <Info label={'E-mail'} text={app.userInfo.email!} />
+                  <Info label={'Telefone'} text={app.userInfo.phoneNumber!} />
+                </InfoGroup>
+                <InfoGroup>
+                  <Info label={'Data de Nascimento'} text={app.userInfo.birthDate} />
+                  <Info label={'Nome dos pais'} text={app.userInfo.parentNames!} />
+                </InfoGroup>
+                <InfoGroup>
+                  <Info label={'Endereço'} text={app.userInfo.address!} />
 
-              </InfoGroup>
-            </div>
+                </InfoGroup>
+              </div>
+            )}
 
-            {userInfo.registrations?.length > 0 && (
+            {selectedRegistration !== undefined && app.userInfo.registrations.length > 0 && (
               <section className={styles.events}>
                 <Topic title="Inscrições" />
                 <ul>
-                  {userInfo.registrations?.map((evt, index) => (
-                    <li key={index} onClick={() => setSelectedRegistration(evt)} className={evt.camp.name === selectedRegistration?.camp.name ? styles.selected : ''}>
+                  {app.userInfo.registrations.map((evt, index) => (
+                    <li key={index} onClick={() => setSelectedRegistration(evt)} className={evt.camp.name === selectedRegistration.camp.name ? styles.selected : ''}>
                       <Image src={'/empty-folder.png'} alt={evt.camp.name} objectFit='contain' width={120} height={140} />
                     </li>
                   ))}
@@ -213,7 +202,7 @@ export default function Profile() {
               </section>
             )}
 
-            {selectedRegistration != undefined && (
+            {selectedRegistration !== undefined && (
               <section className={styles.payments}>
                 <ul>
                   <Topic title="Comprovantes" />
@@ -227,46 +216,13 @@ export default function Profile() {
                       {createNew && !userPayments?.find(f => f.paymentMode === 'pix') && (
                         <div className={styles.body}>
                           <CampDetails />
-                          <form onSubmit={handleSubmit} className={styles.validation}>
-                            <Radio
-                              key={PAYMENT_FIELDS.paymentMode.id}
-                              label={PAYMENT_FIELDS.paymentMode.field.label}
-                              options={getOptions()}
-                              name={PAYMENT_FIELDS.paymentMode.field.name}
-                              subLabel={PAYMENT_FIELDS.paymentMode.field.subLabel}
-                              selected={paymentMode}
-                              onChange={e => {
-                                setPaymentMode(e.target.value);
-
-                                if (!(userPayments?.length!) && e.target.value !== 'pix') {
-                                  setTax(70);
-                                } else {
-                                  const preTax = e.target.value === 'pix' ? 225 : e.target.value === '1x' ? 155 : e.target.value === '2x' ? 77.50 : 51.67;
-                                  setTax(preTax);
-                                }
-                              }}
-                            />
-                            <FileContainer>
-                              <input type="file" accept="image/*,application/pdf" onChange={(e) => handleFile(e.target.files ? e.target.files[0] : undefined)} />
-
-                              <div>
-                                <FiPaperclip height={18} color={'var(--text)'} />
-                                {!file ? <span>Selecione novo arquivo</span> : <span>{file.name}</span>}
-                              </div>
-                            </FileContainer>
-
-                            <Input
-                              className={styles.receipt}
-                              key={FORM_COMPLEX_FIELDS.tax.id}
-                              label={FORM_COMPLEX_FIELDS.tax.field.label}
-                              name={FORM_COMPLEX_FIELDS.tax.field.name}
-                              type={FORM_COMPLEX_FIELDS.tax.type}
-                              value={tax}
-                              onChange={e => setTax(parseFloat(e.target.value))}
-                              autoFocus
-                            />
-                            <Button type="submit" label="Enviar" disabled={!file || !tax} />
-                          </form>
+                          <PaymentForm
+                            file={file}
+                            onFileChange={handleFile}
+                            submit={handleSubmit}
+                            onPaymentChange={changePaymentField}
+                            payment={payment}
+                          />
                         </div>
                       )}
                     </li>
@@ -309,21 +265,4 @@ export default function Profile() {
       }
     </>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { 'umobi.token': token } = parseCookies(ctx);
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/sign-in',
-        permanent: false
-      }
-    }
-  }
-
-  return {
-    props: {}
-  }
 }

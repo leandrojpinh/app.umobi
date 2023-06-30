@@ -12,6 +12,17 @@ import { Session } from '@/services/umobi/models/Session';
 import { AxiosError } from 'axios';
 import { Token } from '@/services/umobi/models/Token';
 
+const INITIAL_USER_STATE = {
+  isAuthenticated: false,
+  name: '',
+  email: '',
+  id: '',
+  isAdmin: false,
+  isViewer: false,
+  refreshToken: '',
+  token: ''
+} as User;
+
 const parseJwt = (token: string) => {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -22,7 +33,7 @@ const parseJwt = (token: string) => {
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export function AuthProvider({ children }: AuthContextProviderProps) {
   const router = useRouter();
-  const [user, setUser] = useState<User>({} as User);
+  const [user, setUser] = useState<User>(INITIAL_USER_STATE);
   const [loading, setLoading] = useState(false);
 
   const signIn = (email: string, password: string): Promise<boolean> => {
@@ -31,9 +42,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
       const session = { email, password } as Session;
       createSession(session)
         .then((response: Token) => {
-          console.log("response", response);
           const tokenParsed = parseJwt(response.token);
-          console.log("tokenParsed", tokenParsed);
           const loggedUser = {
             email: response.user?.email,
             name: response.user?.name,
@@ -50,7 +59,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
           });
 
           setUser(loggedUser);
-          
+
           resolve(true);
         })
         .catch((err: AxiosError) => {

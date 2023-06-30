@@ -5,6 +5,6 @@ export const ERRORS = {
   },
   userAlreadyExists: {
     error: 'User already exists.',
-    message: 'Seu usuário já existe... tenta recuperar sua senha, qualquer coisa, fala com o pessoal da Secretaria da Umobi.'
+    message: 'Seu usuário já existe... tenta fazer o login na conta ou recuperar a senha, qualquer coisa, fala com o pessoal da Secretaria da Umobi.'
   }
 }

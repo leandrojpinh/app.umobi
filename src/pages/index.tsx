@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import styles from '@/styles/index.module.scss';
 import { ALink } from '@/components/common/Button';
@@ -9,10 +9,27 @@ import { RESOURCES } from '@/constants/Resources';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Events } from '@/components/pages/event';
+import { useApp } from '@/context/AppContext';
+import { getCamps } from '@/services/umobi/umobi.api';
+import { toast } from 'react-toastify';
 
 export default function Home() {
   const auth = useAuth();
+  const app = useApp();
+
+  useEffect(() => {
+    app.setIsLoading(true);
+    getCamps().then(camps => {
+      app.setEvents(camps);
+    })
+      .catch(err => {
+        console.log('ERROR-137', err);
+
+        toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
+      }).finally(() => {
+        app.setIsLoading(false);
+      });
+  }, []);
 
   return (
     <Layout>
@@ -25,7 +42,25 @@ export default function Home() {
           (auth.user.isAdmin || auth.user.isViewer) ? (
             <ALink label={'Gerenciar as inscrições'} path={'/dashboard'} />
           ) : (
-            <Events />
+            <>
+              {(auth.user.isAuthenticated && app.hasAvailableEvents) ||
+                ((!auth.user.isAuthenticated && app.events.length > 0)) && (
+                  <div className={styles.events}>
+                    <strong>Eventos</strong>
+                    <ul>
+                      {app.events.map(event => (
+                        <Link key={event.id} href={'/registration'}>
+                          <li>
+                            <picture>
+                              <Image src={event.folderUrl ?? '/empty-folder.png'} alt={event.name} objectPosition={'center'} objectFit='cover' width={120} height={140} />
+                            </picture>
+                          </li>
+                        </Link>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+            </>
           )
         }
 
