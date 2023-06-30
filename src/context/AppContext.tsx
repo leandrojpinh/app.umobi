@@ -23,15 +23,17 @@ export function AppProvider({ children }: AppContextProviderProps) {
   const [events, setEvents] = useState<Camp[]>([]);
 
   const hasAvailableEvents = useMemo(() => {
-    console.log('hasAvailableEvents', {
-      reg: userInfo?.registrations,
-      events
-    });
     const registations = userInfo?.registrations?.map(r => r.campId) || [];
     const availableEventCount = events?.filter(f => !registations.includes(f.id)).length;
 
     return availableEventCount > 0;
   }, [userInfo.registrations, events]);
+
+  const logout = () => {
+    setIsLoading(true);
+    setUserInfo(USER_INFO_INITIAL_STATE);
+    setEvents([]);
+  }
 
   return (
     <AppContext.Provider
@@ -42,7 +44,8 @@ export function AppProvider({ children }: AppContextProviderProps) {
         hasAvailableEvents,
         setIsLoading,
         setUserInfo,
-        setEvents
+        setEvents,
+        logout
       }}>
       {children}
     </AppContext.Provider>

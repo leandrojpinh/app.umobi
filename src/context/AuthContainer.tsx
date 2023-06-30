@@ -75,10 +75,9 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
   const signOut = () => {
     setLoading(true);
     destroyCookie(undefined, Cookie.umobiToken);
-    setUser({} as User);
+    setUser(INITIAL_USER_STATE);
     setLoading(false);
     router.push('/');
-    console.log('passou');
   }
 
   return (

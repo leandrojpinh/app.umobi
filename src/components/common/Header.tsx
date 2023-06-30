@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { FiLogOut } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContainer';
 import Image from 'next/image';
+import { useApp } from '@/context/AppContext';
 
 const Nav = styled.nav`
   color: var(--green0);
@@ -187,9 +188,11 @@ const SessionLinks = () => {
 
 const Logout = () => {
   const auth = useAuth();
+  const app = useApp();
 
   const logout = () => {
     auth.signOut();
+    app.logout();
   }
 
   return (

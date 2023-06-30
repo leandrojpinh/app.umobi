@@ -227,18 +227,18 @@ export default function Registration() {
     createPayment(payment, file as File)
       .then(_ => {
         if (auth.user.isAuthenticated) {
-          // email.sendRegistration({
-          //   email: auth.user.email,
-          //   name: auth.user.name,
-          //   data: new Date().toLocaleString()
-          // }).then(_ => {
+          email.sendRegistration({
+            email: auth.user.email,
+            name: auth.user.name,
+            data: new Date().toLocaleString()
+          }).then(_ => {
           setStep(step + 1);
           setResponse({
             title: 'tudo certo!',
             message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
             type: 'success'
           });
-          // }).catch(err => console.log(err));
+          }).catch(err => console.log(err));
         }
       })
       .catch(err => console.log('ERRR', err))

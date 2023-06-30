@@ -115,13 +115,13 @@ export default function Profile() {
         setCreateNew(false);
         setFile(undefined);
         setPayment(INITIAL_STATE_PAYMENT);
-        // email.sendRegistration({
-        //   email: app.userInfo?.email!,
-        //   name: app.userInfo?.name!,
-        //   data: new Date().toLocaleString()
-        // }).then(_ => {
-        //   toast.success('Comprovante enviado com sucesso!');
-        // }).catch(err => console.log(err));
+        email.sendRegistration({
+          email: app.userInfo?.email!,
+          name: app.userInfo?.name!,
+          data: new Date().toLocaleString()
+        }).then(_ => {
+          toast.success('Comprovante enviado com sucesso!');
+        }).catch(err => console.log(err));
       })
       .catch(err => {
         console.log('ERRR', err);

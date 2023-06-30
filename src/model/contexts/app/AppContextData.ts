@@ -9,4 +9,5 @@ export type AppContextData = {
   setIsLoading: (isLoading: boolean) => void;  
   setUserInfo: (userInfo: UserInfo) => void;
   setEvents: (events: Camp[]) => void;
+  logout: () => void;
 }
