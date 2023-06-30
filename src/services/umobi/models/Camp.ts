@@ -1,6 +1,5 @@
 export type Camp = {
   id: string;
-  userId?: string; 
   name: string;
   from: Date;
   until: Date;

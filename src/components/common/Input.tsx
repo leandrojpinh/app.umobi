@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from 'react';
 import InputMask from 'react-input-mask';
 
-import styles from '@/styles/input.module.scss';
+import { inputModule as styles }  from '@/styles/components/common';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name?: string;

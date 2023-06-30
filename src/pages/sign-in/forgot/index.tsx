@@ -3,15 +3,15 @@ import { FormEvent, useState } from "react";
 
 import { useApp } from "@/context/AppContext";
 
-import { LoginButton } from "@/components/common/Button";
+import { SignInButton } from "@/components/common/Button";
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 import Input from "@/components/common/Input";
 
-import { LOGIN_FIELDS, RESET_FIELDS } from "@/constants/FormFields";
+import { SIGN_IN_FIELDS, RESET_FIELDS } from "@/constants/FormFields";
 
-import styles from '@/styles/pages/login.module.scss';
+import { signInModule as styles } from '@/styles/pages';
 import { useAuth } from "@/context/AuthContainer";
 import { resetUser, sendCode } from "@/services/umobi/umobi.api";
 import { useEmail } from "@/context/EmailProvider";
@@ -70,7 +70,7 @@ export default function Forgot() {
     resetUser(code, password).then((_) => {
       toast.success('Senha alterada com sucesso! Você já pode utilizar a nova senha para fazer Login.');
 
-      history.push('/login');
+      history.push('/sign-in');
     }).catch(err => {
       toast.success('Não identicamos seu e-mail ou deu algum problema na comunicação, verifique com a Secretaria.');
       console.log('signError', err);
@@ -92,15 +92,15 @@ export default function Forgot() {
 
                 <form onSubmit={handleEmail}>
                   <Input
-                    key={LOGIN_FIELDS.email.id}
-                    label={LOGIN_FIELDS.email.field.label}
-                    name={LOGIN_FIELDS.email.field.name}
+                    key={SIGN_IN_FIELDS.email.id}
+                    label={SIGN_IN_FIELDS.email.field.label}
+                    name={SIGN_IN_FIELDS.email.field.name}
                     value={email}
-                    type={LOGIN_FIELDS.email.type}
+                    type={SIGN_IN_FIELDS.email.type}
                     onChange={e => setEmail(e.target.value)}
                   />
 
-                  <LoginButton label="Enviar código" disabled={!email} />
+                  <SignInButton label="Enviar código" disabled={!email} />
                 </form>
               </section>
             ) : (
@@ -119,23 +119,23 @@ export default function Forgot() {
                   />
 
                   <Input
-                    key={LOGIN_FIELDS.password.id}
-                    label={LOGIN_FIELDS.password.field.label}
-                    name={LOGIN_FIELDS.password.field.name}
-                    type={LOGIN_FIELDS.password.type}
+                    key={SIGN_IN_FIELDS.password.id}
+                    label={SIGN_IN_FIELDS.password.field.label}
+                    name={SIGN_IN_FIELDS.password.field.name}
+                    type={SIGN_IN_FIELDS.password.type}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                   />
                   <Input
-                    key={LOGIN_FIELDS.confirmPassword.id}
-                    label={LOGIN_FIELDS.confirmPassword.field.label}
-                    name={LOGIN_FIELDS.confirmPassword.field.name}
-                    type={LOGIN_FIELDS.confirmPassword.type}
+                    key={SIGN_IN_FIELDS.confirmPassword.id}
+                    label={SIGN_IN_FIELDS.confirmPassword.field.label}
+                    name={SIGN_IN_FIELDS.confirmPassword.field.name}
+                    type={SIGN_IN_FIELDS.confirmPassword.type}
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
                   />
 
-                  <LoginButton label="Valida e Enviar" disabled={!password || !confirmPassword || !code || (password.length < 6)} />
+                  <SignInButton label="Valida e Enviar" disabled={!password || !confirmPassword || !code || (password.length < 6)} />
                 </form>
               </section>
             )}

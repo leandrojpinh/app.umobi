@@ -13,7 +13,8 @@ export interface IFieldItem {
   field: IField;
   type: "mail" | "text" | "date" | "radio" | "checkbox";
 }
-export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
+
+export const USER_FORM_FIELDS: IFieldItem[] = [
   {
     id: uuidV4(),
     field: {
@@ -69,7 +70,10 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
       required: true,
     },
     type: "text",
-  },
+  }
+];
+
+export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
   {
     id: uuidV4(),
     field: {
@@ -231,19 +235,10 @@ export const FORM_COMPLEX_FIELDS = {
       label: "Confirme sua senha",
     },
     type: "password",
-  },
-  tax: {
-    id: uuidV4(),
-    field: {
-      name: "tax",
-      label: "Qual o valor do comprovante?",
-      required: true,
-    },
-    type: "number",
-  },
+  }
 };
 
-export const LOGIN_FIELDS = {  
+export const SIGN_IN_FIELDS = {  
   email: {
     id: uuidV4(),
     field: {
@@ -294,19 +289,28 @@ export const PAYMENT_FIELDS = {
       {
         label: "PIX - À vista",
         value: "pix",
-      },
+      },      
       {
-        label: "Parcelado 3x - R$ 51,67",
-        value: "3x",
-      },
-      {
-        label: "Parcelado 2x - R$ 77,50",
+        label: "Parcelado 2x - R$ 100,00",
         value: "2x",
       },
       {
-        label: "Entrada + 1x - R$ 155,00",
-        value: "1x",
+        label: "Parcelado 3x - R$ 66,67",
+        value: "3x",
       },
+      // {
+      //   label: "Entrada + 1x - R$ 155,00",
+      //   value: "1x",
+      // },
     ],
+  },
+  tax: {
+    id: uuidV4(),
+    field: {
+      name: "tax",
+      label: "Qual o valor do comprovante?",
+      required: true,
+    },
+    type: "number",
   },
 };

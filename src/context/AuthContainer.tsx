@@ -12,6 +12,13 @@ import { Session } from '@/services/umobi/models/Session';
 import { AxiosError } from 'axios';
 import { Token } from '@/services/umobi/models/Token';
 
+const parseJwt = (token: string) => {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace('-', '+').replace('_', '/');
+
+  return JSON.parse(window.atob(base64));
+}
+
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export function AuthProvider({ children }: AuthContextProviderProps) {
   const router = useRouter();
@@ -24,6 +31,9 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
       const session = { email, password } as Session;
       createSession(session)
         .then((response: Token) => {
+          console.log("response", response);
+          const tokenParsed = parseJwt(response.token);
+          console.log("tokenParsed", tokenParsed);
           const loggedUser = {
             email: response.user?.email,
             name: response.user?.name,
@@ -31,7 +41,8 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
             refreshToken: response.refreshToken,
             token: response.token,
             isAdmin: response.user?.isAdmin,
-            isViewer: response.user?.isViewer
+            isViewer: response.user?.isViewer,
+            id: tokenParsed.sub
           } as User;
 
           setCookie(undefined, Cookie.umobiToken, loggedUser.token, {
@@ -61,10 +72,6 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
     console.log('passou');
   }
 
-  const setLoadingPage = (value: boolean) => {
-    setLoading(value);
-  }
-
   return (
     <>
       <AuthContext.Provider value={{
@@ -72,7 +79,6 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
         loading,
         signIn,
         signOut,
-        setLoadingPage,
         setUser
       }
       }>

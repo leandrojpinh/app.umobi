@@ -32,7 +32,6 @@ html {
     font-size: 87.5%;
   }
 }
-}
 
 body {
   background: linear-gradient(180deg, rgba(37,44,61,1) 0%, rgba(19,24,31,1) 100%);

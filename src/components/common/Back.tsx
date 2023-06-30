@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { FiArrowLeft } from 'react-icons/fi';
 
-import styles from '@/styles/components/back.module.scss';
+import { backModule as styles }  from '@/styles/components/common';
 
 export const Back = () => {
   const history = useRouter();

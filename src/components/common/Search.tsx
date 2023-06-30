@@ -1,6 +1,6 @@
 import { FiSearch } from 'react-icons/fi';
 
-import styles from '@/styles/components/search.module.scss';
+import { searchModule as styles }  from '@/styles/components/common';
 import { Dispatch, InputHTMLAttributes, SetStateAction, useEffect } from 'react';
 
 interface SearchProps extends InputHTMLAttributes<HTMLInputElement> {

@@ -1,6 +1,6 @@
 import { ALink } from './Button';
 
-import styles from '@/styles/components/response.module.scss';
+import { responseModule as styles }  from '@/styles/components/pages';
 
 export interface IResponseProps {
   title: string;

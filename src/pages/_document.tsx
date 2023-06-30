@@ -12,7 +12,7 @@ export default function Document() {
         <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet"></link>
 
       </Head>
-
+      
       <body>
         <Main />
         <NextScript />

@@ -13,6 +13,7 @@ import { Session } from "./models/Session";
 import { Token } from "./models/Token";
 import { User } from "./models/User";
 import { UserInfo } from "./models/UserInfo";
+import { Camp } from "./models/Camp";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_UMOBI,
@@ -25,6 +26,7 @@ const apiHeader = (token: string) => {
 
 const createUser = (user: User) => {
   return new Promise((resolve, reject) => {
+    console.log("User created", user);
     api
       .post("/users", user)
       .then((userResponse: AxiosResponse<string>) => resolve(userResponse.data))
@@ -111,16 +113,15 @@ const getPayments = async (
   return new Promise((resolve, reject) => {
     api
       .get(`/registrations/payments/${registrationId}`)
-      .then((response) => resolve(response.data))
-      .then(reject);
-  });
-};
-
-const getUserPayments = async (): Promise<RegistrationPayment[]> => {
-  return new Promise((resolve, reject) => {
-    api
-      .get(`/registrations/payments`)
-      .then((response) => resolve(response.data))
+      .then((response) => {
+        const mapped = response.data.map((item: any) => {
+          return {
+            ...item,
+            tax: Number.parseInt(item.tax),
+          }
+        })
+        resolve(mapped)
+      })
       .then(reject);
   });
 };
@@ -197,6 +198,15 @@ const removeReceipt = async (paymentId: string): Promise<void> => {
   });
 }
 
+const getCurrentCamp = async (): Promise<Camp> => {
+  return new Promise((resolve, reject) => {
+    api
+      .get(`/camps/current`)
+      .then((response) => resolve(response.data))
+      .catch((err) => reject(err));
+  });
+}
+
 export {
   api,
   createRegistration,
@@ -204,7 +214,6 @@ export {
   createPayment,
   createSession,
   getUserInfo,
-  getUserPayments,
   getPendingPayments,
   getForms,
   getPayments,
@@ -213,5 +222,6 @@ export {
   getSummary,
   sendCode,
   resetUser,
-  removeReceipt
+  removeReceipt,
+  getCurrentCamp
 };

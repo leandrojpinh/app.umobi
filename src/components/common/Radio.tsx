@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import styles from '@/styles/radio.module.scss';
+import { radioModule as styles }  from '@/styles/components/common';
 
 type IOptionProps = {
   label: string;

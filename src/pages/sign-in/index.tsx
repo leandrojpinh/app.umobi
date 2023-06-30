@@ -3,19 +3,19 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { useApp } from "@/context/AppContext";
 
-import { LoginButton } from "@/components/common/Button";
+import { SignInButton } from "@/components/common/Button";
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 import Input from "@/components/common/Input";
 
-import { LOGIN_FIELDS } from "@/constants/FormFields";
+import { SIGN_IN_FIELDS } from "@/constants/FormFields";
 
-import styles from '@/styles/pages/login.module.scss';
+import { signInModule as styles } from '@/styles/pages';
 import { useAuth } from "@/context/AuthContainer";
 import Link from "next/link";
 
-export default function Login() {
+export default function SignIn() {
   const history = useRouter();
   const auth = useAuth();
   const app = useApp();
@@ -31,7 +31,7 @@ export default function Login() {
           app.setIsLoading(false);
         });
       } else {
-        history.push('/registration-info').then(() => {
+        history.push('/profile').then(() => {
           app.setIsLoading(false);
         });
       }
@@ -50,8 +50,11 @@ export default function Login() {
         setEmail('');
         setPassword('');
         setIsAuthenticated(isAuthenticated);
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log('signError', err);
+      })
+      .finally(() => {
         app.setIsLoading(false);
       });
   }
@@ -69,30 +72,30 @@ export default function Login() {
               <form onSubmit={handleSubmit}>
 
                 <Input
-                  key={LOGIN_FIELDS.email.id}
-                  label={LOGIN_FIELDS.email.field.label}
-                  name={LOGIN_FIELDS.email.field.name}
+                  key={SIGN_IN_FIELDS.email.id}
+                  label={SIGN_IN_FIELDS.email.field.label}
+                  name={SIGN_IN_FIELDS.email.field.name}
                   value={email}
-                  type={LOGIN_FIELDS.email.type}
+                  type={SIGN_IN_FIELDS.email.type}
                   onChange={e => setEmail(e.target.value)}
                 />
 
                 <Input
-                  key={LOGIN_FIELDS.password.id}
-                  label={LOGIN_FIELDS.password.field.label}
-                  name={LOGIN_FIELDS.password.field.name}
-                  type={LOGIN_FIELDS.password.type}
+                  key={SIGN_IN_FIELDS.password.id}
+                  label={SIGN_IN_FIELDS.password.field.label}
+                  name={SIGN_IN_FIELDS.password.field.name}
+                  type={SIGN_IN_FIELDS.password.type}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
 
-                <Link href={'/login/forgot'}>
+                <Link href={'/sign-in/forgot'}>
                   <a className={styles.forgot}>
                     Esqueci a senha
                   </a>
                 </Link>
 
-                <LoginButton label="acessar" />
+                <SignInButton label="acessar" />
               </form>
             </section>
           </Layout>

@@ -20,7 +20,7 @@ import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/R
 import { getBooleanAnswer, toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
 
-import styles from '@/styles/pages/dashboard.registration.module.scss';
+import { dashboardRegistrationModule as styles } from '@/styles/pages';
 
 type DashboardPaymentProps = {
   registrationId: string

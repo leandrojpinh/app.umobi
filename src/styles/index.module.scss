@@ -10,7 +10,7 @@
   .hello {
     color: var(--primary-light);
     font-size: 2rem;
-    font-family: Poppins;
+    font-family: 'Inter';
   }
 
   .title {
@@ -22,7 +22,7 @@
   }
 
   .subtitle {
-    font-family: 'Poppins';
+    font-family: 'Inter';
     text-align: center;
     font-size: 1rem;
     color: var(--text2);
@@ -50,7 +50,7 @@
   }
 
   .last {
-    padding: 10rem 0 0;
+    padding: 5rem 0 0;
     display: flex;
     flex-direction: column;
     width: 100%;

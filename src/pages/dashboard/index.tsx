@@ -8,7 +8,7 @@ import { Title } from "@/components/common/Title";
 import { Summary } from "@/components/pages/dashboard/Summary";
 import { useApp } from "@/context/AppContext";
 
-import styles from '@/styles/pages/dashboard.module.scss';
+import { dashboardModule as styles} from '@/styles/pages';
 import { Search } from "@/components/common/Search";
 import { useAuth } from "@/context/AuthContainer";
 import { getForms, getSummary } from "@/services/umobi/umobi.api";

@@ -1,5 +1,4 @@
-import styles from '@/styles/layout.module.scss';
-
+import { layoutModule as styles }  from '@/styles/components/common';
 import square from '@/assets/square.svg';
 import line from '@/assets/line-up.svg';
 

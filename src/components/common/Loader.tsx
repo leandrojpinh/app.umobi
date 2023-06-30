@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '@/styles/components/loader.module.scss';
+import { loaderModule as styles }  from '@/styles/components/common';
 import DotLoader from "react-spinners/DotLoader";
 
 interface LoaderProps {
