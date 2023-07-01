@@ -33,6 +33,7 @@ export function AppProvider({ children }: AppContextProviderProps) {
     setIsLoading(true);
     setUserInfo(USER_INFO_INITIAL_STATE);
     setEvents([]);
+    setIsLoading(false);
   }
 
   return (

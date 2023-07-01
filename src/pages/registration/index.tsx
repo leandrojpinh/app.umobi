@@ -18,14 +18,12 @@ import { FORM_COMPLEX_FIELDS, FORM_SIMPLE_FIELDS, PAYMENT_FIELDS } from "@/const
 import { useAuth } from "@/context/AuthContainer";
 import { useApp } from "@/context/AppContext";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
-import { createPayment, createRegistration, getCamps, getCurrentCamp } from "@/services/umobi/umobi.api";
+import { createPayment, createRegistration, getCamps } from "@/services/umobi/umobi.api";
 import { toast } from "react-toastify";
 import { ERRORS } from "@/constants/ErrorMessages";
 import { useEmail } from "@/context/EmailProvider";
 import { IResponseProps, Response } from "@/components/common/Response";
 import { CampDetails } from "@/components/common/CampDetails";
-import { FileContainer } from "@/styles/pages/Payments";
-import { FiPaperclip } from "react-icons/fi";
 import { Camp } from "@/services/umobi/models/Camp";
 import { PaymentForm } from "@/components/pages/paymentForm";
 import { Loader } from "@/components/common/Loader";
@@ -129,7 +127,7 @@ export default function Registration() {
   }, []);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 200 : payment.paymentMode === '2x' ? 100 : parseFloat((200 / 3).toFixed(2));
+    const value = payment.paymentMode === 'pix' ? 200 : 75;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -222,6 +220,16 @@ export default function Registration() {
 
   const handleStep2 = (e: FormEvent) => {
     e.preventDefault();
+    if (!file) {
+      toast.warn('Selecionar um arquivo');
+      return;
+    }
+
+    if (payment.paymentMode !== 'pix' && payment.tax < 75) {
+      toast.warn('O valor mínimo da entrada é de R$ 75,00');
+      return;
+    }
+
     app.setIsLoading(true);
 
     createPayment(payment, file as File)
@@ -232,12 +240,12 @@ export default function Registration() {
             name: auth.user.name,
             data: new Date().toLocaleString()
           }).then(_ => {
-          setStep(step + 1);
-          setResponse({
-            title: 'tudo certo!',
-            message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
-            type: 'success'
-          });
+            setStep(step + 1);
+            setResponse({
+              title: 'tudo certo!',
+              message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
+              type: 'success'
+            });
           }).catch(err => console.log(err));
         }
       })
@@ -253,7 +261,11 @@ export default function Registration() {
         <>
           {app.hasAvailableEvents ? (
             <Layout>
-              {(step + 1) <= 3 && <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />}
+              {(step + 1) <= 3 && (
+                <>
+                  <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />
+                </>
+              )}
 
               <>
                 {step === 0 ? (
@@ -263,7 +275,7 @@ export default function Registration() {
                       <ul>
                         {app.events?.map(evt => (
                           <li key={evt.id} onClick={() => setSelectedEvent(evt)} className={evt.name === selectedEvent?.name ? styles.selected : ''}>
-                            <Image src={evt.folderUrl ?? '/empty-folder.png'} alt={evt.name} width={120} height={140} />
+                            <Image src={evt.folderUrl ?? '/folder.svg'} alt={evt.name} width={120} height={140} />
                           </li>
                         ))}
                       </ul>
@@ -391,11 +403,13 @@ export default function Registration() {
                     <CampDetails />
 
                     <PaymentForm
+                      key={'registration-payment'}
                       file={file}
                       onFileChange={handleFile}
                       submit={handleStep2}
                       onPaymentChange={changePaymentField}
                       payment={payment}
+                      payments={[]}
                     />
                   </section>
                 ) : (

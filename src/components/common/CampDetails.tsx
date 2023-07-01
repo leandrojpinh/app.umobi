@@ -9,7 +9,6 @@ export function CampDetails() {
   const [copyText, setCopyText] = useState('Copiar');
   const handleCopy = async () => {
     await navigator.clipboard.writeText(keyPix);
-    toast.success('Chave copiada');
     setCopyText("Copiado!");
 
     setTimeout(() => {

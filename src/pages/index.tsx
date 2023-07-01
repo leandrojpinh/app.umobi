@@ -52,7 +52,7 @@ export default function Home() {
                         <Link key={event.id} href={'/registration'}>
                           <li>
                             <picture>
-                              <Image src={event.folderUrl ?? '/empty-folder.png'} alt={event.name} objectPosition={'center'} objectFit='cover' width={120} height={140} />
+                              <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={120} height={140} />
                             </picture>
                           </li>
                         </Link>

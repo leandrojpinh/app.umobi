@@ -99,18 +99,21 @@
       font-weight: 600;
       padding: 1rem;
       background: var(--black-light);
-      transition: filter 0.2s;
       margin: -1rem -1rem;
       border-radius: 8px;
       cursor: pointer;
-
-      :hover {
-        filter: brightness(.8);
-      }
     }
 
     .body {      
-      margin: 2rem 0 1rem;
+      margin: 2rem 0 0;
+    }    
+  }
+
+  .active {
+    transition: unset;
+
+    &:hover {
+      filter: none;
     }
   }
   
@@ -174,8 +177,9 @@
   ul {
     gap: 1rem;
     border-radius: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    width: fit-content;  
+    
 
     li {
       display: flex;
@@ -206,4 +210,30 @@
 
 .selected {
   border-color: var(--primary-light) !important;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+
+  .modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > button {
+      margin-bottom: 1rem;
+
+      background: transparent;
+      border: 0;
+      color: var(--text);
+      cursor: pointer;
+      
+      transition: filter .2s;
+
+      :hover {
+        filter: brightness(80%);
+      }
+    }
+  }
 }

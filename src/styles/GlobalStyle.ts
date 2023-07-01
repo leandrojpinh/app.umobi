@@ -11,6 +11,7 @@ export default createGlobalStyle`
   --text: #D7DFEB;
   --text2: #A2AAB6;
   --placeholder: #8994BD;
+  --error: #d32f2f
 }
 
 * {

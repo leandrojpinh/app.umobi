@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo, FormEvent } from "react";
 import moment from "moment";
-import { GetServerSideProps } from "next";
-import { parseCookies } from "nookies";
 import { v4 as uuid } from 'uuid';
+import Modal from 'react-modal';
 
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
@@ -20,12 +19,9 @@ import { useApp } from "@/context/AppContext";
 import { profileModule as styles } from '@/styles/pages';
 import { Registration, RegistrationPayment } from "@/services/umobi/models/Registration";
 import Image from "next/image";
-import { FiFileText, FiPaperclip, FiPlus } from "react-icons/fi";
-import { FORM_COMPLEX_FIELDS, PAYMENT_FIELDS } from "@/constants/FormFields";
-import { FileContainer } from "@/styles/pages/Payments";
-import Input from "@/components/common/Input";
-import { Button, ButtonRemove } from "@/components/common/Button";
-import { Radio } from "@/components/common/Radio";
+import { FiFileText, FiPlus, FiX } from "react-icons/fi";
+import { PAYMENT_FIELDS } from "@/constants/FormFields";
+import { ButtonRemove } from "@/components/common/Button";
 import { CampDetails } from "@/components/common/CampDetails";
 import { toMoney } from "@/helper/utils";
 import { toast } from "react-toastify";
@@ -48,9 +44,11 @@ export default function Profile() {
 
   const [file, setFile] = useState<File>();
   const [payment, setPayment] = useState<RegistrationPayment>(INITIAL_STATE_PAYMENT);
+  const [paymentError, setPaymentError] = useState('');
   const [createNew, setCreateNew] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<RegistrationPayment>();
   const [userPayments, setUserPayments] = useState<RegistrationPayment[]>();
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     app.setIsLoading(false);
@@ -90,37 +88,52 @@ export default function Profile() {
       });
     }
 
-  }, [selectedRegistration?.id]);
+  }, [selectedRegistration?.id, reload]);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 200 : payment.paymentMode === '2x' ? 100 : parseFloat((200 / 3).toFixed(2));
+    const value = payment.paymentMode === 'pix' ? 200 : (totalPaid !== undefined && totalPaid > 0) ? 125 : 75;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
-  //TODO: ajustar o component para enviar outro comprovante
-  //TODO: ajustar a parte de gerar link publico para as imagens do firebase
-  const isPaymentsPaid = useMemo(() => {
+  const { isPaymentsPaid, totalPaid } = useMemo(() => {
     const totalPaid = userPayments?.filter(f => !f.rejected)?.reduce((acc, item) => acc + item.tax, 0);
 
-    return totalPaid != undefined && totalPaid >= selectedRegistration?.camp.tax!;
+    return {
+      isPaymentsPaid: totalPaid != undefined && totalPaid >= selectedRegistration?.camp.tax!,
+      totalPaid
+    };
   }, [userPayments]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    app.setIsLoading(true);
 
-    createPayment(payment, file as File)
+    if (!file) {
+      setPaymentError('Selecionar um arquivo');
+      return;
+    }
+
+    if (payment.paymentMode !== 'pix' && payment.tax < 75) {
+      setPaymentError('O valor mínimo da entrada é de R$ 75,00');
+      return;
+    }
+
+    app.setIsLoading(true);
+    const newPayment = {
+      ...payment,
+      registrationId: selectedRegistration?.id
+    } as RegistrationPayment;
+
+    createPayment(newPayment, file)
       .then(_ => {
         setSelectedPayment(undefined);
-        setCreateNew(false);
-        setFile(undefined);
-        setPayment(INITIAL_STATE_PAYMENT);
+        onClose();
         email.sendRegistration({
           email: app.userInfo?.email!,
           name: app.userInfo?.name!,
           data: new Date().toLocaleString()
         }).then(_ => {
           toast.success('Comprovante enviado com sucesso!');
+          setReload(true);
         }).catch(err => console.log(err));
       })
       .catch(err => {
@@ -162,6 +175,21 @@ export default function Profile() {
     setPayment({ ...payment, [`${field}`]: value });
   }
 
+  const onOpen = () => {
+    if (totalPaid !== undefined && totalPaid > 0) {
+      setPayment({ ...payment, paymentMode: '1x', tax: 125 });
+    }
+
+    setCreateNew(true);
+  }
+
+  const onClose = () => {
+    setFile(undefined);
+    setPayment(INITIAL_STATE_PAYMENT);
+    setPaymentError('');
+    setCreateNew(false);
+  }
+
   return (
     <>
       {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
@@ -181,7 +209,6 @@ export default function Profile() {
                 </InfoGroup>
                 <InfoGroup>
                   <Info label={'Endereço'} text={app.userInfo.address!} />
-
                 </InfoGroup>
               </div>
             )}
@@ -192,7 +219,7 @@ export default function Profile() {
                 <ul>
                   {app.userInfo.registrations.map((evt, index) => (
                     <li key={index} onClick={() => setSelectedRegistration(evt)} className={evt.camp.name === selectedRegistration.camp.name ? styles.selected : ''}>
-                      <Image src={'/empty-folder.png'} alt={evt.camp.name} objectFit='contain' width={120} height={140} />
+                      <Image src={'/folder.svg'} alt={evt.camp.name} objectFit='contain' width={120} height={140} />
                     </li>
                   ))}
                 </ul>
@@ -202,27 +229,62 @@ export default function Profile() {
 
             {selectedRegistration !== undefined && (
               <section className={styles.payments}>
+                <Modal isOpen={createNew} style={{
+                  overlay: {
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(19, 24, 31, 0.9)',
+                    zIndex: 99999
+                  },
+                  content: {
+                    position: 'absolute',
+                    top: '40px',
+                    left: '40px',
+                    right: '40px',
+                    bottom: '40px',
+                    border: '1px solid var(--placeholder)',
+                    background: 'var(--background)',
+                    overflow: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    borderRadius: '4px',
+                    outline: 'none',
+                    padding: '20px',
+                    height: 'max-content',
+                  }
+                }}>
+                  <div className={styles.modal}>
+                    <div className={styles.modalHeader}>
+                      <Title title="Novo comprovante" />
+
+                      <button onClick={onClose}>
+                        <FiX size={24} />
+                      </button>
+                    </div>
+
+                    <CampDetails />
+                    <PaymentForm
+                      key={'profile-payment'}
+                      file={file}
+                      onFileChange={handleFile}
+                      submit={handleSubmit}
+                      onPaymentChange={changePaymentField}
+                      payment={payment}
+                      payments={userPayments || []}
+                      error={paymentError}
+                    />
+                  </div>
+                </Modal>
                 <ul>
                   <Topic title="Comprovantes" />
                   {!isPaymentsPaid && (
-                    <li key={uuid()} className={styles.new}>
-                      <div className={styles.header} onClick={() => { setCreateNew(!createNew); }}>
+                    <li key={uuid()} className={`${styles.new} ${createNew ? ` ${styles.active}` : ''}`}>
+                      <div className={styles.header} onClick={onOpen}>
                         <span>Enviar comprovante</span>
-
                         <FiPlus size={24} color={'var(--text)'} />
                       </div>
-                      {createNew && !userPayments?.find(f => f.paymentMode === 'pix') && (
-                        <div className={styles.body}>
-                          <CampDetails />
-                          <PaymentForm
-                            file={file}
-                            onFileChange={handleFile}
-                            submit={handleSubmit}
-                            onPaymentChange={changePaymentField}
-                            payment={payment}
-                          />
-                        </div>
-                      )}
                     </li>
                   )}
                   {userPayments?.map(item => (

@@ -282,27 +282,25 @@ export const PAYMENT_FIELDS = {
     field: {
       name: "paymentMode",
       label: "Formas de Pagamento",
-      subLabel: "No caso do parcelamento, o valor da entrada é R$ 70,00",
+      subLabel: "No caso do parcelamento, o valor da entrada é R$ 75,00 via PIX",
     },
     type: "radio",
     options: [
       {
         label: "PIX - À vista",
         value: "pix",
-      },      
-      {
-        label: "Parcelado 2x - R$ 100,00",
-        value: "2x",
       },
       {
-        label: "Parcelado 3x - R$ 66,67",
-        value: "3x",
+        label: "Parcelado - (Entrada + 1x de R$ 125,00)",
+        value: "1x",
       },
-      // {
-      //   label: "Entrada + 1x - R$ 155,00",
-      //   value: "1x",
-      // },
     ],
+    lastOptions: [
+      {
+        label: "PIX - 1x de R$ 125,00",
+        value: "1x",
+      },
+    ]
   },
   tax: {
     id: uuidV4(),
