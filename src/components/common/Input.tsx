@@ -14,7 +14,7 @@ const Input: React.FC<InputProps> = ({ label, name, mask, ...rest }) => {
     <div className={`${styles.inputBlock} ${rest.className}`}>
       <label htmlFor={name}>{label}</label>
       {mask ? (
-        <InputMask mask={mask} id={name} {...rest} />
+        <InputMask mask={mask} id={name} {...rest} crossOrigin='' />
       ) : (
         <input id={name} {...rest} />
       )}
