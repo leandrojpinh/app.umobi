@@ -282,7 +282,7 @@ export const PAYMENT_FIELDS = {
     field: {
       name: "paymentMode",
       label: "Formas de Pagamento",
-      subLabel: "No caso do parcelamento, o valor da entrada é R$ 75,00 via PIX",
+      subLabel: "No caso do parcelamento, o valor da entrada é R$ 75,00 via PIX para que sua vaga seja garantida.",
     },
     type: "radio",
     options: [

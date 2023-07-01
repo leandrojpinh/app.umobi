@@ -55,7 +55,7 @@ export default function SignIn() {
     <>
       {auth.loading || app.isLoading ? <Loader loading={app.isLoading || auth.loading} /> :
         (
-          <Layout>
+          <Layout title="Login">
             <section className={styles.container}>
               <Title
                 title="Login"

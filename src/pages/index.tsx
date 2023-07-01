@@ -13,6 +13,12 @@ import { useApp } from '@/context/AppContext';
 import { getCamps } from '@/services/umobi/umobi.api';
 import { toast } from 'react-toastify';
 
+export const metadata = {
+  title: 'Sling Academy',
+  description:
+    'This is a meta description. Welcome to slingacademy.com. Happy coding and have a nice day',
+};
+
 export default function Home() {
   const auth = useAuth();
   const app = useApp();

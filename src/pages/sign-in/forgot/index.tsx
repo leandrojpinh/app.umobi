@@ -82,7 +82,7 @@ export default function Forgot() {
     <>
       {auth.loading || app.isLoading ? <Loader loading={app.isLoading || auth.loading} /> :
         (
-          <Layout>
+          <Layout title="Recuperação de conta">
             {stage === 'email' ? (
               <section className={styles.container}>
                 <Back />

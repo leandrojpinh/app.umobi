@@ -194,7 +194,7 @@ export default function Profile() {
     <>
       {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
         (
-          <Layout>
+          <Layout title="Perfil">
             <Title title={`${app.userInfo.name.split(' ').slice(0, 2).join(' ')}`} />
 
             {app.userInfo !== undefined && (

@@ -141,7 +141,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   }
 
   return (
-    <LayoutAdmin>
+    <LayoutAdmin title={form?.registration?.user?.name || ''}>
       <Back />
       <Title title={form?.registration?.user?.name || ''} />
 

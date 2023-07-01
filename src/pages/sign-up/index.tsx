@@ -115,7 +115,7 @@ export default function SignUp() {
   return (
     <>
       {app.isLoading ? <Loader loading={app.isLoading} /> :
-        <Layout>
+        <Layout title="Cadastro">
           <Title title="Criar conta" />
 
           <Topic title="Registro" />

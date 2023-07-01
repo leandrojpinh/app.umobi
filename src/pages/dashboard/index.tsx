@@ -62,7 +62,7 @@ export default function Dashboard() {
   return (
     <>
       {app.isLoading ? <Loader loading={app.isLoading} /> :
-        <LayoutAdmin>
+        <LayoutAdmin title="Dashboard">
           <Title title="Dashboard" />
 
           <Summary

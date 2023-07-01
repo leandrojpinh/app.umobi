@@ -11,5 +11,5 @@ module.exports = withImages({
   sassOptions: [
     path.join(__dirname, 'styles')
   ],
-  reactStrictMode: true,
+  reactStrictMode: true
 });

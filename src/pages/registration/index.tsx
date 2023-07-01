@@ -260,7 +260,7 @@ export default function Registration() {
       {app.isLoading ? <Loader loading={app.isLoading} /> : (
         <>
           {app.hasAvailableEvents ? (
-            <Layout>
+            <Layout title="Inscrição">
               {(step + 1) <= 3 && (
                 <>
                   <Title title="Inscrição" subtitle={`Passo ${step + 1}/3`} />
@@ -420,7 +420,7 @@ export default function Registration() {
               </>
             </Layout>
           ) : (
-            <Layout>
+            <Layout title="Inscrição">
               <Response type={'error'} message={'Não há mais eventos disponíveis.'} title={''} />
             </Layout>
           )}

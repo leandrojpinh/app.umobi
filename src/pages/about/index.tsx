@@ -8,7 +8,7 @@ export default function About() {
 
 
   return (
-    <Layout>
+    <Layout title="Sobre nós">
       <Loader loading={app.isLoading} />
       <Title title="Sobre nós" />
     </Layout>
