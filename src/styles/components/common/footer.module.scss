@@ -6,26 +6,31 @@
     max-width: 1200px;
     display: flex;
     flex: 1;
-    flex-direction: column;    
+    flex-direction: column;
     padding-top: 2rem;
 
     .info {
       display: flex;
       flex-direction: column;
       padding: 0;
-  
-      span {
-        margin-top: 1rem;
-      }
     }
-  
+
     .actions {
       display: flex;
       flex: 1;
-      justify-content: flex-end;
-      margin: 2rem 0 2rem auto;
-  
-      button, a {
+      justify-content: space-between;
+      margin: 1rem 0;
+
+      .social {
+        display: flex;
+
+        a:first-child {
+          margin-left: 0;
+        }
+      }
+
+      button,
+      a {
         cursor: pointer;
         color: var(--text);
         background: var(--black-light);
@@ -39,38 +44,31 @@
         transition: filter .2s;
         margin-left: 1rem;
       }
-  
-      button:hover, a:hover {
+
+      button:hover,
+      a:hover {
         filter: brightness(80%);
       }
+
+      .noMargin {
+        margin-left: 0;
+      }
+    }
+
+    span {
+      margin: 1rem 0 1rem;
     }
   }
 
-  @media screen and (min-width: 830px) {    
+  @media screen and (min-width: 830px) {
     align-items: center;
     padding: 0 2rem;
-    
-    .content {
-      flex-direction: row;
-      padding: 0;
-      margin: 0 auto;
-  
-      .info {
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-  
-        span {
-          margin-top: 0;
-          margin-left: 3rem;
-        }
-      }
-    }
   }
 }
 
 @media screen and (min-width: 1200px) {
   .content {
     padding: 0;
+    margin: 0 auto;
   }
 }

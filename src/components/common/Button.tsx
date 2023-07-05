@@ -1,5 +1,5 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
-import styles from '@/styles/components/button.module.scss';
+import { buttonModule as styles }  from '@/styles/components/common';
 import Link from "next/link";
 import { FiLogIn } from "react-icons/fi";
 
@@ -40,7 +40,7 @@ export function ALink({ label, path, onClick, children, ...rest }: ILinkProps) {
   )
 }
 
-export function LoginButton({ label, onClick, ...rest }: IButtonProps) {
+export function SignInButton({ label, onClick, ...rest }: IButtonProps) {
   return (
     <button className={styles.loginButton} {...rest}>
       {label}

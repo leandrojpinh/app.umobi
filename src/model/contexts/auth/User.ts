@@ -6,9 +6,10 @@ export type User = {
   token: string;
   isAdmin: boolean;
   isViewer: boolean;
+  id: string;
 }
 
-export type Login = {
+export type SignIn = {
   email: string;
   password: string;
 }

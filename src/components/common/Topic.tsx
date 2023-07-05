@@ -1,4 +1,4 @@
-import styles from '@/styles/topic.module.scss';
+import { topicModule as styles }  from '@/styles/components/common';
 
 interface TopicProps {
   title: string;

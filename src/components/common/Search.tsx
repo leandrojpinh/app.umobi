@@ -1,7 +1,7 @@
 import { FiSearch } from 'react-icons/fi';
 
-import styles from '@/styles/components/search.module.scss';
-import { Dispatch, InputHTMLAttributes, SetStateAction, useEffect } from 'react';
+import { searchModule as styles }  from '@/styles/components/common';
+import { Dispatch, InputHTMLAttributes, SetStateAction, useEffect, useCallback } from 'react';
 
 interface SearchProps extends InputHTMLAttributes<HTMLInputElement> {
   setSearch: Dispatch<SetStateAction<string>>;
@@ -9,11 +9,12 @@ interface SearchProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Search = ({ setSearch, searchAction, ...rest }: SearchProps) => {
-  useEffect(() => {
+  useCallback(() => {
     if (!rest.value) {
       searchAction();
     }
   }, [rest.value]);
+  
   return (
     <div className={styles.search}>
       <input

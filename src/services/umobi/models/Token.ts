@@ -4,6 +4,7 @@ export type Token = {
     email: string;
     isAdmin: boolean;
     isViewer: boolean;
+    id: string;
   };
   token: string;
   refreshToken: string;

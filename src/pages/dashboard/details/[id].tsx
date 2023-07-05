@@ -20,7 +20,8 @@ import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/R
 import { getBooleanAnswer, toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
 
-import styles from '@/styles/pages/dashboard.registration.module.scss';
+import { dashboardRegistrationModule as styles } from '@/styles/pages';
+import Image from "next/image";
 
 type DashboardPaymentProps = {
   registrationId: string
@@ -47,16 +48,6 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   const [validation, setValidation] = useState('');
   const [toConfirm, setToConfirm] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('Confirmar');
-
-  useEffect(() => {
-    if (!auth?.user?.isAdmin && !auth?.user?.isViewer) {
-      history.push('/');
-    }
-
-    if (!auth?.user?.isAuthenticated) {
-      history.push('/');
-    }
-  }, [auth]);
 
   useEffect(() => {
     if (registrationId) {
@@ -141,7 +132,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   }
 
   return (
-    <LayoutAdmin>
+    <LayoutAdmin title={form?.registration?.user?.name || ''}>
       <Back />
       <Title title={form?.registration?.user?.name || ''} />
 
@@ -205,7 +196,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
                     </embed>
                   ) : (
-                    <img src={selectedPayment.publicPaymentUrl} alt="Comprovante" />
+                    <Image src={selectedPayment.publicPaymentUrl!} alt="Comprovante" />
                   )}
 
                   {auth.user.isAdmin && <div className={styles.info}>

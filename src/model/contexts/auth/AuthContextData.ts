@@ -5,6 +5,5 @@ export type AuthContextData = {
   loading: boolean,
   signIn: (email: string, password: string) => Promise<boolean>,
   signOut: () => void,
-  setLoadingPage: (value: boolean) => void,
   setUser: (value: User) => void
 }

@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from 'react';
 import InputMask from 'react-input-mask';
 
-import styles from '@/styles/input.module.scss';
+import { inputModule as styles }  from '@/styles/components/common';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name?: string;
@@ -14,7 +14,7 @@ const Input: React.FC<InputProps> = ({ label, name, mask, ...rest }) => {
     <div className={`${styles.inputBlock} ${rest.className}`}>
       <label htmlFor={name}>{label}</label>
       {mask ? (
-        <InputMask mask={mask} id={name} {...rest} />
+        <InputMask mask={mask} id={name} {...rest} crossOrigin='' />
       ) : (
         <input id={name} {...rest} />
       )}

@@ -6,10 +6,12 @@ import Link from 'next/link';
 
 import { FiLogOut } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContainer';
+import Image from 'next/image';
+import { useApp } from '@/context/AppContext';
 
 const Nav = styled.nav`
   color: var(--green0);
-  height: 90px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +23,7 @@ const Nav = styled.nav`
 const NavContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 90px;
+  height: 80px;
   z-index: 1;
   width: 100%;  
   max-width: 1200px;
@@ -47,6 +49,7 @@ const NavMenu = styled.ul`
   align-items: center;
   list-style: none;
   text-align: center;
+  gap: 1rem;
   /* @media screen and (max-width: 830px) {
     display: none;
   } */
@@ -62,14 +65,14 @@ const NavItem = styled.li`
     display: flex;
     align-items: center;
     text-decoration: none;
-    padding: 0 1rem;
+    padding: 0 .5rem;
     height: 100%;
     cursor: pointer;
     border-bottom: 3px solid transparent;
     color: inherit;
     transition: .2s filter;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(primary-light) !important;
     }
 
     & :hover {
@@ -79,6 +82,10 @@ const NavItem = styled.li`
 
   button:hover, a:hover {
     filter: brightness(80%);
+  }
+
+  @media screen and (min-width: 830px) {
+    padding: 0 1rem;
   }
 `;
 
@@ -95,7 +102,7 @@ const NavLink = styled(Link)`
     border-bottom: 3px solid transparent;
     color: inherit;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(--primary-light) !important;
     }
   }
 `;
@@ -113,7 +120,7 @@ const NavLinkLogout = styled.a`
     border-bottom: 3px solid transparent;
     color: inherit;
     &.active {
-      border-color: var(--green1) !important;
+      border-color: var(--primary-light) !important;
     }
   }
 `;
@@ -130,28 +137,33 @@ const SubscribeButton = styled.div`
 
   background: var(--linear);
   border-radius: 8px;
-  max-height: 3rem;
+  max-height: 2.1rem;  
 
-  & :hover {
-    filter: brightness(80%);
+  &:hover {
+    filter: brightness(90%);
+  }
+
+  @media screen and (min-width: 830px) {
+    max-height: 3rem;
   }
 `;
 
 const NavLinks = () => {
+  const auth = useAuth();
   return (
     <>
       <NavMenu>
-        <NavItem>
-          <NavLink href={'/dashboard'}>Inscrições</NavLink>
-        </NavItem>
-        {/* 
-        TODO: Login
-        <NavItem>
+        {auth && auth.user.isAdmin && (
+          <NavItem>
+            <NavLink href={'/dashboard'}>Inscrições</NavLink>
+          </NavItem>
+        )}
+        {/* <NavItem>
           <NavLink href={'about'}>Sobre nós</NavLink>
         </NavItem> */}
       </NavMenu>
     </>
-  )
+  );
 }
 
 const SessionLinks = () => {
@@ -159,36 +171,50 @@ const SessionLinks = () => {
     <NavMenu>
       <NavItem>
         <FiLogOut height={36} color={'var(--primary-dark)'} />
-        <NavLink href={'/login'}>
+        <NavLink href={'/sign-in'}>
           Entrar
         </NavLink>
       </NavItem>
-      {/* <NavItem>
+      <NavItem>
         <SubscribeButton>
-          <NavLink href={'/registration'}>
+          <NavLink href={'/sign-up'}>
             Inscreva-se
           </NavLink>
         </SubscribeButton>
-      </NavItem> */}
+      </NavItem>
     </NavMenu>
   )
 }
 
 const Logout = () => {
   const auth = useAuth();
+  const app = useApp();
 
   const logout = () => {
     auth.signOut();
+    app.logout();
   }
-  
+
   return (
     <NavMenu>
+      {
+        auth.user.isAuthenticated && (!auth.user.isAdmin && !auth.user.isViewer) && (
+          <>
+            <NavItem>
+              <NavLink href={'/registration'}>Inscrições</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href={'/profile'}>Perfil</NavLink>
+            </NavItem>
+          </>
+        )
+      }
       <NavItem>
         <NavLinkLogout onClick={logout}>
           Sair
         </NavLinkLogout>
         <FiLogOut height={36} color={'var(--primary-light)'} />
-      </NavItem>      
+      </NavItem>
     </NavMenu>
   )
 }
@@ -201,19 +227,21 @@ export const Navbar = () => {
       <NavContainer>
         <NavBrand>
           <NavLink href={'/'}>
-            <img src="/umobi-logo.png" height={42} width={128} alt="Umobi" />
+            <picture>
+              <Image src="/umobi-logo.png" height={42} width={128} alt="Umobi" objectFit='cover' />
+            </picture>
           </NavLink>
         </NavBrand>
         {!auth?.user?.isAuthenticated ? (
           <>
-            {/* <NavLinks /> */}
+            <NavLinks />
             <SessionLinks />
           </>
         ) : (
           <>
-          {(auth?.user?.isAdmin || auth?.user?.isViewer) &&  <NavLinks />}
-          <Logout />
-          </>          
+            {(auth?.user?.isAdmin || auth?.user?.isViewer) && <NavLinks />}
+            <Logout />
+          </>
         )}
       </NavContainer>
     </Nav>

@@ -13,7 +13,8 @@ export interface IFieldItem {
   field: IField;
   type: "mail" | "text" | "date" | "radio" | "checkbox";
 }
-export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
+
+export const USER_FORM_FIELDS: IFieldItem[] = [
   {
     id: uuidV4(),
     field: {
@@ -69,7 +70,10 @@ export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
       required: true,
     },
     type: "text",
-  },
+  }
+];
+
+export const FORM_SIMPLE_FIELDS: IFieldItem[] = [
   {
     id: uuidV4(),
     field: {
@@ -231,19 +235,10 @@ export const FORM_COMPLEX_FIELDS = {
       label: "Confirme sua senha",
     },
     type: "password",
-  },
-  tax: {
-    id: uuidV4(),
-    field: {
-      name: "tax",
-      label: "Qual o valor do comprovante?",
-      required: true,
-    },
-    type: "number",
-  },
+  }
 };
 
-export const LOGIN_FIELDS = {  
+export const SIGN_IN_FIELDS = {  
   email: {
     id: uuidV4(),
     field: {
@@ -287,7 +282,7 @@ export const PAYMENT_FIELDS = {
     field: {
       name: "paymentMode",
       label: "Formas de Pagamento",
-      subLabel: "No caso do parcelamento, o valor da entrada é R$ 70,00",
+      subLabel: "No caso do parcelamento, o valor da entrada é R$ 75,00 via PIX para que sua vaga seja garantida.",
     },
     type: "radio",
     options: [
@@ -296,17 +291,24 @@ export const PAYMENT_FIELDS = {
         value: "pix",
       },
       {
-        label: "Parcelado 3x - R$ 51,67",
-        value: "3x",
-      },
-      {
-        label: "Parcelado 2x - R$ 77,50",
-        value: "2x",
-      },
-      {
-        label: "Entrada + 1x - R$ 155,00",
+        label: "Parcelado - (Entrada + 1x de R$ 125,00)",
         value: "1x",
       },
     ],
+    lastOptions: [
+      {
+        label: "PIX - 1x de R$ 125,00",
+        value: "1x",
+      },
+    ]
+  },
+  tax: {
+    id: uuidV4(),
+    field: {
+      name: "tax",
+      label: "Qual o valor do comprovante?",
+      required: true,
+    },
+    type: "number",
   },
 };

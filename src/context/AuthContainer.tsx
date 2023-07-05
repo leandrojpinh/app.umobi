@@ -12,10 +12,28 @@ import { Session } from '@/services/umobi/models/Session';
 import { AxiosError } from 'axios';
 import { Token } from '@/services/umobi/models/Token';
 
+const INITIAL_USER_STATE = {
+  isAuthenticated: false,
+  name: '',
+  email: '',
+  id: '',
+  isAdmin: false,
+  isViewer: false,
+  refreshToken: '',
+  token: ''
+} as User;
+
+const parseJwt = (token: string) => {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace('-', '+').replace('_', '/');
+
+  return JSON.parse(window.atob(base64));
+}
+
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export function AuthProvider({ children }: AuthContextProviderProps) {
   const router = useRouter();
-  const [user, setUser] = useState<User>({} as User);
+  const [user, setUser] = useState<User>(INITIAL_USER_STATE);
   const [loading, setLoading] = useState(false);
 
   const signIn = (email: string, password: string): Promise<boolean> => {
@@ -24,6 +42,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
       const session = { email, password } as Session;
       createSession(session)
         .then((response: Token) => {
+          const tokenParsed = parseJwt(response.token);
           const loggedUser = {
             email: response.user?.email,
             name: response.user?.name,
@@ -31,7 +50,8 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
             refreshToken: response.refreshToken,
             token: response.token,
             isAdmin: response.user?.isAdmin,
-            isViewer: response.user?.isViewer
+            isViewer: response.user?.isViewer,
+            id: tokenParsed.sub
           } as User;
 
           setCookie(undefined, Cookie.umobiToken, loggedUser.token, {
@@ -39,7 +59,7 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
           });
 
           setUser(loggedUser);
-          
+
           resolve(true);
         })
         .catch((err: AxiosError) => {
@@ -55,14 +75,9 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
   const signOut = () => {
     setLoading(true);
     destroyCookie(undefined, Cookie.umobiToken);
-    setUser({} as User);
+    setUser(INITIAL_USER_STATE);
     setLoading(false);
     router.push('/');
-    console.log('passou');
-  }
-
-  const setLoadingPage = (value: boolean) => {
-    setLoading(value);
   }
 
   return (
@@ -72,7 +87,6 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
         loading,
         signIn,
         signOut,
-        setLoadingPage,
         setUser
       }
       }>

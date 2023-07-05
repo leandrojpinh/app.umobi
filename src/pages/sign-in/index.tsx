@@ -3,42 +3,35 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { useApp } from "@/context/AppContext";
 
-import { LoginButton } from "@/components/common/Button";
+import { SignInButton } from "@/components/common/Button";
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
 import Input from "@/components/common/Input";
 
-import { LOGIN_FIELDS } from "@/constants/FormFields";
+import { SIGN_IN_FIELDS } from "@/constants/FormFields";
 
-import styles from '@/styles/pages/login.module.scss';
+import { signInModule as styles } from '@/styles/pages';
 import { useAuth } from "@/context/AuthContainer";
 import Link from "next/link";
 
-export default function Login() {
+export default function SignIn() {
   const history = useRouter();
   const auth = useAuth();
   const app = useApp();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (auth.user.isAuthenticated) {
       if (auth.user.isAdmin || auth.user.isViewer) {
-        history.push('/dashboard').then(() => {
-          app.setIsLoading(false);
-        });
+        history.push('/dashboard');
       } else {
-        history.push('/registration-info').then(() => {
-          app.setIsLoading(false);
-        });
+        history.push('/profile');
       }
-    } else {
-      app.setIsLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [auth.user.isAuthenticated]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -46,12 +39,14 @@ export default function Login() {
     app.setIsLoading(true);
 
     auth.signIn(email, password)
-      .then((isAuthenticated) => {
+      .then(_ => {
         setEmail('');
         setPassword('');
-        setIsAuthenticated(isAuthenticated);
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log('signError', err);
+      })
+      .finally(() => {
         app.setIsLoading(false);
       });
   }
@@ -60,39 +55,40 @@ export default function Login() {
     <>
       {auth.loading || app.isLoading ? <Loader loading={app.isLoading || auth.loading} /> :
         (
-          <Layout>
+          <Layout title="Login">
             <section className={styles.container}>
               <Title
                 title="Login"
                 subtitle="Faça login para acompanhar sua inscrição ou verificar alguma pendência" />
 
               <form onSubmit={handleSubmit}>
-
                 <Input
-                  key={LOGIN_FIELDS.email.id}
-                  label={LOGIN_FIELDS.email.field.label}
-                  name={LOGIN_FIELDS.email.field.name}
+                  key={SIGN_IN_FIELDS.email.id}
+                  label={SIGN_IN_FIELDS.email.field.label}
+                  name={SIGN_IN_FIELDS.email.field.name}
                   value={email}
-                  type={LOGIN_FIELDS.email.type}
+                  type={SIGN_IN_FIELDS.email.type}
                   onChange={e => setEmail(e.target.value)}
                 />
 
                 <Input
-                  key={LOGIN_FIELDS.password.id}
-                  label={LOGIN_FIELDS.password.field.label}
-                  name={LOGIN_FIELDS.password.field.name}
-                  type={LOGIN_FIELDS.password.type}
+                  key={SIGN_IN_FIELDS.password.id}
+                  label={SIGN_IN_FIELDS.password.field.label}
+                  name={SIGN_IN_FIELDS.password.field.name}
+                  type={SIGN_IN_FIELDS.password.type}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
 
-                <Link href={'/login/forgot'}>
-                  <a className={styles.forgot}>
-                    Esqueci a senha
-                  </a>
-                </Link>
+                <div className={styles.actions}>
+                  <Link href={'/sign-in/forgot'}>
+                    <a className={styles.forgot}>
+                      Esqueci a senha
+                    </a>
+                  </Link>
 
-                <LoginButton label="acessar" />
+                  <SignInButton label="acessar" />
+                </div>
               </form>
             </section>
           </Layout>

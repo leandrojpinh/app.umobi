@@ -14,7 +14,7 @@
     > span {
       font-size: .9rem;
       color: var(--text);
-      font-weight: 500;
+      font-weight: 500;      
     }
   }
 
@@ -29,7 +29,11 @@
     margin-bottom: 1rem;
 
     span {
+      display: -webkit-box;
       margin: 0;
+      overflow: hidden;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
     }
 
     button {

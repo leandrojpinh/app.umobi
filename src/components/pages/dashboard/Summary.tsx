@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-import summaryStyles from '@/styles/components/summary.module.scss';
+import { summaryModule as styles }  from '@/styles/components/pages';
 import { SummaryPayments } from '@/services/umobi/models/Registration';
 import { toMoney } from '@/helper/utils';
 
@@ -26,7 +26,7 @@ export function Summary({ confirmed, pending, received, registrations, uncomplet
   }, [confirmed, pending, received, registrations, uncompleted]);
 
   return (
-    <ul className={summaryStyles.container}>
+    <ul className={styles.container}>
       {report.map(item => (
         <li key={item.id}>
           <span>{item.description}</span>

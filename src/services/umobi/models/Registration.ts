@@ -1,10 +1,12 @@
 import { User } from "@/model/entities/User";
+import { Camp } from "@/model/entities/Camp";
 
 export type Registration = {
   campId: string;
   userId: string;
-  id?: string;
-  user?: User;
+  id: string;
+  user: User;
+  camp: Camp
 };
 
 export type RegistrationForm = {

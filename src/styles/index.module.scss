@@ -10,7 +10,7 @@
   .hello {
     color: var(--primary-light);
     font-size: 2rem;
-    font-family: Poppins;
+    font-family: 'Inter';
   }
 
   .title {
@@ -22,7 +22,7 @@
   }
 
   .subtitle {
-    font-family: 'Poppins';
+    font-family: 'Inter';
     text-align: center;
     font-size: 1rem;
     color: var(--text2);
@@ -50,7 +50,7 @@
   }
 
   .last {
-    padding: 10rem 0 0;
+    padding: 5rem 0 0;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -70,4 +70,43 @@
       flex: 1;
     }
   }
+
+  .events {
+    padding: 5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    strong {
+      font-family: 'Staatliches', cursive;
+      letter-spacing: 0.1em;
+      font-size: 2rem;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    a {
+      display: flex;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    li {
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      transition: filter ease-in-out .2s;
+
+      img {
+        border-radius: 8px;
+      }
+    }
+
+    li:hover {
+        filter: brightness(70%);
+    }
+  }
 }
+

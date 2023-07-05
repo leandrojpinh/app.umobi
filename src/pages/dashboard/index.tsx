@@ -8,7 +8,7 @@ import { Title } from "@/components/common/Title";
 import { Summary } from "@/components/pages/dashboard/Summary";
 import { useApp } from "@/context/AppContext";
 
-import styles from '@/styles/pages/dashboard.module.scss';
+import { dashboardModule as styles} from '@/styles/pages';
 import { Search } from "@/components/common/Search";
 import { useAuth } from "@/context/AuthContainer";
 import { getForms, getSummary } from "@/services/umobi/umobi.api";
@@ -28,10 +28,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (auth) {
-      if (!auth.user.isAdmin && !auth.user.isViewer) {
-        history.push('/');
-      }
-      
       if (auth.user.token) {
         getForms().then(response => {
           setForms(response);
@@ -62,7 +58,7 @@ export default function Dashboard() {
   return (
     <>
       {app.isLoading ? <Loader loading={app.isLoading} /> :
-        <LayoutAdmin>
+        <LayoutAdmin title="Dashboard">
           <Title title="Dashboard" />
 
           <Summary
