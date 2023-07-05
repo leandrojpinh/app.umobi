@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from 'react';
 
 import styles from '@/styles/index.module.scss';
@@ -35,7 +37,7 @@ export default function Home() {
       }).finally(() => {
         app.setIsLoading(false);
       });
-  }, []);
+  }, [app]);
 
   return (
     <Layout>
@@ -58,7 +60,7 @@ export default function Home() {
                         <Link key={event.id} href={'/registration'}>
                           <li>
                             <picture>
-                              <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={120} height={140} />
+                              <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
                             </picture>
                           </li>
                         </Link>
@@ -73,7 +75,7 @@ export default function Home() {
         <div className={styles.last}>
           <strong>Retiro Umobi 2022</strong>
           <div>
-            {/* <ReactPlayer url={RESOURCES.video} /> */}
+            <ReactPlayer url={RESOURCES.video} />
           </div>
         </div>
       </div>

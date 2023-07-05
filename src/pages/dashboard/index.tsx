@@ -28,10 +28,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (auth) {
-      if (!auth.user.isAdmin && !auth.user.isViewer) {
-        history.push('/');
-      }
-      
       if (auth.user.token) {
         getForms().then(response => {
           setForms(response);
