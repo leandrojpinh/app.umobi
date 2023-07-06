@@ -7,7 +7,7 @@ import { SignInButton } from "@/components/common/Button";
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
-import Input from "@/components/common/Input";
+import { Input, Password } from "@/components/common/Input";
 
 import { SIGN_IN_FIELDS } from "@/constants/FormFields";
 
@@ -22,6 +22,7 @@ export default function SignIn() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   useEffect(() => {
     if (auth.user.isAuthenticated) {
@@ -71,13 +72,14 @@ export default function SignIn() {
                   onChange={e => setEmail(e.target.value)}
                 />
 
-                <Input
+                <Password
                   key={SIGN_IN_FIELDS.password.id}
                   label={SIGN_IN_FIELDS.password.field.label}
                   name={SIGN_IN_FIELDS.password.field.name}
-                  type={SIGN_IN_FIELDS.password.type}
-                  value={password}
+                  type={isPasswordVisible ? 'text' : SIGN_IN_FIELDS.password.type}
                   onChange={e => setPassword(e.target.value)}
+                  setIsVisible={() => setIsPasswordVisible(!isPasswordVisible)}
+                  isVisible={isPasswordVisible}
                 />
 
                 <div className={styles.actions}>

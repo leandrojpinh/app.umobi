@@ -7,7 +7,7 @@ import { SignInButton } from "@/components/common/Button";
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
 import { Title } from "@/components/common/Title"
-import Input from "@/components/common/Input";
+import { Input } from "@/components/common/Input";
 
 import { SIGN_IN_FIELDS, RESET_FIELDS } from "@/constants/FormFields";
 

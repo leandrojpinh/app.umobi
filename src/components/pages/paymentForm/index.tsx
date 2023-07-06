@@ -1,5 +1,5 @@
 import { Button } from "@/components/common/Button";
-import Input from "@/components/common/Input";
+import { Input } from "@/components/common/Input";
 import { Radio } from "@/components/common/Radio";
 import { PAYMENT_FIELDS } from "@/constants/FormFields";
 import { IPaymentProps } from "@/pages/registration";
