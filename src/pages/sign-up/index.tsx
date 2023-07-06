@@ -4,7 +4,7 @@ import moment from "moment";
 import { toast } from 'react-toastify';
 
 import { Button } from "@/components/common/Button";
-import Input from "@/components/common/Input";
+import { Input, Password } from "@/components/common/Input";
 import { Layout } from "@/components/common/Layout"
 import { Title } from "@/components/common/Title"
 import { Topic } from "@/components/common/Topic"
@@ -44,6 +44,8 @@ export default function SignUp() {
 
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const changeField = (field: string, value: any) => {
     const newRegistration = {
@@ -156,22 +158,24 @@ export default function SignUp() {
               }
               )}
 
-              <Input
+              <Password
                 key={FORM_COMPLEX_FIELDS.password.id}
                 label={FORM_COMPLEX_FIELDS.password.field.label}
                 name={FORM_COMPLEX_FIELDS.password.field.name}
-                value={registration?.password}
-                type={FORM_COMPLEX_FIELDS.password.type}
+                type={isPasswordVisible ? 'text' : FORM_COMPLEX_FIELDS.password.type}
                 onChange={e => changeField(FORM_COMPLEX_FIELDS.password.field.name, e.target.value)}
+                setIsVisible={() => setIsPasswordVisible(!isPasswordVisible)}
+                isVisible={isPasswordVisible}
               />
-
-              <Input
+              
+              <Password
                 key={FORM_COMPLEX_FIELDS.confirmPassword.id}
                 label={FORM_COMPLEX_FIELDS.confirmPassword.field.label}
                 name={FORM_COMPLEX_FIELDS.confirmPassword.field.name}
-                value={confirmPassword}
-                type={FORM_COMPLEX_FIELDS.password.type}
+                type={isConfirmPasswordVisible ? 'text' : FORM_COMPLEX_FIELDS.password.type}
                 onChange={e => setConfirmPassword(e.target.value)}
+                setIsVisible={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                isVisible={isConfirmPasswordVisible}
               />
 
               <Button type={'submit'} label="Criar conta" disabled={!isValid()} />

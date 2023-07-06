@@ -24,3 +24,14 @@
   background: none;
   z-index: 1;
 }
+
+.inputPassword {
+  position: absolute;
+  cursor: pointer;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  margin-top: 0.5rem;
+  right: 0;
+  background: none;
+  color: var(--text);
+}

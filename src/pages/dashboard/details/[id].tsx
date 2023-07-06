@@ -12,7 +12,7 @@ import { Title } from "@/components/common/Title";
 import { Info, InfoGroup } from "@/components/common/Info";
 import { Back } from "@/components/common/Back";
 import { Topic } from "@/components/common/Topic";
-import Input from "@/components/common/Input";
+import  { Input } from "@/components/common/Input";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";

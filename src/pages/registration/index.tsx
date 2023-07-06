@@ -12,7 +12,7 @@ import { LOCAL_STORAGE } from "@/constants/Storage";
 
 import { registrationModule as styles } from '@/styles/components/pages';
 import Image from "next/image";
-import Input from "@/components/common/Input";
+import { Input } from "@/components/common/Input";
 import { Radio } from "@/components/common/Radio";
 import { FORM_COMPLEX_FIELDS, FORM_SIMPLE_FIELDS, PAYMENT_FIELDS } from "@/constants/FormFields";
 import { useAuth } from "@/context/AuthContainer";
