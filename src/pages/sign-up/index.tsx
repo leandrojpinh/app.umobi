@@ -59,7 +59,7 @@ export default function SignUp() {
     e.preventDefault();
     app.setIsLoading(true);
 
-    if (moment.duration(moment().diff(moment(registration.birthDate))).years() < 15) {
+    if (moment.duration(moment().diff(moment(registration.birthDate))).years() < 14) {
       toast.warn('Hmm, você ainda não tem idade para participar...');
 
       setTimeout(() => {
@@ -167,7 +167,7 @@ export default function SignUp() {
                 setIsVisible={() => setIsPasswordVisible(!isPasswordVisible)}
                 isVisible={isPasswordVisible}
               />
-              
+
               <Password
                 key={FORM_COMPLEX_FIELDS.confirmPassword.id}
                 label={FORM_COMPLEX_FIELDS.confirmPassword.field.label}

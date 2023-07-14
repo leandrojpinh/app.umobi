@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  
+
   @media(min-width: 850px) {
     flex-direction: row;
     gap: 5rem;
@@ -65,26 +65,37 @@
     .registrationInfo {
       display: flex;
       flex-direction: column;
+      height: auto;
 
-      > img {
+      .receiptImage {
         width: 100%;
-        height: auto;
-        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+
+        >span {
+          position: initial !important;
+        }
+
+        .image {
+          object-fit: contain;
+          width: 100% !important;
+          position: relative !important;
+          height: unset !important;
+        }
       }
 
-      > embed {
+      >embed {
         width: 100%;
         margin-bottom: 1rem;
       }
 
-      > .info {
+      >.info {
         align-items: center;
         justify-content: space-between;
         display: flex;
         gap: 1rem;
         margin-bottom: 1rem;
 
-        > div {
+        >div {
           font-size: 0;
         }
       }
@@ -94,11 +105,11 @@
       display: flex;
       flex-direction: column;
 
-      > div {
+      >div {
         margin-bottom: 0;
       }
 
-      > div + div {
+      >div+div {
         display: flex;
         flex: 1;
         gap: 1rem;
@@ -116,7 +127,7 @@
         display: flex;
         flex: 1;
         flex-direction: column;
-  
+
         margin-top: 1rem;
         gap: 0;
       }

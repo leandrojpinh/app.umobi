@@ -8,7 +8,7 @@ import { Title } from "@/components/common/Title";
 import { Summary } from "@/components/pages/dashboard/Summary";
 import { useApp } from "@/context/AppContext";
 
-import { dashboardModule as styles} from '@/styles/pages';
+import { dashboardModule as styles } from '@/styles/pages';
 import { Search } from "@/components/common/Search";
 import { useAuth } from "@/context/AuthContainer";
 import { getForms, getSummary } from "@/services/umobi/umobi.api";
@@ -74,20 +74,30 @@ export default function Dashboard() {
               setSearch={setSearch}
               placeholder={'Buscar por nome'}
               searchAction={handleFilteredForms} />
+            <div className={styles.legend}>
+              <div>
+                <div></div>
+                <span>Aguardando confirmação</span>
+              </div>
+              <div>
+                <div></div>
+                <span>Confirmado</span>
+              </div>
+            </div>
             <ul className={styles.registrations}>
               {filteredForms?.map(form => (
                 <li key={form.registrationId}>
-                  <div className='userData'>
-                    <span className='name'>{form.name}</span>
+                  <div className={styles.userData}>
+                    <span className={styles.name}>{form.name}</span>
                     {form.totalConfirmed ? (
-                      <span>{`Confirmado: ${toMoney(`${form.totalConfirmed}`)}`}</span>
+                      <span className={styles.status}>{`Confirmado: ${toMoney(`${form.totalConfirmed}`)}`}</span>
                     ) : (
-                      <span>{`Aguardando confirmação`}</span>
+                      <span className={styles.status}>{`Aguardando confirmação`}</span>
                     )}
                   </div>
 
                   <div className={styles.action}>
-                    <button className={styles.checkButton} onClick={() => handleFormDetails(form.registrationId)}>
+                    <button className={form.totalConfirmed ? styles.viewButton : styles.checkButton} onClick={() => handleFormDetails(form.registrationId)}>
                       <FiExternalLink />
                     </button>
                   </div>

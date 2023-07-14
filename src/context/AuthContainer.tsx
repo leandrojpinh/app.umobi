@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/dist/client/router';
 import { toast } from 'react-toastify';
 import { setCookie, destroyCookie } from 'nookies';
@@ -79,6 +79,12 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
     setLoading(false);
     router.push('/');
   }
+
+  useEffect(() => {
+    if (!user.isAuthenticated) {
+      signOut();
+    }
+  }, [user]);
 
   return (
     <>
