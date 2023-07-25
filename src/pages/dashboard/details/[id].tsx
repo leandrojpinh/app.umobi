@@ -34,7 +34,6 @@ interface Params extends ParsedUrlQuery {
 type ValidationType = 'accepted' | 'rejected';
 
 export default function DashboardRegistration({ registrationId }: DashboardPaymentProps) {
-  const history = useRouter();
   const auth = useAuth();
   const email = useEmail();
 
@@ -171,19 +170,23 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'Informações adicionais'} text={form?.moreInformation} />
             </InfoGroup>}
           </div>
-          <ul>
-            <Topic title="Comprovantes" />
-            {payments?.map(item => (
-              <li key={item.id} className={`${item.validated ? styles.validated : ''} ${selectedPayment?.id === item.id ? styles.selected : ''}`} onClick={() => handleSelectPayment(item)}>
-                <FiFileText size={24} />
-                <div>
-                  <span>{item.createdAt}</span>
-                  <span>{toMoney(`${item.tax}`)}</span>
-                  <span>{item.paymentMode}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+
+          {payments?.length && (
+            <ul>
+              <Topic title="Comprovantes" />
+              {payments?.map(item => (
+                <li key={item.id} className={`${item.validated ? styles.validated : ''} ${selectedPayment?.id === item.id ? styles.selected : ''}`} onClick={() => handleSelectPayment(item)}>
+                  <FiFileText size={24} />
+                  <div>
+                    <span>{item.createdAt}</span>
+                    <span>{toMoney(`${item.tax}`)}</span>
+                    <span>{item.paymentMode}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
         </section>
         <section className={styles.side}>
           {

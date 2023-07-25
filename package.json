@@ -1,6 +1,6 @@
 {
   "name": "app.umobi",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -22,7 +22,6 @@
     "react-dom": "18.1.0",
     "react-icons": "4.3.1",
     "react-input-mask": "2.0.4",
-    "react-modal": "3.16.1",
     "react-player": "2.10.1",
     "react-scroll": "1.8.7",
     "react-spinners": "0.12.0",
@@ -37,7 +36,6 @@
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.5",
     "@types/react-input-mask": "3.0.1",
-    "@types/react-modal": "3.16.0",
     "@types/react-scroll": "1.8.3",
     "@types/styled-components": "5.1.25",
     "@types/uuid": "8.3.4",
