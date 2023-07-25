@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useMemo, FormEvent } from "react";
 import moment from "moment";
 import { v4 as uuid } from 'uuid';
-import Modal from 'react-modal';
 
 import { Layout } from "@/components/common/Layout"
 import { Loader } from "@/components/common/Loader";
@@ -27,6 +26,7 @@ import { toMoney } from "@/helper/utils";
 import { toast } from "react-toastify";
 import { useEmail } from "@/context/EmailProvider";
 import { PaymentForm } from "@/components/pages/paymentForm";
+import { Back } from "@/components/common/Back";
 
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
@@ -194,133 +194,108 @@ export default function Profile() {
     <>
       {auth.loading || app.isLoading ? <Loader loading={auth.loading || app.isLoading} /> :
         (
-          <Layout title="Perfil">
-            <Title title={`${app.userInfo.name.split(' ').slice(0, 2).join(' ')}`} />
+          <>
+            {createNew ?
+              <>
+                <Layout title="Perfil">
+                  <Back />
+                  <Title title='Envio de comprovante' />
 
-            {app.userInfo !== undefined && (
-              <div className={styles.personData}>
-                <InfoGroup>
-                  <Info label={'E-mail'} text={app.userInfo.email!} />
-                  <Info label={'Telefone'} text={app.userInfo.phoneNumber!} />
-                </InfoGroup>
-                <InfoGroup>
-                  <Info label={'Data de Nascimento'} text={app.userInfo.birthDate} />
-                  <Info label={'Nome dos pais'} text={app.userInfo.parentNames!} />
-                </InfoGroup>
-                <InfoGroup>
-                  <Info label={'Endereço'} text={app.userInfo.address!} />
-                </InfoGroup>
-              </div>
-            )}
+                  <CampDetails />
+                  <PaymentForm
+                    key={'profile-payment'}
+                    file={file}
+                    onFileChange={handleFile}
+                    submit={handleSubmit}
+                    onPaymentChange={changePaymentField}
+                    payment={payment}
+                    payments={userPayments || []}
+                    error={paymentError}
+                  />
+                </Layout>
+              </> : <>
+                <Layout title="Perfil">
+                  <Title title={`${app.userInfo.name.split(' ').slice(0, 2).join(' ')}`} />
 
-            {selectedRegistration !== undefined && app.userInfo.registrations.length > 0 && (
-              <section className={styles.events}>
-                <Topic title="Inscrições" />
-                <ul>
-                  {app.userInfo.registrations.map((evt, index) => (
-                    <li key={index} onClick={() => setSelectedRegistration(evt)} className={evt.camp.name === selectedRegistration.camp.name ? styles.selected : ''}>
-                      <Image src={'/folder.svg'} alt={evt.camp.name} objectFit='contain' width={120} height={140} />
-                    </li>
-                  ))}
-                </ul>
-                <span>{`${selectedRegistration !== undefined ? selectedRegistration.camp.name : 'Selecione uma inscrição'}`}</span>
-              </section>
-            )}
-
-            {selectedRegistration !== undefined && (
-              <section className={styles.payments}>
-                <Modal isOpen={createNew} style={{
-                  overlay: {
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(19, 24, 31, 0.9)',
-                    zIndex: 99999
-                  },
-                  content: {
-                    position: 'absolute',
-                    top: '40px',
-                    left: '40px',
-                    right: '40px',
-                    bottom: '40px',
-                    border: '1px solid var(--placeholder)',
-                    background: 'var(--background)',
-                    overflow: 'auto',
-                    WebkitOverflowScrolling: 'touch',
-                    borderRadius: '4px',
-                    outline: 'none',
-                    padding: '20px',
-                    height: 'max-content',
-                  }
-                }}>
-                  <div className={styles.modal}>
-                    <div className={styles.modalHeader}>
-                      <Title title="Novo comprovante" />
-
-                      <button onClick={onClose}>
-                        <FiX size={24} />
-                      </button>
+                  {app.userInfo !== undefined && (
+                    <div className={styles.personData}>
+                      <InfoGroup>
+                        <Info label={'E-mail'} text={app.userInfo.email!} />
+                        <Info label={'Telefone'} text={app.userInfo.phoneNumber!} />
+                      </InfoGroup>
+                      <InfoGroup>
+                        <Info label={'Data de Nascimento'} text={app.userInfo.birthDate} />
+                        <Info label={'Nome dos pais'} text={app.userInfo.parentNames!} />
+                      </InfoGroup>
+                      <InfoGroup>
+                        <Info label={'Endereço'} text={app.userInfo.address!} />
+                      </InfoGroup>
                     </div>
-
-                    <CampDetails />
-                    <PaymentForm
-                      key={'profile-payment'}
-                      file={file}
-                      onFileChange={handleFile}
-                      submit={handleSubmit}
-                      onPaymentChange={changePaymentField}
-                      payment={payment}
-                      payments={userPayments || []}
-                      error={paymentError}
-                    />
-                  </div>
-                </Modal>
-                <ul>
-                  <Topic title="Comprovantes" />
-                  {!isPaymentsPaid && (
-                    <li key={uuid()} className={`${styles.new} ${createNew ? ` ${styles.active}` : ''}`}>
-                      <div className={styles.header} onClick={onOpen}>
-                        <span>Enviar comprovante</span>
-                        <FiPlus size={24} color={'var(--text)'} />
-                      </div>
-                    </li>
                   )}
-                  {userPayments?.map(item => (
-                    <li key={item.id} className={`${selectedPayment?.id === item.id ? styles.selected : ''} ${item.rejected ? styles.rejected : ''}`}>
-                      <div className={`${styles.item} ${item.validated ? styles.validated : ''}`} onClick={() => handleItem(item)}>
-                        <div>
-                          <FiFileText size={24} />
-                          <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
-                        </div>
-                        <div>
-                          <span className={styles.paymentData}>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
-                          <span>{toMoney(`${item.tax}`)}</span>
-                          <span>{item.paymentMode}</span>
-                        </div>
-                      </div>
-                      {(selectedPayment && item.id === selectedPayment.id) && (
-                        <section className={`${styles.selectedPayment} ${!selectedPayment.validated || !selectedPayment.rejected ? styles.infoPending : ''}`}>
-                          {selectedPayment.validated && selectedPayment.rejected ? (
-                            <>
-                              <span>O comprovante foi rejeitado! Basta remover e enviar o comprovante correto.</span>
-                              <span className={styles.reason}>{selectedPayment.reason}</span>
-                              <ButtonRemove label="Remover" onClick={() => handleRemoveReceipt(selectedPayment.id!)} />
-                            </>
-                          ) : selectedPayment.validated && !selectedPayment.rejected ? (
-                            <span>O comprovante já foi validado!</span>
-                          ) : (
-                            <span>Pendente de validação, em breve você receberá um e-mail com o novo status.</span>
-                          )}
-                        </section>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </Layout>
+
+                  {selectedRegistration !== undefined && app.userInfo.registrations.length > 0 && (
+                    <section className={styles.events}>
+                      <Topic title="Inscrições" />
+                      <ul>
+                        {app.userInfo.registrations.map((evt, index) => (
+                          <li key={index} onClick={() => setSelectedRegistration(evt)} className={evt.camp.name === selectedRegistration.camp.name ? styles.selected : ''}>
+                            <Image src={'/folder.svg'} alt={evt.camp.name} objectFit='contain' width={120} height={140} />
+                          </li>
+                        ))}
+                      </ul>
+                      <span>{`${selectedRegistration !== undefined ? selectedRegistration.camp.name : 'Selecione uma inscrição'}`}</span>
+                    </section>
+                  )}
+
+                  {selectedRegistration !== undefined && (
+                    <section className={styles.payments}>
+                      <ul>
+                        <Topic title="Comprovantes" />
+                        {!isPaymentsPaid && (
+                          <li key={uuid()} className={`${styles.new} ${createNew ? ` ${styles.active}` : ''}`}>
+                            <div className={styles.header} onClick={onOpen}>
+                              <span>Enviar comprovante</span>
+                              <FiPlus size={24} color={'var(--text)'} />
+                            </div>
+                          </li>
+                        )}
+                        {userPayments?.map(item => (
+                          <li key={item.id} className={`${selectedPayment?.id === item.id ? styles.selected : ''} ${item.rejected ? styles.rejected : ''}`}>
+                            <div className={`${styles.item} ${item.validated ? styles.validated : ''}`} onClick={() => handleItem(item)}>
+                              <div>
+                                <FiFileText size={24} />
+                                <span>{item.validated && !item.rejected ? 'Validado' : item.validated && item.rejected ? 'Rejeitado' : 'Aguardando validação'}</span>
+                              </div>
+                              <div>
+                                <span className={styles.paymentData}>{moment(item.createdAt).utc().format('DD/MM/yyyy')}</span>
+                                <span>{toMoney(`${item.tax}`)}</span>
+                                <span>{item.paymentMode}</span>
+                              </div>
+                            </div>
+                            {(selectedPayment && item.id === selectedPayment.id) && (
+                              <section className={`${styles.selectedPayment} ${!selectedPayment.validated || !selectedPayment.rejected ? styles.infoPending : ''}`}>
+                                {selectedPayment.validated && selectedPayment.rejected ? (
+                                  <>
+                                    <span>O comprovante foi rejeitado! Basta remover e enviar o comprovante correto.</span>
+                                    <span className={styles.reason}>{selectedPayment.reason}</span>
+                                    <ButtonRemove label="Remover" onClick={() => handleRemoveReceipt(selectedPayment.id!)} />
+                                  </>
+                                ) : selectedPayment.validated && !selectedPayment.rejected ? (
+                                  <span>O comprovante já foi validado!</span>
+                                ) : (
+                                  <span>Pendente de validação, em breve você receberá um e-mail com o novo status.</span>
+                                )}
+                              </section>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </Layout>
+              </>
+            }
+          </>
         )
       }
     </>
