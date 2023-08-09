@@ -96,17 +96,39 @@
     li {
       display: flex;
       justify-content: center;
+      align-items: center;
       cursor: pointer;
       transition: filter ease-in-out .2s;
+      flex-direction: column;
 
       img {
         border-radius: 8px;
       }
+
+      .eventInfo {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1rem;
+
+        span {
+          font-family: 'Inter';
+          text-align: center;
+          font-size: 2rem;
+          color: var(--text2);
+        }
+      }
     }
 
     li:hover {
-        filter: brightness(70%);
+      filter: brightness(70%);
+    }
+
+    .unavailable {
+      cursor: not-allowed;
+    }
+
+    .unavailable:hover {
+      filter: contrast();
     }
   }
 }
-

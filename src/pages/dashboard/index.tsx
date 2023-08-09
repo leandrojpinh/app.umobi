@@ -30,8 +30,11 @@ export default function Dashboard() {
     if (auth) {
       if (auth.user.token) {
         getForms().then(response => {
-          setForms(response);
-          setFilteredForms(response);
+          const ordered = response.toSorted((a, b) => {
+            return a.totalConfirmed - b.totalConfirmed
+          });
+          setForms(ordered);
+          setFilteredForms(ordered);
         });
 
         getSummary().then(response => {

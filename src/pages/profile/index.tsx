@@ -198,7 +198,7 @@ export default function Profile() {
             {createNew ?
               <>
                 <Layout title="Perfil">
-                  <Back />
+                  <Back onClick={() => onClose()} />
                   <Title title='Envio de comprovante' />
 
                   <CampDetails />
