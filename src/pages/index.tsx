@@ -50,9 +50,9 @@ export default function Home() {
                   <div className={styles.events}>
                     <strong>Eventos</strong>
                     <ul>
-                      {app.events.map(event => (
+                      {app.events.map((event, index) => (
                         // <Link key={event.id} href={'/registration'}>
-                        <li className={styles.unavailable}>
+                        <li key={index} className={styles.unavailable}>
                           <picture>
                             <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
                           </picture>
