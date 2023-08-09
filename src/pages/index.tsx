@@ -50,14 +50,17 @@ export default function Home() {
                   <div className={styles.events}>
                     <strong>Eventos</strong>
                     <ul>
-                      {app.events.map(event => (
-                        <Link key={event.id} href={'/registration'}>
-                          <li>
-                            <picture>
-                              <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
-                            </picture>
-                          </li>
-                        </Link>
+                      {app.events.map((event, index) => (
+                        // <Link key={event.id} href={'/registration'}>
+                        <li key={index} className={styles.unavailable}>
+                          <picture>
+                            <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
+                          </picture>
+                          <div className={styles.eventInfo}>
+                            <span>Inscrições encerradas</span>
+                          </div>
+                        </li>
+                        // </Link>
                       ))}
                     </ul>
                   </div>
