@@ -24,11 +24,11 @@ export function AppProvider({ children }: AppContextProviderProps) {
 
   const hasAvailableEvents = useMemo(() => {
     //desabilita as inscrições
-    const registations = userInfo?.registrations?.map(r => r.campId) || [];
-    const availableEventCount = events?.filter(f => !registations.includes(f.id)).length;
+    // const registations = userInfo?.registrations?.map(r => r.campId) || [];
+    // const availableEventCount = events?.filter(f => !registations.includes(f.id)).length;
 
-    return availableEventCount > 0;
-    //return false;
+    // return availableEventCount > 0;
+    return false;
   }, [userInfo.registrations, events]);
 
   const logout = () => {
