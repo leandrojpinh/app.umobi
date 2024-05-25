@@ -31,7 +31,7 @@ import { Back } from "@/components/common/Back";
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 200
+  tax: 250
 };
 
 export default function Profile() {
@@ -91,7 +91,7 @@ export default function Profile() {
   }, [selectedRegistration?.id, reload]);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 200 : (totalPaid !== undefined && totalPaid > 0) ? 125 : 75;
+    const value = payment.paymentMode === 'pix' ? 250 : (totalPaid !== undefined && totalPaid > 0) ? 150 : 100;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -112,8 +112,8 @@ export default function Profile() {
       return;
     }
 
-    if (payment.paymentMode !== 'pix' && payment.tax < 75) {
-      setPaymentError('O valor mínimo da entrada é de R$ 75,00');
+    if (payment.paymentMode !== 'pix' && payment.tax < 100) {
+      setPaymentError('O valor mínimo da entrada é de R$ 100,00');
       return;
     }
 

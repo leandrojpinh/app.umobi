@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { campDetailModule as styles }  from '@/styles/components/pages';
+import { campDetailModule as styles } from '@/styles/components/pages';
 
 import { FiLayers } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
 export function CampDetails() {
-  const keyPix = "cfc50003-defe-4875-9ae0-db173dbd41e6";
+  const keyPix = "dda966f3-5897-4bd8-bfda-cee614205799";
   const [copyText, setCopyText] = useState('Copiar');
   const handleCopy = async () => {
     await navigator.clipboard.writeText(keyPix);
@@ -20,7 +20,7 @@ export function CampDetails() {
     <div className={styles.info}>
       <strong>Taxa do Retiro</strong>
       {/* <strong className={styles.tax}>R$ 200,00 <span>a partir de 16/out R$ 250,00.</span></strong> */}
-      <strong className={styles.tax}>R$ 200,00</strong>
+      <strong className={styles.tax}>R$ 250,00</strong>
 
       <strong>Dados para envio de pix/transferências</strong>
       <span>Chave Pix</span>
@@ -33,6 +33,7 @@ export function CampDetails() {
 
       <span>Banco: Inter</span>
       <span>Tesoureiro: Daniel Nunes Araújo</span>
+      <span>Contato: (85) 98866-7478</span>
     </div>
   )
 }
