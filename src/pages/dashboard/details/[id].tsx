@@ -12,7 +12,7 @@ import { Title } from "@/components/common/Title";
 import { Info, InfoGroup } from "@/components/common/Info";
 import { Back } from "@/components/common/Back";
 import { Topic } from "@/components/common/Topic";
-import Input from "@/components/common/Input";
+import { Input } from "@/components/common/Input";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";
@@ -20,7 +20,8 @@ import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/R
 import { getBooleanAnswer, toMoney } from "@/helper/utils";
 import { useEmail } from "@/context/EmailProvider";
 
-import styles from '@/styles/pages/dashboard.registration.module.scss';
+import { dashboardRegistrationModule as styles } from '@/styles/pages';
+import Image from "next/image";
 
 type DashboardPaymentProps = {
   registrationId: string
@@ -33,7 +34,6 @@ interface Params extends ParsedUrlQuery {
 type ValidationType = 'accepted' | 'rejected';
 
 export default function DashboardRegistration({ registrationId }: DashboardPaymentProps) {
-  const history = useRouter();
   const auth = useAuth();
   const email = useEmail();
 
@@ -47,16 +47,6 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   const [validation, setValidation] = useState('');
   const [toConfirm, setToConfirm] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('Confirmar');
-
-  useEffect(() => {
-    if (!auth?.user?.isAdmin && !auth?.user?.isViewer) {
-      history.push('/');
-    }
-
-    if (!auth?.user?.isAuthenticated) {
-      history.push('/');
-    }
-  }, [auth]);
 
   useEffect(() => {
     if (registrationId) {
@@ -141,7 +131,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
   }
 
   return (
-    <LayoutAdmin>
+    <LayoutAdmin title={form?.registration?.user?.name || ''}>
       <Back />
       <Title title={form?.registration?.user?.name || ''} />
 
@@ -180,19 +170,23 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
               <Info label={'Informações adicionais'} text={form?.moreInformation} />
             </InfoGroup>}
           </div>
-          <ul>
-            <Topic title="Comprovantes" />
-            {payments?.map(item => (
-              <li key={item.id} className={`${item.validated ? styles.validated : ''} ${selectedPayment?.id === item.id ? styles.selected : ''}`} onClick={() => handleSelectPayment(item)}>
-                <FiFileText size={24} />
-                <div>
-                  <span>{item.createdAt}</span>
-                  <span>{toMoney(`${item.tax}`)}</span>
-                  <span>{item.paymentMode}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+
+          {payments?.length && (
+            <ul>
+              <Topic title="Comprovantes" />
+              {payments?.map(item => (
+                <li key={item.id} className={`${item.validated ? styles.validated : ''} ${selectedPayment?.id === item.id ? styles.selected : ''}`} onClick={() => handleSelectPayment(item)}>
+                  <FiFileText size={24} />
+                  <div>
+                    <span>{item.createdAt}</span>
+                    <span>{toMoney(`${item.tax}`)}</span>
+                    <span>{item.paymentMode}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
         </section>
         <section className={styles.side}>
           {
@@ -205,7 +199,9 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
 
                     </embed>
                   ) : (
-                    <img src={selectedPayment.publicPaymentUrl} alt="Comprovante" />
+                    <div className={styles.receiptImage}>
+                      <Image src={selectedPayment.publicPaymentUrl!} alt="Comprovante" layout="fill" className={styles.image} />
+                    </div>
                   )}
 
                   {auth.user.isAdmin && <div className={styles.info}>

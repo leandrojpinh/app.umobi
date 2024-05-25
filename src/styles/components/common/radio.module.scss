@@ -1,0 +1,72 @@
+.inputBlock {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 1rem 0 1.5rem;
+}
+
+.wrapper {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 1rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.5rem;
+  width: 1.5rem;
+  border: 1px solid var(--text);
+  border-radius: 50%;
+}
+
+.container:hover input ~ .checkmark {
+  background: var(--linear);
+}
+
+.container input:checked ~ .checkmark {
+  background: var(--linear);
+  border: transparent;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.container:not(:disabled):checked ~ input::before{
+  opacity: 1;
+}
+
+.subLabel {
+  font-size: .8rem;
+  margin: 0.1rem 0 0;
+  color: var(--placeholder);
+}

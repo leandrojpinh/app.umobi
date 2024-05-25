@@ -8,7 +8,7 @@ import { Title } from "@/components/common/Title";
 import { Summary } from "@/components/pages/dashboard/Summary";
 import { useApp } from "@/context/AppContext";
 
-import styles from '@/styles/pages/dashboard.module.scss';
+import { dashboardModule as styles } from '@/styles/pages';
 import { Search } from "@/components/common/Search";
 import { useAuth } from "@/context/AuthContainer";
 import { getForms, getSummary } from "@/services/umobi/umobi.api";
@@ -28,14 +28,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (auth) {
-      if (!auth.user.isAdmin && !auth.user.isViewer) {
-        history.push('/');
-      }
-      
       if (auth.user.token) {
         getForms().then(response => {
-          setForms(response);
-          setFilteredForms(response);
+          if (response.length > 0) {
+            const ordered = response
+              .sort((a, b) => {
+                return a.totalConfirmed - b.totalConfirmed
+              });
+            setForms(ordered);
+            setFilteredForms(ordered);
+          }
         });
 
         getSummary().then(response => {
@@ -62,7 +64,7 @@ export default function Dashboard() {
   return (
     <>
       {app.isLoading ? <Loader loading={app.isLoading} /> :
-        <LayoutAdmin>
+        <LayoutAdmin title="Dashboard">
           <Title title="Dashboard" />
 
           <Summary
@@ -78,20 +80,30 @@ export default function Dashboard() {
               setSearch={setSearch}
               placeholder={'Buscar por nome'}
               searchAction={handleFilteredForms} />
+            <div className={styles.legend}>
+              <div>
+                <div></div>
+                <span>Aguardando confirmação</span>
+              </div>
+              <div>
+                <div></div>
+                <span>Confirmado</span>
+              </div>
+            </div>
             <ul className={styles.registrations}>
               {filteredForms?.map(form => (
                 <li key={form.registrationId}>
-                  <div className='userData'>
-                    <span className='name'>{form.name}</span>
+                  <div className={styles.userData}>
+                    <span className={styles.name}>{form.name}</span>
                     {form.totalConfirmed ? (
-                      <span>{`Confirmado: ${toMoney(`${form.totalConfirmed}`)}`}</span>
+                      <span className={styles.status}>{`Confirmado: ${toMoney(`${form.totalConfirmed}`)}`}</span>
                     ) : (
-                      <span>{`Aguardando confirmação`}</span>
+                      <span className={styles.status}>{`Aguardando confirmação`}</span>
                     )}
                   </div>
 
                   <div className={styles.action}>
-                    <button className={styles.checkButton} onClick={() => handleFormDetails(form.registrationId)}>
+                    <button className={form.totalConfirmed ? styles.viewButton : styles.checkButton} onClick={() => handleFormDetails(form.registrationId)}>
                       <FiExternalLink />
                     </button>
                   </div>

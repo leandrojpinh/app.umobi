@@ -1,0 +1,37 @@
+.inputBlock {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.inputBlock label {
+  font-size: .9rem;
+}
+
+.inputBlock input {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid var(--text);
+  outline: 0;
+  padding: 0.5rem 0.5rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.inputBlock input[type="date"]::-webkit-calendar-picker-indicator {
+  color: transparent;
+  background: none;
+  z-index: 1;
+}
+
+.inputPassword {
+  position: absolute;
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 0.5rem;
+  margin-top: 0.5rem;
+  right: 0;
+  background: none;
+  color: var(--text);
+}

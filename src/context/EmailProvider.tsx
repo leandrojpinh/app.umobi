@@ -8,39 +8,12 @@ import { emailConfig } from '@/services/email/email';
 
 export const EmailContext = createContext({} as EmailContextData);
 
-// sendAdjustment(email)
-//       .then(_ => {
-//         toast.success('E-mail adjustment!')
-//       }).catch(err => console.log('sendNew', err));
-
-//     sendNew(10)
-//       .then(_ => {
-//         toast.success('E-mail send enviado!')
-//       }).catch(err => console.log('sendNew', err));
-
-//     sendConfirmation({
-//       email: 'leandro-jpinh@hotmail.com',
-//       name: 'Leandro',
-//       data: new Date().toLocaleString()
-//     }).then(_ => {
-//       toast.success('Valor do comprovante confirmado!');
-//     }).catch(err => console.log(err));
-
-//     sendRejection({
-//       email: 'leandro-jpinh@hotmail.com',
-//       name: 'Leandro',
-//       data: new Date().toLocaleString()
-//     }).then(_ => {
-//       toast.success('Valor do comprovante rejeitado, enviamos um e-mail para correção.');
-//     }).catch(err => console.log(err));
-
 export function EmailProvider({ children }: EmailContextProviderProps) {
   const [isSending, setIsSending] = useState(false);
 
   async function sendRegistration(email: Email) {
     try {
       setIsSending(true);
-      //console.log('sendRegistration', email);
       const response = await send(emailConfig.serviceId, emailConfig.registrationTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de inscrição.');
@@ -55,7 +28,6 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendConfirmation(email: Email) {
     try {
       setIsSending(true);
-      // console.log('sendConfirmation', email);
       const response = await send(emailConfig.serviceId, emailConfig.confirmationTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de confirmação.');
@@ -70,7 +42,6 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendRejection(email: Email) {
     try {
       setIsSending(true);
-      // console.log('sendRejection', email);
       const response = await send(emailConfig.serviceId, emailConfig.rejectTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de confirmação.');
@@ -85,7 +56,6 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendAdjustment(email: Email) {
     try {
       setIsSending(true);
-      // console.log('sendAdjustment', email);
       const response = await send(emailConfig.serviceId, emailConfig.adjustTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de correção do comprovante.');
@@ -100,7 +70,6 @@ export function EmailProvider({ children }: EmailContextProviderProps) {
   async function sendReset(email: Email) {
     try {
       setIsSending(true);
-      // console.log('sendReset', email);
       const response = await send(emailConfig.serviceId, emailConfig.resetTemplateId, email);
       if (response.status !== 200) {
         throw new Error('Erro ao enviar e-mail de inscrição.');

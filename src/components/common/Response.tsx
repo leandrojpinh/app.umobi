@@ -1,6 +1,6 @@
 import { ALink } from './Button';
 
-import styles from '@/styles/components/response.module.scss';
+import { responseModule as styles }  from '@/styles/components/pages';
 
 export interface IResponseProps {
   title: string;
@@ -14,7 +14,7 @@ export const Response = ({ title, message, type = 'success' }: IResponseProps) =
       <h1 className={type === 'success' ? styles.success : styles.error}>{title}</h1>
       <span>{message}</span>
 
-      <ALink path={'/'} label={'Entendi'} />
+      <ALink path={'/profile'} label={'Entendi'} />
     </div>
   )
 }

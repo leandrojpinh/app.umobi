@@ -84,34 +84,19 @@ export const FORM: FormProps[] = [
         ],
       },
     ],
-  },
+  },  
   {
     id: 4,
-    name: "4. PREVENÇÃO À COVID-19",
+    name: "4. PENALIDADES",
     items: [
       {
-        description: '4.1 Se você se inscreveu, mas testou positivo para Covid-19 próximo à data ou no dia do retiro, por favor, fique em casa. Se já tiver realizado o pagamento, nesse caso específico, será devolvido o valor pago.',
+        description: '4.1 Penalidade simples: O retirante será direcionado a fazer alguma tarefa e sua equipe não sofrerá penalidade nos pontos;',
       },
       {
-        description: '4.2 Cumprindo exigências ainda em vigor faz-se necessário o uso de máscara nas programações.',
+        description: '4.2 Penalidade de nível médio: O retirante será direcionado a fazer alguma atividade, sofrerá penalidade nos pontos da equipe e estará sobre aviso, caso aconteça novamente receberá a penalidade máxima;',
       },
       {
-        description: '4.3 Orientamos que todos façam uso regular de álcool em gel.',
-      }
-    ]
-  },
-  {
-    id: 5,
-    name: "5. PENALIDADES",
-    items: [
-      {
-        description: '5.1 Penalidade simples: O retirante será direcionado a fazer alguma tarefa e sua equipe não sofrerá penalidade nos pontos;',
-      },
-      {
-        description: '5.2 Penalidade de nível médio: O retirante será direcionado a fazer alguma atividade, sofrerá penalidade nos pontos da equipe e estará sobre aviso, caso aconteça novamente receberá a penalidade máxima;',
-      },
-      {
-        description: '5.3 Penalidade de nível máximo: O retirante será deixado em sua residência sem direito a devolução do dinheiro, e será suspenso de participar dos dois retiros seguintes.',
+        description: '4.3 Penalidade de nível máximo: O retirante será deixado em sua residência sem direito a devolução do dinheiro, e será suspenso de participar dos dois retiros seguintes.',
       },
       {
         description: 'OBS: Os responsáveis para julgar e aplicar a penalidades serão os pastores presentes no retiro.'

@@ -1,16 +1,26 @@
-import styles from '@/styles/components/camp-details.module.scss';
+import { useState } from 'react';
+import { campDetailModule as styles } from '@/styles/components/pages';
+
 import { FiLayers } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 export function CampDetails() {
-  const keyPix = "(85) 99244-2092";
-  const handleCopy = () => {
-    navigator.clipboard.writeText(keyPix);
+  const keyPix = "dda966f3-5897-4bd8-bfda-cee614205799";
+  const [copyText, setCopyText] = useState('Copiar');
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(keyPix);
+    setCopyText("Copiado!");
+
+    setTimeout(() => {
+      setCopyText("Copiar");
+    }, 3000);
   }
 
   return (
     <div className={styles.info}>
       <strong>Taxa do Retiro</strong>
-      <strong className={styles.tax}>R$ 225,00 <span>a partir de 16/out R$ 250,00.</span></strong>
+      {/* <strong className={styles.tax}>R$ 200,00 <span>a partir de 16/out R$ 250,00.</span></strong> */}
+      <strong className={styles.tax}>R$ 250,00</strong>
 
       <strong>Dados para envio de pix/transferências</strong>
       <span>Chave Pix</span>
@@ -18,11 +28,12 @@ export function CampDetails() {
         <span>
           {keyPix}
         </span>
-        <button onClick={handleCopy}>Copiar <FiLayers height={18} color={'var(--primary-light)'} /></button>
+        <button onClick={handleCopy}>{copyText} <FiLayers height={18} color={'var(--primary-light)'} /></button>
       </div>
 
-      <span>Banco: NU Pagamentos</span>
-      <span>Tesoureiro: Wisley Silva dos Santos</span>
+      <span>Banco: Inter</span>
+      <span>Tesoureiro: Daniel Nunes Araújo</span>
+      <span>Contato: (85) 98866-7478</span>
     </div>
   )
 }

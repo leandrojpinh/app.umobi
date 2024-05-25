@@ -1,0 +1,63 @@
+.inputBlock {
+  display: flex;
+  flex: 1;
+  margin: 2rem 0 1rem;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 2rem;
+  padding-left: 3rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--primary-light);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2rem;
+  width: 2rem;
+  border: 1px solid var(--text);
+}
+
+.container:hover input ~ .checkmark {
+  background: var(--linear);
+}
+
+.container input:checked ~ .checkmark {
+  background: var(--linear);
+  border: transparent;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.container:not(:disabled):checked ~ input::before{
+  opacity: 1;
+}
