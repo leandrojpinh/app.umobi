@@ -52,13 +52,13 @@ export default function Home() {
                     <ul>
                       {app.events.map((event, index) => (
                         <Link key={event.id} href={'/registration'}>
-                          <li key={index} className={styles.unavailable}>
+                          <li key={index}>
                             <picture>
                               <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
                             </picture>
-                            <div className={styles.eventInfo}>
+                            {/* <div className={styles.eventInfo}>
                               <span>Inscrições encerradas</span>
-                            </div>
+                            </div> */}
                           </li>
                         </Link>
                       ))}
@@ -70,7 +70,7 @@ export default function Home() {
         }
 
         <div className={styles.last}>
-          <strong>Retiro Umobi 2022</strong>
+          <strong>Retiro Umobi 2023</strong>
           <div>
             <ReactPlayer url={RESOURCES.video} />
           </div>

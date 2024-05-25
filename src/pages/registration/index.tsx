@@ -90,7 +90,7 @@ const INITIAL_STATE: IRegistrationProps = {
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 200
+  tax: 250
 };
 
 
@@ -127,7 +127,7 @@ export default function Registration() {
   }, []);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 200 : 75;
+    const value = payment.paymentMode === 'pix' ? 250 : 100;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -225,8 +225,8 @@ export default function Registration() {
       return;
     }
 
-    if (payment.paymentMode !== 'pix' && payment.tax < 75) {
-      toast.warn('O valor mínimo da entrada é de R$ 75,00');
+    if (payment.paymentMode !== 'pix' && payment.tax < 100) {
+      toast.warn('O valor mínimo da entrada é de R$ 100,00');
       return;
     }
 
