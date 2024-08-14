@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from "next/router";
 import { FormEvent, useState, useEffect, InputHTMLAttributes } from "react";
 import { animateScroll as scroll } from "react-scroll";
@@ -21,12 +23,12 @@ import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/R
 import { createPayment, createRegistration, getCamps } from "@/services/umobi/umobi.api";
 import { toast } from "react-toastify";
 import { ERRORS } from "@/constants/ErrorMessages";
-import { useEmail } from "@/context/EmailProvider";
 import { IResponseProps, Response } from "@/components/common/Response";
 import { CampDetails } from "@/components/common/CampDetails";
 import { Camp } from "@/services/umobi/models/Camp";
 import { PaymentForm } from "@/components/pages/paymentForm";
 import { Loader } from "@/components/common/Loader";
+import { SendRegistration } from "@/services/email/email";
 
 interface RoleProps {
   name: string;
@@ -98,7 +100,6 @@ export default function Registration() {
   const app = useApp();
   const auth = useAuth();
   const history = useRouter();
-  const email = useEmail();
 
   const [selectedEvent, setSelectedEvent] = useState<Camp>();
   const [registration, setRegistration] = useState<IRegistrationProps>(INITIAL_STATE);
@@ -218,7 +219,7 @@ export default function Registration() {
       });
   }
 
-  const handleStep2 = (e: FormEvent) => {
+  const handleStep2 = async (e: FormEvent) => {
     e.preventDefault();
     if (!file) {
       toast.warn('Selecionar um arquivo');
@@ -232,27 +233,30 @@ export default function Registration() {
 
     app.setIsLoading(true);
 
-    createPayment(payment, file as File)
-      .then(_ => {
-        if (auth.user.isAuthenticated) {
-          email.sendRegistration({
-            email: auth.user.email,
-            name: auth.user.name,
-            data: new Date().toLocaleString()
-          }).then(_ => {
-            setStep(step + 1);
-            setResponse({
-              title: 'tudo certo!',
-              message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
-              type: 'success'
-            });
-          }).catch(err => console.log(err));
+    try {
+      const paymentResponse = await createPayment(payment, file as File);
+      if (auth.user.isAuthenticated) {
+        const mail = await SendRegistration({
+          email: auth.user.email,
+          name: auth.user.name,
+          eventName: selectedEvent?.name
+        });
+
+        if (mail.data?.id) {
+          setStep(step + 1);
+          setResponse({
+            title: 'tudo certo!',
+            message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
+            type: 'success'
+          });
         }
-      })
-      .catch(err => console.log('ERRR', err))
-      .finally(() => {
-        app.setIsLoading(false);
-      });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
+    } finally {
+      app.setIsLoading(false);
+    }
   }
 
   return (

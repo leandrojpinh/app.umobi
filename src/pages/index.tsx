@@ -25,8 +25,6 @@ export default function Home() {
       app.setEvents(camps);
     })
       .catch(err => {
-        console.log('ERROR-137', err);
-
         toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);
@@ -56,9 +54,6 @@ export default function Home() {
                             <picture>
                               <Image src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
                             </picture>
-                            {/* <div className={styles.eventInfo}>
-                              <span>Inscrições encerradas</span>
-                            </div> */}
                           </li>
                         </Link>
                       ))}

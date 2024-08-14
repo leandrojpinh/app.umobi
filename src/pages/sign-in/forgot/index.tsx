@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
@@ -14,9 +16,9 @@ import { SIGN_IN_FIELDS, RESET_FIELDS } from "@/constants/FormFields";
 import { signInModule as styles } from '@/styles/pages';
 import { useAuth } from "@/context/AuthContainer";
 import { resetUser, sendCode } from "@/services/umobi/umobi.api";
-import { useEmail } from "@/context/EmailProvider";
 import { toast } from "react-toastify";
 import { Back } from "@/components/common/Back";
+import { SendCode } from "@/services/email/email";
 
 type Stage = 'email' | 'code';
 
@@ -24,7 +26,6 @@ export default function Forgot() {
   const history = useRouter();
   const auth = useAuth();
   const app = useApp();
-  const mail = useEmail();
 
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -32,32 +33,32 @@ export default function Forgot() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [stage, setStage] = useState<Stage>('email');
 
-  const handleEmail = (e: FormEvent) => {
+  const handleEmail = async (e: FormEvent) => {
     e.preventDefault();
 
     app.setIsLoading(true);
 
-    sendCode(email).then((response) => {
-      mail.sendReset({
+    try {
+      const response = await sendCode(email);
+      const mail = await SendCode({
+        code: response.code,
         email: response.email,
-        name: response.name,
-        code: response.code
-      })
-        .then(_ => {
-          toast.success('Enviamos um código de confirmação para seu e-mail, verifica se chegou no seu e-mail');
+        name: response.name
+      });
 
-          setStage('code');
-        })
-        .catch(err => console.log(err))
-        .finally(() => app.setIsLoading(false));
-    }).catch(err => {
+      if (mail.data?.id) {
+        toast.success('Enviamos um código de confirmação para seu e-mail, verifica se chegou no seu e-mail');
+        setStage('code');
+      }
+    } catch (err) {
+      console.log(err);
       toast.warn('Não identicamos seu e-mail ou deu algum problema na comunicação, verifique com a Secretaria.');
-      console.log('signError', err);
+    } finally {
       app.setIsLoading(false);
-    });
+    }
   }
 
-  const handleCode = (e: FormEvent) => {
+  const handleCode = async (e: FormEvent) => {
     e.preventDefault();
     app.setIsLoading(true);
 

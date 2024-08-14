@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from "next/router";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { FormEvent, useEffect, useState } from "react";
@@ -18,10 +20,10 @@ import { useAuth } from "@/context/AuthContainer";
 import { evaluatePayment, getForm, getPayments } from "@/services/umobi/umobi.api";
 import { RegistrationForm, RegistrationPayment } from "@/services/umobi/models/Registration";
 import { getBooleanAnswer, toMoney } from "@/helper/utils";
-import { useEmail } from "@/context/EmailProvider";
 
 import { dashboardRegistrationModule as styles } from '@/styles/pages';
 import Image from "next/image";
+import { SendConfirmation, SendRejection } from "@/services/email/email";
 
 type DashboardPaymentProps = {
   registrationId: string
@@ -35,7 +37,6 @@ type ValidationType = 'accepted' | 'rejected';
 
 export default function DashboardRegistration({ registrationId }: DashboardPaymentProps) {
   const auth = useAuth();
-  const email = useEmail();
 
   const [payments, setPayments] = useState<RegistrationPayment[]>();
   const [form, setForm] = useState<RegistrationForm>();
@@ -77,7 +78,7 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
     setSelectedPayment(obj);
   }
 
-  const handleEvaluatePayment = (e: FormEvent) => {
+  const handleEvaluatePayment = async (e: FormEvent) => {
     e.preventDefault();
 
     if (selectedPayment) {
@@ -91,41 +92,41 @@ export default function DashboardRegistration({ registrationId }: DashboardPayme
           return;
         }
 
-        evaluatePayment({ paymentId: selectedPayment.id!, rejected: false, tax: confirmationTax }).then(response => {
-          email.sendConfirmation({
+        try {
+          const evaluateResponse = await evaluatePayment({ paymentId: selectedPayment.id!, rejected: false, tax: confirmationTax });
+          const mail = await SendConfirmation({
             email: form?.registration?.user?.email!,
             name: form?.registration?.user?.name!,
-            data: new Date().toLocaleString()
-          }).then(_ => {
+            eventName: form?.registration?.camp.name
+          })
+
+          if (mail.data?.id) {
             toast.success('Valor do comprovante confirmado!');
-          }).catch(err => {
-            toast.error('Erro ao enviar e-mail, ver nos logs');
-            console.log('ERR100', err);
-          });
+          }
 
-          setSelectedPayment(response);
-        }).catch(err => {
-          toast.error('Erro ao confirmar comprovante, ver nos logs');
-          console.log('ERR103', err);
-        });
+          setSelectedPayment(evaluateResponse);
+        } catch (err) {
+          toast.error('Erro ao enviar e-mail, ver nos logs');
+          console.log('ERR100', err);
+        }
       } else {
-        evaluatePayment({ paymentId: selectedPayment.id!, rejected: true, reason: 'Valor incorreto.' }).then(response => {
-          email.sendRejection({
+        try {
+          const evaluateResponse = await evaluatePayment({ paymentId: selectedPayment.id!, rejected: true, reason: 'Valor incorreto.' });
+          const mail = await SendRejection({
             email: form?.registration?.user?.email!,
             name: form?.registration?.user?.name!,
-            data: new Date().toLocaleString()
-          }).then(_ => {
-            toast.success('Valor do comprovante rejeitado, enviamos um e-mail para correção.');
-          }).catch(err => {
-            toast.error("Erro ao enviar e-mail de rejeição do comprovante, ver nos logs");
-            console.log('ERR124', err);
-          });
+            eventName: form?.registration?.camp.name
+          })
 
-          setSelectedPayment(response);
-        }).catch(err => {
-          toast.error("Erro ao rejeitar comprovante, ver nos logs");
-          console.log('ERR130', err);
-        });
+          if (mail.data?.id) {
+            toast.success('Valor do comprovante rejeitado, enviamos um e-mail para correção.');
+          }
+
+          setSelectedPayment(evaluateResponse);
+        } catch (err) {
+          toast.error("Erro ao enviar e-mail de rejeição do comprovante, ver nos logs");
+          console.log('ERR100', err);
+        }
       }
     }
   }

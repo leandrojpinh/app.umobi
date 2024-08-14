@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo, FormEvent } from "react";
 import moment from "moment";
@@ -24,9 +26,9 @@ import { ButtonRemove } from "@/components/common/Button";
 import { CampDetails } from "@/components/common/CampDetails";
 import { toMoney } from "@/helper/utils";
 import { toast } from "react-toastify";
-import { useEmail } from "@/context/EmailProvider";
 import { PaymentForm } from "@/components/pages/paymentForm";
 import { Back } from "@/components/common/Back";
+import { SendRegistration } from "@/services/email/email";
 
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
@@ -38,7 +40,6 @@ export default function Profile() {
   const auth = useAuth();
   const app = useApp();
   const history = useRouter();
-  const email = useEmail();
 
   const [selectedRegistration, setSelectedRegistration] = useState<Registration>();
 
@@ -104,7 +105,7 @@ export default function Profile() {
     };
   }, [userPayments]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!file) {
@@ -118,31 +119,32 @@ export default function Profile() {
     }
 
     app.setIsLoading(true);
-    const newPayment = {
-      ...payment,
-      registrationId: selectedRegistration?.id
-    } as RegistrationPayment;
+    try {
+      const newPayment = {
+        ...payment,
+        registrationId: selectedRegistration?.id
+      } as RegistrationPayment;
 
-    createPayment(newPayment, file)
-      .then(_ => {
+      const response = await createPayment(newPayment, file);
+      const mail = await SendRegistration({
+        email: app.userInfo?.email!,
+        name: app.userInfo?.name!,
+        eventName: selectedRegistration?.camp.name
+      });
+
+      if (mail.data?.id) {
         setSelectedPayment(undefined);
         onClose();
-        email.sendRegistration({
-          email: app.userInfo?.email!,
-          name: app.userInfo?.name!,
-          data: new Date().toLocaleString()
-        }).then(_ => {
-          toast.success('Comprovante enviado com sucesso!');
-          setReload(true);
-        }).catch(err => console.log(err));
-      })
-      .catch(err => {
-        console.log('ERRR', err);
-        toast.warn("Tivemos um problema ao enviar o comprovante, atualize a página.")
-      })
-      .finally(() => {
-        app.setIsLoading(false);
-      });
+        toast.success('Comprovante enviado com sucesso!');
+        setReload(true);
+      }
+    }
+    catch (err) {
+      console.log('ERRR', err);
+      toast.warn("Tivemos um problema ao enviar o comprovante, atualize a página.")
+    } finally {
+      app.setIsLoading(false);
+    }
   }
 
   const handleRemoveReceipt = (paymentId: string) => {

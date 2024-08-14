@@ -1,14 +1,62 @@
-import { init } from 'emailjs-com';
+'use server';
 
-export const emailConfig = {
-  userId: process.env.NEXT_PUBLIC_EMAILJS_USER_ID,
-  token: process.env.NEXT_PUBLIC_EMAILJS_TOKEN,
-  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
-  registrationTemplateId: process.env.NEXT_PUBLIC_EMAILJS_REGISTRATION_TEMPLATE_ID || '',
-  confirmationTemplateId: process.env.NEXT_PUBLIC_EMAILJS_CONFIRMATION_TEMPLATE_ID || '',
-  rejectTemplateId: process.env.NEXT_PUBLIC_EMAILJS_REJECTION_TEMPLATE_ID || '',
-  adjustTemplateId: process.env.NEXT_PUBLIC_EMAILJS_ADJUST_TEMPLATE_ID || '',
-  resetTemplateId: process.env.NEXT_PUBLIC_EMAILJS_RESET_TEMPLATE_ID || '',
-};
+import UmobiRegistration, { UmobiRegistrationProps } from "@/components/email/umobi-registration";
+import UmobiCode, { UmobiCodeProps } from "@/components/email/umobi-code";
+import UmobiConfirmation, { UmobiConfirmationProps } from "@/components/email/umobi-confirmation";
+import { Resend } from "resend";
+import UmobiRejection, { UmobiRejectionProps } from "@/components/email/umobi-rejection";
 
-init(emailConfig.userId || '');
+export async function SendConfirmation(props: UmobiConfirmationProps) {
+  console.log("process.env.RESEND_API_KEY", process.env.RESEND_API_KEY);
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Confirmação de comprovante - ${props.eventName}`,
+    react: UmobiConfirmation(props)
+  });
+
+  return response;
+}
+
+export async function SendCode(props: UmobiCodeProps) {
+  const key = process.env.RESEND_API_KEY;
+  console.log('key', key);
+  const resend = new Resend(key);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Reset de senha`,
+    react: UmobiCode(props)
+  });
+
+  return response;
+}
+
+export async function SendRegistration(props: UmobiRegistrationProps) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Reset de senha`,
+    react: UmobiRegistration(props)
+  });
+
+  return response;
+}
+
+export async function SendRejection(props: UmobiRejectionProps) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Comprovante Rejeitado`,
+    react: UmobiRejection(props)
+  });
+
+  return response;
+}
