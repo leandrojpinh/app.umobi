@@ -1,19 +1,21 @@
 'use server';
 
-import UmobiRegistration, { UmobiRegistrationProps } from "@/components/email/umobi-registration";
-import UmobiCode, { UmobiCodeProps } from "@/components/email/umobi-code";
-import UmobiConfirmation, { UmobiConfirmationProps } from "@/components/email/umobi-confirmation";
+import UmobiCharge, { UmobiChargeProps } from "@/templates/email/umobi-charge";
+import UmobiCode, { UmobiCodeProps } from "@/templates/email/umobi-code";
+import UmobiConfirmation, { UmobiConfirmationProps } from "@/templates/email/umobi-confirmation";
+import UmobiRegistration, { UmobiRegistrationProps } from "@/templates/email/umobi-registration";
+import UmobiRejection, { UmobiRejectionProps } from "@/templates/email/umobi-rejection";
 import { Resend } from "resend";
-import UmobiRejection, { UmobiRejectionProps } from "@/components/email/umobi-rejection";
 
 export async function SendConfirmation(props: UmobiConfirmationProps) {
   console.log("process.env.RESEND_API_KEY", process.env.RESEND_API_KEY);
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
 
   const response = await resend.emails.send({
     from: 'inscricao@umobice.com.br',
     to: props.email!,
-    subject: `Confirmação de comprovante - ${props.eventName}`,
+    subject: `Umobi | Confirmação de comprovante - ${props.eventName}`,
     react: UmobiConfirmation(props)
   });
 
@@ -21,14 +23,14 @@ export async function SendConfirmation(props: UmobiConfirmationProps) {
 }
 
 export async function SendCode(props: UmobiCodeProps) {
-  const key = process.env.RESEND_API_KEY;
-  console.log('key', key);
-  const resend = new Resend(key);
+  const apiKey = process.env.RESEND_API_KEY;
+  console.log('key', apiKey);
+  const resend = new Resend(apiKey);
 
   const response = await resend.emails.send({
     from: 'inscricao@umobice.com.br',
     to: props.email!,
-    subject: `Reset de senha`,
+    subject: `Umobi | Reset de senha`,
     react: UmobiCode(props)
   });
 
@@ -36,12 +38,13 @@ export async function SendCode(props: UmobiCodeProps) {
 }
 
 export async function SendRegistration(props: UmobiRegistrationProps) {
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
 
   const response = await resend.emails.send({
     from: 'inscricao@umobice.com.br',
     to: props.email!,
-    subject: `Reset de senha`,
+    subject: `Umobi | Inscrição Recebida`,
     react: UmobiRegistration(props)
   });
 
@@ -49,13 +52,28 @@ export async function SendRegistration(props: UmobiRegistrationProps) {
 }
 
 export async function SendRejection(props: UmobiRejectionProps) {
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
 
   const response = await resend.emails.send({
     from: 'inscricao@umobice.com.br',
     to: props.email!,
-    subject: `Comprovante Rejeitado`,
+    subject: `Umobi | Comprovante Rejeitado`,
     react: UmobiRejection(props)
+  });
+
+  return response;
+}
+
+export async function SendCharge(props: UmobiChargeProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Lembrete`,
+    react: UmobiCharge(props)
   });
 
   return response;
