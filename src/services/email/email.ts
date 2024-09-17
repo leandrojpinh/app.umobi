@@ -1,14 +1,80 @@
-import { init } from 'emailjs-com';
+'use server';
 
-export const emailConfig = {
-  userId: process.env.NEXT_PUBLIC_EMAILJS_USER_ID,
-  token: process.env.NEXT_PUBLIC_EMAILJS_TOKEN,
-  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
-  registrationTemplateId: process.env.NEXT_PUBLIC_EMAILJS_REGISTRATION_TEMPLATE_ID || '',
-  confirmationTemplateId: process.env.NEXT_PUBLIC_EMAILJS_CONFIRMATION_TEMPLATE_ID || '',
-  rejectTemplateId: process.env.NEXT_PUBLIC_EMAILJS_REJECTION_TEMPLATE_ID || '',
-  adjustTemplateId: process.env.NEXT_PUBLIC_EMAILJS_ADJUST_TEMPLATE_ID || '',
-  resetTemplateId: process.env.NEXT_PUBLIC_EMAILJS_RESET_TEMPLATE_ID || '',
-};
+import UmobiCharge, { UmobiChargeProps } from "@/templates/email/umobi-charge";
+import UmobiCode, { UmobiCodeProps } from "@/templates/email/umobi-code";
+import UmobiConfirmation, { UmobiConfirmationProps } from "@/templates/email/umobi-confirmation";
+import UmobiRegistration, { UmobiRegistrationProps } from "@/templates/email/umobi-registration";
+import UmobiRejection, { UmobiRejectionProps } from "@/templates/email/umobi-rejection";
+import { Resend } from "resend";
 
-init(emailConfig.userId || '');
+export async function SendConfirmation(props: UmobiConfirmationProps) {
+  console.log("process.env.RESEND_API_KEY", process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Confirmação de comprovante - ${props.eventName}`,
+    react: UmobiConfirmation(props)
+  });
+
+  return response;
+}
+
+export async function SendCode(props: UmobiCodeProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  console.log('key', apiKey);
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Reset de senha`,
+    react: UmobiCode(props)
+  });
+
+  return response;
+}
+
+export async function SendRegistration(props: UmobiRegistrationProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Inscrição Recebida`,
+    react: UmobiRegistration(props)
+  });
+
+  return response;
+}
+
+export async function SendRejection(props: UmobiRejectionProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Comprovante Rejeitado`,
+    react: UmobiRejection(props)
+  });
+
+  return response;
+}
+
+export async function SendCharge(props: UmobiChargeProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Lembrete`,
+    react: UmobiCharge(props)
+  });
+
+  return response;
+}
