@@ -20,7 +20,7 @@ export default function Home() {
     getCamps().then(camps => {
       app.setEvents(camps);
     })
-      .catch(err => {
+      .catch(_ => {
         toast.error('Houve um problema na comunicação, tenta novamente. Se o problema persistir, fala com alguém da Secretaria da Umobi.');
       }).finally(() => {
         app.setIsLoading(false);

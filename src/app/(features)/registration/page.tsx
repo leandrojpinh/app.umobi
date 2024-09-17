@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/Input";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Radio } from "@/components/ui/Radio";
 import { CampDetails } from "@/components/ui/CampDetails";
-import { PaymentForm } from "@/components/pages/PaymentForm";
+import { PaymentForm } from "@/components/pages/PaymentForms";
 import { useEmail } from "@/contexts/EmailProvider";
 import { SendRegistration } from "@/services/email/email";
 

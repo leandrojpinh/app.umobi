@@ -21,7 +21,7 @@ import { Layout } from "@/components/ui/Layout";
 import { Back, ButtonRemove } from "@/components/ui/Button";
 import { Title, Topic } from "@/components/ui/Text";
 import { CampDetails } from "@/components/ui/CampDetails";
-import { PaymentForm } from "@/components/pages/PaymentForm";
+import { PaymentForm } from "@/components/pages/PaymentForms";
 import { Info, InfoGroup } from "@/components/ui/Info";
 import { SendRegistration } from "@/services/email/email";
 
