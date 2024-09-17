@@ -238,7 +238,7 @@ export const FORM_COMPLEX_FIELDS = {
   }
 };
 
-export const SIGN_IN_FIELDS = {
+export const LOGIN_FIELDS = {
   email: {
     id: uuidV4(),
     field: {
@@ -293,7 +293,7 @@ export const PAYMENT_FIELDS = {
       {
         label: "Parcelado - (Entrada + 1x de R$ 150,00)",
         value: "1x",
-      },
+      }
     ],
     lastOptions: [
       {

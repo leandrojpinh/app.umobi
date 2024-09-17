@@ -1,7 +1,7 @@
 export const ERRORS = {
-  formAlreadyExists: { 
+  formAlreadyExists: {
     error: 'Registration Form already exists!',
-    message: 'Sua inscrição já tinha sido enviada, então já vamos para a próxima etapa.'
+    message: 'Já existe um cadastro com os dados informados... tenta recuperar sua senha, qualquer coisa, fala com o pessoal da Secretaria da Umobi.'
   },
   userAlreadyExists: {
     error: 'User already exists.',
