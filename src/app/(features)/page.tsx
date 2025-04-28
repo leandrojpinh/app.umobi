@@ -50,7 +50,7 @@ export default function Home() {
                       <Link key={event.id} href={'/registration'} className="flex no-underline cursor-pointer">
                         <li key={index} className="flex justify-center items-center transition-all duration-200 flex-col hover:brightness-90">
                           <picture>
-                            <Image className="rounded-lg" src={event.folderUrl ?? '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
+                            <Image className="rounded-lg" src={!!event.folderUrl ? event.folderUrl : '/folder.svg'} alt={event.name} objectPosition={'center'} objectFit='cover' width={295} height={344} />
                           </picture>
                           {/* <div className={styles.eventInfo}>
                               <span>Inscrições encerradas</span>

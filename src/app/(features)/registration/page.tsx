@@ -90,7 +90,7 @@ const INITIAL_STATE: IRegistrationProps = {
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 250
+  tax: 180
 };
 
 
@@ -127,7 +127,7 @@ export default function Registration() {
   }, []);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 250 : 100;
+    const value = payment.paymentMode === 'pix' ? 180 : 50;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -225,8 +225,8 @@ export default function Registration() {
       return;
     }
 
-    if (payment.paymentMode !== 'pix' && payment.tax < 100) {
-      toast.warn('O valor mínimo da entrada é de R$ 100,00');
+    if (payment.paymentMode !== 'pix' && payment.tax < 50) {
+      toast.warn('O valor mínimo da entrada é de R$ 50,00');
       return;
     }
 
@@ -286,7 +286,7 @@ export default function Registration() {
                       <ul className="gap-4 rounded-md flex w-fit">
                         {app.events?.map(evt => (
                           <li key={evt.id} onClick={() => setSelectedEvent(evt)} className={`flex flex-1 h-full cursor-pointer transition-all duration-200 rounded-md border-solid border-2 hover:brightness-90 ${evt.name === selectedEvent?.name ? 'border-app-primary-light' : 'border-[transparent]'}`}>
-                            <Image className="rounded-lg h-full" src={evt.folderUrl ?? '/folder.svg'} alt={evt.name} width={120} height={140} />
+                            <Image className="rounded-lg h-full" src={!!evt.folderUrl ? evt.folderUrl : '/folder.svg'} alt={evt.name} width={120} height={140} />
                           </li>
                         ))}
                       </ul>

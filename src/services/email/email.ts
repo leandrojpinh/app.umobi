@@ -8,7 +8,6 @@ import UmobiRejection, { UmobiRejectionProps } from "@/templates/email/umobi-rej
 import { Resend } from "resend";
 
 export async function SendConfirmation(props: UmobiConfirmationProps) {
-  console.log("process.env.RESEND_API_KEY", process.env.RESEND_API_KEY);
   const apiKey = process.env.RESEND_API_KEY;
   const resend = new Resend(apiKey);
 
@@ -24,7 +23,6 @@ export async function SendConfirmation(props: UmobiConfirmationProps) {
 
 export async function SendCode(props: UmobiCodeProps) {
   const apiKey = process.env.RESEND_API_KEY;
-  console.log('key', apiKey);
   const resend = new Resend(apiKey);
 
   const response = await resend.emails.send({
