@@ -28,7 +28,7 @@ import { SendRegistration } from "@/services/email/email";
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 250
+  tax: 180
 };
 
 export default function Profile() {
@@ -87,7 +87,7 @@ export default function Profile() {
   }, [selectedRegistration?.id, reload]);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 250 : (totalPaid !== undefined && totalPaid > 0) ? 150 : 100;
+    const value = payment.paymentMode === 'pix' ? 180 : (totalPaid !== undefined && totalPaid > 0) ? 130 : 50;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -108,8 +108,8 @@ export default function Profile() {
       return;
     }
 
-    if (payment.paymentMode !== 'pix' && payment.tax < 100) {
-      setPaymentError('O valor mínimo da entrada é de R$ 100,00');
+    if (payment.paymentMode !== 'pix' && payment.tax < 50) {
+      setPaymentError('O valor mínimo da entrada é de R$ 50,00');
       return;
     }
 
@@ -121,7 +121,6 @@ export default function Profile() {
       } as RegistrationPayment;
 
       const response = await createPayment(newPayment, file);
-      console.log('response', response);
       const mail = await SendRegistration({
         email: app.userInfo?.email!,
         name: app.userInfo?.name!,
@@ -175,7 +174,7 @@ export default function Profile() {
 
   const onOpen = () => {
     if (totalPaid !== undefined && totalPaid > 0) {
-      setPayment({ ...payment, paymentMode: '1x', tax: 125 });
+      setPayment({ ...payment, paymentMode: '1x', tax: 130 });
     }
 
     setCreateNew(true);

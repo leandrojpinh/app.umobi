@@ -26,7 +26,6 @@ const apiHeader = (token: string) => {
 
 const createUser = (user: User) => {
   return new Promise((resolve, reject) => {
-    console.log("User created", user);
     api
       .post("/users", user)
       .then((userResponse: AxiosResponse<string>) => resolve(userResponse.data))
@@ -150,10 +149,6 @@ const evaluatePayment = async ({
   reason,
   tax
 }: EvaluatePayment): Promise<RegistrationPayment> => {
-  console.log({  paymentId,
-    rejected,
-    reason,
-    tax});
   return new Promise((resolve, reject) => {
     api
       .post(`/registrations/payments/${paymentId}`, { rejected, reason, tax })
@@ -162,7 +157,7 @@ const evaluatePayment = async ({
   });
 };
 
-const getSummary = async (): Promise<SummaryPayments> => {  
+const getSummary = async (): Promise<SummaryPayments> => {
   return new Promise((resolve, reject) => {
     api
       .get('/registrations/summary')
@@ -171,7 +166,7 @@ const getSummary = async (): Promise<SummaryPayments> => {
   });
 }
 
-const sendCode = async (email: string): Promise<Reset> => {  
+const sendCode = async (email: string): Promise<Reset> => {
   return new Promise((resolve, reject) => {
     api
       .post('/password/forgot', { email })
@@ -180,7 +175,7 @@ const sendCode = async (email: string): Promise<Reset> => {
   });
 }
 
-const resetUser = async (token: string, password: string): Promise<Reset> => {  
+const resetUser = async (token: string, password: string): Promise<Reset> => {
   return new Promise((resolve, reject) => {
     api
       .post(`password/reset?token=${token}`, { password })
@@ -189,7 +184,7 @@ const resetUser = async (token: string, password: string): Promise<Reset> => {
   });
 }
 
-const removeReceipt = async (paymentId: string): Promise<void> => {  
+const removeReceipt = async (paymentId: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     api
       .delete(`/registrations/payments/${paymentId}`)

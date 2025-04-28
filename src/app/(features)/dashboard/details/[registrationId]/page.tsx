@@ -153,7 +153,6 @@ export default function DashboardRegistration({ params }: DashboardPaymentProps)
 
   const handleSendCharge = async () => {
     try {
-      console.log('asdasdasd', form?.registration);
       const mail = await SendCharge({
         email: form?.registration?.user?.email!,
         name: form?.registration?.user?.name!,
