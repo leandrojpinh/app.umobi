@@ -3,6 +3,7 @@
 import UmobiCharge, { UmobiChargeProps } from "@/templates/email/umobi-charge";
 import UmobiCode, { UmobiCodeProps } from "@/templates/email/umobi-code";
 import UmobiConfirmation, { UmobiConfirmationProps } from "@/templates/email/umobi-confirmation";
+import UmobiReceipt from "@/templates/email/umobi-receipt";
 import UmobiRegistration, { UmobiRegistrationProps } from "@/templates/email/umobi-registration";
 import UmobiRejection, { UmobiRejectionProps } from "@/templates/email/umobi-rejection";
 import { Resend } from "resend";
@@ -44,6 +45,20 @@ export async function SendRegistration(props: UmobiRegistrationProps) {
     to: props.email!,
     subject: `Umobi | Inscrição Recebida`,
     react: UmobiRegistration(props)
+  });
+
+  return response;
+}
+
+export async function SendReceipt(props: UmobiRegistrationProps) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const resend = new Resend(apiKey);
+
+  const response = await resend.emails.send({
+    from: 'inscricao@umobice.com.br',
+    to: props.email!,
+    subject: `Umobi | Comprovante Recebido`,
+    react: UmobiReceipt(props)
   });
 
   return response;

@@ -26,7 +26,7 @@ import { Radio } from "@/components/ui/Radio";
 import { CampDetails } from "@/components/ui/CampDetails";
 import { PaymentForm } from "@/components/pages/PaymentForms";
 import { useEmail } from "@/contexts/EmailProvider";
-import { SendRegistration } from "@/services/email/email";
+import { SendReceipt, SendRegistration } from "@/services/email/email";
 
 interface RoleProps {
   name: string;
@@ -196,6 +196,13 @@ export default function Registration() {
 
     createRegistration(auth.user.id, form).then(_ => {
       toast.success('Sua inscrição foi enviada, vamos para o próximo passo!');
+      if (auth.user.isAuthenticated) {
+        SendRegistration({
+          email: auth.user.email,
+          name: auth.user.name,
+          eventName: selectedEvent?.name
+        });
+      }
 
       app.setIsLoading(false);
       setStep(step + 1);
@@ -233,29 +240,21 @@ export default function Registration() {
     app.setIsLoading(true);
 
     try {
-      const paymentResponse = await createPayment(payment, file as File);
+      await createPayment(payment, file as File);
       if (auth.user.isAuthenticated) {
-        const res = await email.sendRegistration({
+        const mail = await SendReceipt({
           email: auth.user.email,
           name: auth.user.name,
-          data: new Date().toLocaleString()
+          eventName: selectedEvent?.name
         });
 
-        if (res) {
-          const mail = await SendRegistration({
-            email: auth.user.email,
-            name: auth.user.name,
-            eventName: selectedEvent?.name
+        if (mail.data?.id) {
+          setStep(step + 1);
+          setResponse({
+            title: 'tudo certo!',
+            message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
+            type: 'success'
           });
-
-          if (mail.data?.id) {
-            setStep(step + 1);
-            setResponse({
-              title: 'tudo certo!',
-              message: 'Suas informações foram enviadas. Assim que forem confirmadas você receberá um e-mail avisando que foi aprovado, ou se precisa fazer algum ajuste no comprovante. Até lá!',
-              type: 'success'
-            });
-          }
         }
       }
     } catch (err) {

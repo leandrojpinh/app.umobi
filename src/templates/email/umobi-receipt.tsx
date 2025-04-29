@@ -12,13 +12,13 @@ import {
   Tailwind
 } from "@react-email/components";
 
-export interface UmobiRegistrationProps {
+export interface UmobiReceiptProps {
   email?: string;
   name?: string;
   eventName?: string;
 }
 
-export const UmobiRegistration = ({ name, eventName }: UmobiRegistrationProps) => (
+export const UmobiReceipt = ({ name, eventName }: UmobiReceiptProps) => (
   <Html>
     <Head />
     <Tailwind>
@@ -44,4 +44,4 @@ export const UmobiRegistration = ({ name, eventName }: UmobiRegistrationProps) =
   </Html>
 );
 
-export default UmobiRegistration;
+export default UmobiReceipt;
