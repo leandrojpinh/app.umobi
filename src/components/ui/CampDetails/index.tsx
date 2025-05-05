@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FiLayers } from 'react-icons/fi';
 
 export function CampDetails() {
-  const keyPix = "85992121171";
+  const keyPix = "4fa2d6d3-a08e-4570-8b18-fbb25680345b";
   const [copyText, setCopyText] = useState('Copiar');
   const handleCopy = async () => {
     await navigator.clipboard.writeText(keyPix);
@@ -31,7 +31,7 @@ export function CampDetails() {
         <button className='py-2 px-0 border-none ml-4 bg-[transparent] text-app-primary-light flex items-center gap-2 cursor-pointer' onClick={handleCopy}>{copyText} <FiLayers height={18} color={'var(--primary-light)'} /></button>
       </div>
 
-      <span className='mb-2'>Banco: Itaú</span>
+      <span className='mb-2'>Banco: Will Bank</span>
       <span className='mb-2'>Tesoureiro: Sabrina Lima da Costa</span>
       <span className='mb-2'>Contato: (85) 99212-1171</span>
     </div>
