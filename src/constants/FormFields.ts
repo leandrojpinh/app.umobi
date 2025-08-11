@@ -291,13 +291,13 @@ export const PAYMENT_FIELDS = {
         value: "pix",
       },
       {
-        label: "Parcelado - (Entrada + 1x de R$ 130,00)",
+        label: "Parcelado - (Entrada + 1x de R$ 150,00)",
         value: "1x",
       }
     ],
     lastOptions: [
       {
-        label: "PIX - 1x de R$ 180,00",
+        label: "PIX - 1x de R$ 200,00",
         value: "1x",
       },
     ]

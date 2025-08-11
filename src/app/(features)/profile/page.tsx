@@ -28,7 +28,7 @@ import { SendRegistration } from "@/services/email/email";
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 180
+  tax: 200
 };
 
 export default function Profile() {
@@ -87,7 +87,7 @@ export default function Profile() {
   }, [selectedRegistration?.id, reload]);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 180 : (totalPaid !== undefined && totalPaid > 0) ? 130 : 50;
+    const value = payment.paymentMode === 'pix' ? 200 : (totalPaid !== undefined && totalPaid > 0) ? 150 : 50;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 
@@ -174,7 +174,7 @@ export default function Profile() {
 
   const onOpen = () => {
     if (totalPaid !== undefined && totalPaid > 0) {
-      setPayment({ ...payment, paymentMode: '1x', tax: 130 });
+      setPayment({ ...payment, paymentMode: '1x', tax: 150 });
     }
 
     setCreateNew(true);

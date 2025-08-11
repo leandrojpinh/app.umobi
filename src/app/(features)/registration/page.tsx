@@ -90,7 +90,7 @@ const INITIAL_STATE: IRegistrationProps = {
 const INITIAL_STATE_PAYMENT: RegistrationPayment = {
   paymentMode: 'pix',
   registrationId: '',
-  tax: 180
+  tax: 200
 };
 
 
@@ -127,7 +127,7 @@ export default function Registration() {
   }, []);
 
   useEffect(() => {
-    const value = payment.paymentMode === 'pix' ? 180 : 50;
+    const value = payment.paymentMode === 'pix' ? 200 : 50;
     changePaymentField(PAYMENT_FIELDS.tax.field.name, value);
   }, [payment.paymentMode]);
 

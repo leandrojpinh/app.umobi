@@ -20,7 +20,7 @@ export function CampDetails() {
     <div className={'flex flex-col w-full font-app-text'}>
       <strong className='mb-2'>Taxa do Retiro</strong>
       {/* <strong className={styles.tax}>R$ 200,00 <span>a partir de 16/out R$ 250,00.</span></strong> */}
-      <strong className={'text-4xl text-app-primary-light mb-4'}>R$ 180,00</strong>
+      <strong className={'text-4xl text-app-primary-light mb-4'}>R$ 200,00</strong>
 
       <strong className='mb-2 text-md font-normal tracking-widest'>Dados para envio de pix/transferências</strong>
       <span className='mb-2'>Chave Pix</span>
