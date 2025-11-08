@@ -33,13 +33,13 @@ export const Navigation = () => {
           {
             auth.user.isAuthenticated && (!auth.user.isAdmin && !auth.user.isViewer) && (
               <>
-                <li className='h-full flex items-center'>
+                {/* <li className='h-full flex items-center'>
                   <Link href={navigation.pages.private.registration.route}>
                     <div className='h-full uppercase items-center gap-2 flex transition-all ease-in-out duration-200 hover:opacity-70 rounded-lg max-h-10 px-2'>
                       <span>{navigation.pages.private.registration.name}</span>
                     </div>
                   </Link>
-                </li>
+                </li> */}
                 <li className='h-full flex items-center'>
                   <Link href={navigation.pages.private.profile.route}>
                     <div className='h-full uppercase items-center gap-2 flex transition-all ease-in-out duration-200 hover:opacity-70 rounded-lg max-h-10 px-2'>
@@ -67,13 +67,13 @@ export const Navigation = () => {
             </li>
           ) : (
             <>
-              <li className='h-full flex items-center'>
+              {/* <li className='h-full flex items-center'>
                 <Link href={navigation.pages.public.signUp.route}>
                   <div className='h-full max-h-10 cursor-pointer transition-all duration-200 flex text-app-text rounded-md items-center justify-center p-4 hover:brightness-90' style={{ background: 'var(--linear)' }}>
                     <span>{navigation.pages.public.signUp.name}</span>
                   </div>
                 </Link>
-              </li>
+              </li> */}
               <li className='h-full flex items-center gap-2'>
                 <FiLogIn height={36} className='text-app-primary-dark' />
                 <Link className='hover:opacity-70 transition-all duration-200' href={navigation.pages.public.signIn.route}>{navigation.pages.public.signIn.name}</Link>
